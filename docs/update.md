@@ -17,7 +17,7 @@ Thank you all for your support!
 
 # Release Notes
 
-v2.21.0 (August 25th 2026)
+v2.21.0 (September 16th 2026)
 ===
 
 Hi everyone,
@@ -29,32 +29,6 @@ We've also fixed versatile weapon quick-rolls, HP updates for legacy Roll20 game
 You can read the full [Changelog](/Changelog#v2210) below to see all the changes included in this release.
 
 As usual, a big thank you to [@dmportella/Gothyl](https://github.com/dmportella), [@jugarrit](https://github.com/jugarrit), and [@0xguy07](https://github.com/0xguy07) for their work on this release!
-
-Enjoy!
-=
-v2.20.1 (June 7th 2026)
-===
-
-Hi everyone,
-
-This time we're releasing a small hotfix for an issue introduced in the previous release. Users on Chrome who had duplicate rolls on Roll20 or who couldn't get their rolls sent to Roll20 after the extension is reloaded (such as after an update), should not be affected by those bugs anymore.
-
-Thank you to [@dmportella/Gothyl](https://github.com/dmportella) and to[@0xguy07](https://github.com/0xguy07) who fixed the issues in this hotfix.
-
-Have fun!
-=
-v2.20.0 (June 4th 2026)
-===
-
-Hi everyone,
-
-Today's release adds a few small bugfixes to Beyond20, but also tackles a recent issue with the Roll20 website now using two slightly different URLs for the games.
-
-This should get rid of the warning users would see, when they access their games through the new URL, which prevented Beyond20 from sending rolls to Roll20. 
-
-You can read the full [Changelog](/Changelog#v2200) below to see all the changes included in this release.
-
-As usual, a big thank you to [@dmportella/Gothyl](https://github.com/dmportella) and to[@raystuart](https://github.com/raystuart) for their work on this release!
 Thank you as well to our generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
 
 Enjoy!
@@ -65,7 +39,7 @@ Click [here](/release_notes) for the full release notes from previous versions.
 
 # Changelog
 
-v2.20.2 (August 25th 2026)
+v2.21.0 (September 16th 2026)
 ===
 - **Feature**: *dndbeyond*: Add support for the 2024 Wizard: Bladesinger: Bladesong feature (by [@jugarrit](https://github.com/jugarrit))
 - **Feature**: *dndbeyond*: Add support for the Unarmed Fighting fighting style (by [@dmportella](https://github.com/dmportella))

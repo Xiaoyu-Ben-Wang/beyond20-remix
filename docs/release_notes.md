@@ -1,4 +1,4 @@
-v2.21.0 (August 25th 2026)
+v2.21.0 (September 16th 2026)
 ===
 
 Hi everyone,
@@ -10,6 +10,7 @@ We've also fixed versatile weapon quick-rolls, HP updates for legacy Roll20 game
 You can read the full [Changelog](/Changelog#v2210) to see all the changes included in this release.
 
 As usual, a big thank you to [@dmportella/Gothyl](https://github.com/dmportella), [@jugarrit](https://github.com/jugarrit), and [@0xguy07](https://github.com/0xguy07) for their work on this release!
+Thank you as well to our generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
 
 Enjoy!
 

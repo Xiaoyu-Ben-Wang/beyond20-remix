@@ -1,4 +1,4 @@
-v2.21.0 (August 25th 2026)
+v2.21.0 (September 16th 2026)
 ===
 - **Feature**: *dndbeyond*: Add support for the 2024 Wizard: Bladesinger: Bladesong feature (by [@jugarrit](https://github.com/jugarrit))
 - **Feature**: *dndbeyond*: Add support for the Unarmed Fighting fighting style (by [@dmportella](https://github.com/dmportella))
