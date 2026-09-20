@@ -417,7 +417,7 @@ function rollAbilityOrSavingThrow(paneClass, rollType) {
     });
 }
 
-async function rollSavingThrowFromRow(row) {
+function scrapeSavingThrowRow(row) {
     const $row = $(row);
     const abbr = $row
         .find(".ct-saving-throws-summary__ability-name abbr, .ddbc-saving-throws-summary__ability-name abbr")
@@ -458,16 +458,17 @@ async function rollSavingThrowFromRow(row) {
         ".ddbc-saving-throws-summary__ability-proficiency .ddbc-tooltip"
     ).attr("data-original-title");
 
+    return { ability_name, ability, modifier, proficiency };
+}
+
+async function rollSavingThrowFromRow(row) {
     return applyAbilityOrSavingThrowEffects({
         rollType: "saving-throw",
-        ability_name,
-        ability,
-        modifier,
-        proficiency
+        ...scrapeSavingThrowRow(row)
     });
 }
 
-function rollAbilityCheckFromRow(row) {
+function scrapeAbilityRow(row) {
     const $row = $(row);
 
     let ability_name = $row
@@ -509,11 +510,13 @@ function rollAbilityCheckFromRow(row) {
         ".ddbc-ability-summary__secondary span[class*='styles_numberDisplay']"
     ).first().text().replace(/\s+/g, "");
 
+    return { ability_name, ability, modifier };
+}
+
+function rollAbilityCheckFromRow(row) {
     return applyAbilityOrSavingThrowEffects({
         rollType: "ability",
-        ability_name,
-        ability,
-        modifier
+        ...scrapeAbilityRow(row)
     });
 }
 
@@ -3322,6 +3325,24 @@ function handleMessage(request, sender, sendResponse) {
     } else if (request.action == "get-character") {
         character.updateInfo();
         sendResponse(character.getDict());
+    } else if (request.action == "quick-roll-data") {
+        character.updateInfo();
+        sendResponse(getQuickRollData());
+    } else if (request.action == "quick-roll") {
+        // Remote quick rolls are broadcast to every D&D Beyond tab; only the tab holding
+        // the requested character acts. Ids are compared as strings because the sheet's
+        // id is not reliably one or the other.
+        if (!request.characterId || String(character._id) !== String(request.characterId)) {
+            sendResponse({ ok: false, reason: "not-my-character" });
+        } else {
+            performRemoteQuickRoll(request.rollType, request.name)
+                .then(sendResponse)
+                .catch((err) => {
+                    console.error("Beyond20: remote quick roll failed", err);
+                    sendResponse({ ok: false, reason: "error" });
+                });
+            return true; // async response
+        }
     } else if (request.action == "open-options") {
         alertFullSettings();
     }
@@ -3460,19 +3481,15 @@ function handleSpellIntegratedDie(button) {
     return true;
 }
 
-function handleAbilityIntegratedDie(target) {
-    const row = target.closest(".ct-ability-summary, .ddbc-ability-summary");
-    if (!row) return false;
-
+// Roll an ability check from its sheet row. Shared by the integrated-dice hijack and
+// remote (Roll20-initiated) quick rolls.
+function quickRollAbilityRow(row) {
     resetHijackQuickRollState();
-    rollAbilityCheckFromRow(row);
-    return true;
+    return rollAbilityCheckFromRow(row);
 }
 
-function handleSavingThrowIntegratedDie(target) {
-    const row = target.closest(".ct-saving-throws-summary__ability, .ddbc-saving-throws-summary__ability");
-    if (!row) return false;
-
+// Roll a saving throw from its sheet row. Shared as above.
+function quickRollSaveRow(row) {
     resetHijackQuickRollState();
 
     $(".ct-saving-throws-summary__ability.beyond20-active-roll, .ddbc-saving-throws-summary__ability.beyond20-active-roll")
@@ -3480,7 +3497,37 @@ function handleSavingThrowIntegratedDie(target) {
 
     $(row).addClass("beyond20-active-roll");
 
-    rollSavingThrowFromRow(row);
+    return rollSavingThrowFromRow(row);
+}
+
+// The skills pane currently mounted in the sidebar, if any.
+function getOpenSkillPaneClass() {
+    for (const cls of ["ct-skill-pane", "ct-custom-skill-pane"]) {
+        if ($("." + cls).length > 0)
+            return cls;
+    }
+    return null;
+}
+
+function getSkillPaneName(paneClass) {
+    return $("." + paneClass + " .ct-sidebar__heading ." + paneClass + "__header-name")
+        .text()
+        .trim();
+}
+
+function handleAbilityIntegratedDie(target) {
+    const row = target.closest(".ct-ability-summary, .ddbc-ability-summary");
+    if (!row) return false;
+
+    quickRollAbilityRow(row);
+    return true;
+}
+
+function handleSavingThrowIntegratedDie(target) {
+    const row = target.closest(".ct-saving-throws-summary__ability, .ddbc-saving-throws-summary__ability");
+    if (!row) return false;
+
+    quickRollSaveRow(row);
     return true;
 }
 
@@ -3493,22 +3540,8 @@ function handleSkillIntegratedDie(target) {
         .first();
 
     const name = label.text().trim();
-
-    let pane = null;
-    let paneClass = null;
-
-    for (const cls of ["ct-skill-pane", "ct-custom-skill-pane"]) {
-        const found = $("." + cls);
-        if (found.length > 0) {
-            pane = found;
-            paneClass = cls;
-            break;
-        }
-    }
-
-    const paneName = pane && paneClass
-        ? pane.find(".ct-sidebar__heading ." + paneClass + "__header-name").text().trim()
-        : "";
+    const paneClass = getOpenSkillPaneClass();
+    const paneName = paneClass ? getSkillPaneName(paneClass) : "";
 
     if (name && paneName && name === paneName && paneClass) {
         resetHijackQuickRollState();

@@ -137,6 +137,51 @@ function sendMessageToBeyond(request) {
     sendMessageTo(DNDBEYOND_FEATS_URL, request)
 }
 
+// Ask every open D&D Beyond character sheet a question and collect the answers.
+//
+// sendMessageTo() cannot be used: it is fire-and-forget, and the launcher needs to know
+// which characters are open and which acted. Every sheet is asked and decides for itself
+// whether the request is meant for it, so no registry of D&D Beyond tabs is needed.
+function queryMessageToBeyond(request, callback, timeout_ms = 3000) {
+    const responses = [];
+    let done = false;
+
+    const finish = () => {
+        if (done) return;
+        done = true;
+        callback(responses);
+    };
+
+    chrome.tabs.query({ url: DNDBEYOND_CHARACTER_URL }, (tabs) => {
+        if (!tabs || tabs.length === 0)
+            return finish();
+
+        let pending = tabs.length;
+        for (const tab of tabs) {
+            // The content script runs in every frame but the sheet is in the top one;
+            // asking only there avoids duplicate answers.
+            chrome.tabs.sendMessage(tab.id, request, { frameId: 0 }, (response) => {
+                if (chrome.runtime.lastError)
+                    console.log("Beyond20: no answer from D&D Beyond tab " + tab.id + ": " + chrome.runtime.lastError.message);
+                else if (response)
+                    responses.push(response);
+                if (--pending <= 0)
+                    finish();
+            });
+        }
+    });
+
+    // A sheet that never answers must not hang the caller forever.
+    setTimeout(finish, timeout_ms);
+}
+
+function isValidQuickRollRequest(request) {
+    const rollTypes = ["ability", "saving-throw", "skill"];
+    return !!request.characterId &&
+        rollTypes.includes(request.rollType) &&
+        typeof request.name === "string" && request.name.length > 0 && request.name.length < 100;
+}
+
 function isFVTTTabAdded(tab) {
     return !!fvtt_tabs.find(t => t.id === tab.id);
 }
@@ -294,6 +339,38 @@ function onMessage(request, sender, sendResponse) {
         sendMessageToBeyond(request);
         sendMessageToFVTT(request);
         sendMessageToCustomSites(request);
+    } else if (request.action == "quick-roll-data") {
+        // Sent by the Roll20 quick roll launcher, which needs the open characters
+        // before it can offer anything to roll.
+        queryMessageToBeyond({ action: "quick-roll-data" }, (responses) => {
+            sendResponse({ characters: responses.filter((r) => r && r.id) });
+        });
+        return true
+    } else if (request.action == "quick-roll") {
+        // The reverse of the usual direction: a roll asked for from the VTT. Only the
+        // sheet owning the requested character acts; the rest decline.
+        if (!isValidQuickRollRequest(request)) {
+            sendResponse({ ok: false, reason: "bad-request" })
+            return true
+        }
+        const quickRollRequest = {
+            action: "quick-roll",
+            characterId: String(request.characterId),
+            rollType: request.rollType,
+            name: request.name
+        }
+        // A skill roll may have to open its pane first, so this waits longer than a
+        // data request. It still only waits for the roll to be accepted.
+        queryMessageToBeyond(quickRollRequest, (responses) => {
+            const handled = responses.find((r) => r && r.ok)
+            if (handled)
+                return sendResponse(handled)
+            // A refusal from the owning sheet ("this needs a choice") explains far more
+            // than the generic "nobody is open".
+            const refusal = responses.find((r) => r && r.reason && r.reason !== "not-my-character")
+            sendResponse(refusal || { ok: false, reason: "no-tab" })
+        }, 10000);
+        return true
     } else if (request.action == "activate-icon") {
         // popup doesn't have sender.tab so we grab it from the request.
         const tab = request.tab || sender.tab;

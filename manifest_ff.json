@@ -1,8 +1,8 @@
 {
-	"name": "Beyond 20",
-	"version": "2.21.0",
+	"name": "Beyond20 Custom Remix",
+	"version": "2.21.1",
 	"manifest_version": 2,
-	"description": "Integrates the D&D Beyond Character Sheets with Roll20 and Foundry VTT.",
+	"description": "Custom remix of Beyond20: integrates the D&D Beyond Character Sheets with Roll20 and Foundry VTT.",
 	"permissions": [
 		"activeTab",
 		"tabs",

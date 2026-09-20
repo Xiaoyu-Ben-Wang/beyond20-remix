@@ -100,8 +100,18 @@ class DNDBRoller {
     }
 }
 
+// Set while a remote (Roll20-initiated) quick roll runs. Such a roll runs in a
+// backgrounded tab, where an interactive prompt would be invisible and never answered,
+// so we refuse to block on one.
+var b20_remote_roll_context = null;
+
 class DNDBPrompter {
     async prompt(title, html, ok_label = "OK", cancel_label = "Cancel") {
+        if (b20_remote_roll_context) {
+            b20_remote_roll_context.prompt_blocked = true;
+            console.warn("Beyond20: blocked interactive prompt during remote quick roll:", title);
+            return null; // every caller already treats null as "cancelled"
+        }
         return new Promise((resolve, reject) => {
             alertify.Beyond20Prompt(title, html, ok_label, cancel_label, resolve);
         });

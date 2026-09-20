@@ -921,10 +921,24 @@ function injectSettingsButton() {
     img.onclick = alertQuickSettings;
 }
 
+// The appearance settings only arrive through a settings broadcast, so they are folded
+// into one value to tell a real change from the usual chatter.
+function quickRollAppearanceKey(s) {
+    return s ? s["roll20-quick-roll-theme"] + "|" + s["roll20-quick-roll-color"] : null;
+}
+
 function updateSettings(new_settings = null) {
     if (new_settings) {
+        const had_launcher = settings && settings["roll20-quick-roll-panel"];
+        const had_appearance = quickRollAppearanceKey(settings);
         settings = new_settings;
         roll_renderer.setSettings(settings);
+        // Only touch the DOM when the setting changed; settings broadcasts are frequent.
+        if (had_launcher !== settings["roll20-quick-roll-panel"]) {
+            injectQuickRollLauncher();
+        } else if (had_appearance !== quickRollAppearanceKey(settings)) {
+            applyQuickRollAppearance();
+        }
     } else {
         getStoredSettings((saved_settings) => {
             updateSettings(saved_settings);
@@ -934,6 +948,9 @@ function updateSettings(new_settings = null) {
 
 function handleMessage(request, sender, sendResponse) {
     console.log("Received message:", request);
+    // Every roll names the character it came from, which is how the launcher learns
+    // which D&D Beyond sheet this game is played with.
+    observeQuickRollCharacter(request.character);
     if (request.action == "settings") {
         if (request.type == "general")
             updateSettings(request.settings);
@@ -995,5 +1012,8 @@ updateSettings();
 chrome.runtime.sendMessage({ "action": "activate-icon" });
 sendCustomEvent("disconnect");
 injectPageScript(chrome.runtime.getURL('dist/roll20_script.js'));
+// Before injectSettingsButton, which throws if Roll20 moved its chat input and would
+// otherwise take the launcher down with it.
+injectQuickRollLauncher();
 injectSettingsButton();
 initializeAlertify();

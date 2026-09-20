@@ -1,21 +1,39 @@
-Beyond20: D&D Beyond & Roll20/Foundry VTT Integration
+Beyond20 Custom Remix: D&D Beyond & Roll20/Foundry VTT Integration
 ==
 
-[Beyond20](https://beyond20.here-for-more.info/) is a browser extension that integrates the Character Sheet from D&D Beyond into Roll20, Foundry VTT & Discord.
+A personal fork of [Beyond20](https://beyond20.here-for-more.info/), the browser extension that
+integrates the Character Sheet from D&D Beyond into Roll20, Foundry VTT & Discord.
 
-# Install and Use
+This fork is **not** the official Beyond20 and is not affiliated with or endorsed by the Beyond20
+project. It takes upstream's code as its base and adds the changes listed below. Everything
+Beyond20 normally does still works; the additions are on top.
 
-## Install 
+It is based on Beyond20 v2.21.0. Its own releases use plain numeric versions (`2.21.1`, `2.21.2`, …)
+rather than a `remix` label, because Chrome and Firefox both require the extension version to be
+dot-separated integers; the `remix` label lives in the release tag and the zip filenames instead.
 
-### Chrome
+# Custom features
 
-To install Beyond 20 on Chrome, simply head over to the [Chrome Web Store](https://chrome.google.com/webstore/detail/beyond-20/gnblbpbepfbfmoobegdogkglpbhcjofh) and click "Add to Chrome" to get it installed.
+## Roll20 Quick Roll Launcher
 
-### Firefox
+Roll a skill, saving throw or ability check from the Roll20 page, without switching tabs.
 
-To install Beyond 20 on Firefox, simply head over to [Firefox Extensions](https://addons.mozilla.org/en-CA/firefox/addon/beyond-20/) and click "Add to Firefox" to get it installed.
+* A floating button on the Roll20 page shows your D&D Beyond character's portrait. Click it to
+  open a panel of skills, saving throws and ability checks.
+* Click a roll and it is performed on your real D&D Beyond character sheet, so class features,
+  effects and custom modifiers all apply exactly as if you had clicked the sheet yourself. The
+  result appears in the Roll20 chat as usual.
+* Your D&D Beyond tab stays in the background and is never brought to the front.
+* Remembers which character you play in each Roll20 game, and asks rather than guessing when it
+  cannot tell. Several sheets open at once can be switched between from the panel header.
+* Light and dark themes, and a choice of colour for the panel's text and highlights.
+* Can be turned off in the settings, under the Roll20 tab's options.
 
-## Use 
+See [docs/features.md](docs/features.md) for the full feature list, and
+[docs/api.md](docs/api.md) for the two messages this adds to Beyond20's internal API
+(`quick-roll-data` and `quick-roll`).
+
+# Use
 
 Open Roll20 or Foundry VTT in a tab of Chrome or Firefox then your character sheet in D&D Beyond in another tab. If you are using Chrome with Foundry VTT, then you need to click on the Beyond20 icon in the Chrome window's toolbar to activate Beyond20 for your FVTT installation.
 
@@ -27,17 +45,22 @@ If you click on the Beyond20 button in the toolbar, it will pop open the quick s
 
 # Build
 
-You need to install the build dependencies by running in Beyond20's source directory: 
+You need to install the build dependencies by running in the source directory:
 `npm install`
 
 You can then build the files using the command `npm run build`
 
+Run the tests with `npm test`. Producing the packaged zips for a release is `npm run package`,
+which writes them to `build/artifacts/`.
+
 # Developer Mode Installation
 
-All you need is to load the extension from the source :
+This fork is not published to the Chrome Web Store or Firefox Add-ons, so it is installed from
+source. All you need is to load the extension from the source :
 
-0. If you already have Beyond20 installed from the Chrome or Firefox stores, disable it.
-1. Download the extension for either [Chrome](https://github.com/kakaroto/Beyond20/releases/download/latest/chrome.zip) or [Firefox](https://github.com/kakaroto/Beyond20/releases/download/latest/firefox.zip)
+0. If you have the official Beyond20 installed from the Chrome or Firefox stores, disable it.
+   Both extensions do the same job and will otherwise both answer the same rolls.
+1. Download the extension for either [Chrome](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest/download/beyond_20-2.21.remix.1-chrome.zip) or [Firefox](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest/download/beyond_20-2.21.remix.1-firefox.zip), or build it yourself with `npm run package`
 2. Extract the zip file in a directory of your choice
 
 ## Chrome

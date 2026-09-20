@@ -169,6 +169,9 @@ See the [Screenshots](screenshots) page for a video tour of some of the features
   * Select a tab to send all rolls to
   * Select the campaign (Roll2) or world (Foundry VTT) to send the rolls to
   * Send rolls to All tabs, Only Roll20 Tabs, Only Foundry VTT Tabs
+  * Show the Roll20 quick roll launcher
+  * Quick roll panel light or dark theme
+  * Quick roll panel text and highlight colour
 * D&D Beyond character specific options
   * Custom roll dice formula bonus
   * Custom damage dice formula bonus
@@ -186,6 +189,21 @@ See the [Screenshots](screenshots) page for a video tour of some of the features
   * This is the official character sheet template I used and developed for and the one I recommend
 * Fallback option for all other templates
 * Automatically detect character sheet template
+
+
+## Roll20 Quick Roll Launcher
+* Rolls from the Roll20 page, without switching to your D&D Beyond tab
+* A floating button on the Roll20 page shows your D&D Beyond character's portrait
+  * Click it to open a panel of skills, saving throws and ability checks
+  * Click a roll to make it; the result appears in the Roll20 chat as usual
+* The roll is made on your real D&D Beyond character sheet, so class features, effects and
+  custom modifiers all apply exactly as if you had clicked the sheet yourself
+* Your D&D Beyond tab stays in the background and is never brought to the front
+* Remembers which character you play in each Roll20 game, and asks rather than guessing
+  when it can't tell
+* Several character sheets open at once? Switch between them from the panel header
+* Light and dark themes, and a choice of colour for the panel's text and highlights
+* Can be turned off in the settings
 
 
 ## Misc

@@ -666,7 +666,12 @@ async function sendRoll(character, rollType, fallback, args) {
         }
     }
 
-    if (character.getGlobalSetting("use-digital-dice", false) && DigitalDiceManager.isEnabled()) {
+    // Digital dice drive D&D Beyond's own on-screen animation, which cannot run in a
+    // hidden tab (it is timing based and awaits the message broker, which gives up after
+    // 15 seconds) and which nobody would see from Roll20 anyway. A remote quick roll
+    // therefore takes the plain path: Beyond20 still resolves the dice, only the
+    // animation is skipped.
+    if (character.getGlobalSetting("use-digital-dice", false) && DigitalDiceManager.isEnabled() && !b20_remote_roll_context) {
         req.sendMessage = true;
         dndbeyondDiceRoller.handleRollRequest(req);
     } else {

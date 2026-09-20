@@ -127,6 +127,48 @@ const options_list = {
         "advanced": true
     },
 
+    "roll20-quick-roll-panel": {
+        "short": "Show the quick roll launcher in Roll20",
+        "title": "Show a quick roll launcher in Roll20",
+        "description": "Adds a floating button with your D&D Beyond character's portrait to the Roll20 page.\n" +
+            "Click it to roll a skill, saving throw or ability check on your D&D Beyond character\n" +
+            "sheet without leaving Roll20. The roll happens in your D&D Beyond tab, which is not\n" +
+            "brought to the front, and its result appears in the Roll20 chat as usual.",
+        "type": "bool",
+        "default": true,
+        "advanced": true
+    },
+
+    "roll20-quick-roll-theme": {
+        "short": "Quick roll panel theme",
+        "title": "Quick roll panel theme",
+        "description": "Light or dark colour scheme for the Roll20 quick roll launcher and its panel.",
+        "type": "combobox",
+        "default": "dark",
+        "choices": {
+            "dark": "Dark",
+            "light": "Light",
+        },
+        "advanced": true
+    },
+
+    "roll20-quick-roll-color": {
+        "short": "Quick roll panel colour",
+        "title": "Quick roll panel colour",
+        "description": "Colour of the text and highlights in the Roll20 quick roll panel, including the ring around the launcher button.",
+        "type": "combobox",
+        "default": "default",
+        "choices": {
+            "default": "Default",
+            "green": "Green",
+            "blue": "Blue",
+            "purple": "Purple",
+            "amber": "Amber",
+            "rose": "Rose",
+        },
+        "advanced": true
+    },
+
     "use-digital-dice": {
         "short": "Use D&D Beyond's Digital Dice",
         "title": "Use D&D Beyond's Digital Dice",

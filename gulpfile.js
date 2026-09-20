@@ -70,6 +70,7 @@ const SRC_FILES = {
     roll20: [
         ...ROLL_RENDERER_DEPS,
         "src/roll20/renderer.js",
+        "src/roll20/quick-roll.js",
         "src/roll20/content-script.js"
     ],
     roll20_script: [
@@ -138,6 +139,7 @@ const SRC_FILES = {
         "src/dndbeyond/base/extras.js",
         "src/dndbeyond/base/character.js",
         "src/dndbeyond/content-scripts/character.js",
+        "src/dndbeyond/content-scripts/quick-roll.js",
     ],
     dndbeyond_source: [
         ...DNDBEYOND_PAGE_DEPS,

@@ -24,6 +24,8 @@ There are 3 types of APIs that Beyond20 includes.
     - [forward](#forward)
     - [open-options](#open-options)
     - [get-character](#get-character)
+    - [quick-roll-data](#quick-roll-data)
+    - [quick-roll](#quick-roll)
     - [settings](#settings)
     - **[roll](#roll)**
     - **[rendered-roll](#rendered-roll)**
@@ -90,6 +92,8 @@ These are messages that a tab can send to the background Beyond20 process
 - `register-generic-tab`: Registers a custom domain tab as being a generic tab so it can receive forwarded messages from Beyond20
 - `get-current-tab`: Request the background script to send information about the current tab
 - `forward`: Request the background script to forward the current message to a specific tab (used by the browser popup)
+- `quick-roll-data`: Ask the background script which D&D Beyond characters are open, and what they can roll
+- `quick-roll`: Ask the background script to make a D&D Beyond character roll a skill, save or ability check
 
 ### Tab->Tab forwarded messages
 These are messages that can only be sent to a specific tab via the `forward` message. These are used by the browser popup to communicate with the tab it was open on.
@@ -220,6 +224,81 @@ Must be sent through a `forward` message to a specific tab.
 }
 ```
 Returns a [Beyond20Character](#beyond20-character-format) object as response.
+
+
+#### quick-roll-data
+Ask the background script which D&D Beyond characters are currently open, along with the
+skills, saving throws and ability checks each of them can roll. Used by the Roll20 quick
+roll launcher, which has no character of its own to read those from.
+
+Unlike most messages, this one runs in the VTT->D&D Beyond direction. The background
+script asks every open D&D Beyond character sheet and collects the replies. A sheet that
+has not finished loading, or that has no character on it, does not answer at all.
+
+Message Format:
+```js
+{
+    action,  // <String> Must be "quick-roll-data"
+}
+```
+Returns a response of the form:
+```js
+{
+    characters  // <Array> One entry per open D&D Beyond character sheet
+}
+```
+Each entry has the following fields:
+```js
+{
+    id,         // <String> The D&D Beyond character's id
+    name,       // <String> The character's name
+    avatar,     // <String> URL of the character's portrait, or null
+    abilities,  // <Array> of { name, abbr, modifier } for the six ability scores
+    saves,      // <Array> of { name, abbr, modifier } for the six saving throws
+    skills,     // <Array> of { name, ability, modifier }; `ability` is the abbreviation
+                //   of the ability the skill belongs to, or "" for a custom skill
+}
+```
+
+#### quick-roll
+Ask the background script to have a D&D Beyond character roll one of its skills, saving
+throws or ability checks. Used by the Roll20 quick roll launcher so that a player can roll
+without leaving the Roll20 tab.
+
+The request is broadcast to every open D&D Beyond character sheet, and the one whose
+character id matches performs the roll on its own sheet. Rolling on the real sheet means
+that every class feature, effect and custom modifier is applied exactly as if the player
+had clicked the sheet themselves. The resulting roll is sent back to the VTT through the
+normal [roll](#roll) pipeline.
+
+The D&D Beyond tab is never brought to the front, so it may be hidden while this happens.
+A roll that would need to ask the player something — because the whisper or roll type is
+set to "Ask every time", or because a custom skill has no ability assigned to it — is
+refused instead of being left waiting on a prompt nobody can see.
+
+Message Format:
+```js
+{
+    action,       // <String> Must be "quick-roll"
+    characterId,  // <String> The id of the character that should make the roll
+    rollType,     // <String> One of "ability", "saving-throw" or "skill"
+    name          // <String> The ability abbreviation (e.g. "STR"), or the skill's name
+}
+```
+Returns a response of the form:
+```js
+{
+    ok,      // <Boolean> Whether the roll was accepted. This means the roll is under
+             //   way, not that it has finished; its result arrives through the normal
+             //   roll pipeline.
+    reason   // <String> Why the roll was refused, when ok is false. One of
+             //   "no-tab" (no D&D Beyond sheet is open), "not-my-character",
+             //   "not-found" (the sheet has no such row), "pane-timeout",
+             //   "custom-skill", "interactive-setting" (the roll would need a
+             //   prompt nobody can see), "busy" (another roll is in flight),
+             //   "disconnected" (the extension was reloaded) or "bad-request"
+}
+```
 
 
 #### settings

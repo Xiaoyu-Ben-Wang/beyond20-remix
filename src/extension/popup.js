@@ -455,6 +455,12 @@ function actOnCurrentTab(tab) {
         if (vtt == "Roll20") {
             e = createHTMLOption("roll20-template", false, undefined, { advanced: true });
             options.append(e);
+            e = createHTMLOption("roll20-quick-roll-panel", false, undefined, { advanced: true });
+            options.append(e);
+            e = createHTMLOption("roll20-quick-roll-theme", false, undefined, { advanced: true });
+            options.append(e);
+            e = createHTMLOption("roll20-quick-roll-color", false, undefined, { advanced: true });
+            options.append(e);
         }
         e = createHTMLOption("display-conditions", false);
         options.append(e);

@@ -1,12 +1,12 @@
 {
     "name": "beyond20",
-    "version": "2.21.0",
+    "version": "2.21.1",
     "description": "Beyond20: D&D Beyond & Roll20/Foundry VTT Integration",
     "directories": {
         "doc": "docs"
     },
     "scripts": {
-        "test": "node test/dice_regex.test.js",
+        "test": "node test/dice_regex.test.js && node test/quick_roll_protocol.test.js",
         "gulp": "gulp",
         "clean": "gulp clean",
         "build": "run-s clean build:*",
