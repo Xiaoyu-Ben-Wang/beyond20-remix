@@ -6,11 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,maximum-scale=2">
     <link rel="stylesheet" type="text/css" media="screen" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/favicon/site.webmanifest">
-    <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ '/favicon/apple-touch-icon.png' | relative_url }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ '/favicon/favicon-32x32.png' | relative_url }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ '/favicon/favicon-16x16.png' | relative_url }}">
+    <link rel="manifest" href="{{ '/favicon/site.webmanifest' | relative_url }}">
+    <link rel="mask-icon" href="{{ '/favicon/safari-pinned-tab.svg' | relative_url }}" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 {% seo %}
@@ -21,7 +21,7 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
-          <img src="{{ site.logo }}" style="float: right;"></img>
+          <img src="{{ site.logo | relative_url }}" style="float: right;"></img>
           <a id="forkme_banner" href="{{ site.github.repository_url }}">View on GitHub</a>
           <h1 id="project_title">{{ site.title | default: site.github.repository_name }}</h1>
           <h2 id="project_tagline">{{ site.description | default: site.github.project_tagline }}</h2>
@@ -62,27 +62,12 @@
         background-color: #0090ff;
         color: #fff;
       }
-      .outer {
-        display: flex;
-      }
-      #main_content.inner {
-        margin: 0 20px 0 auto;
-      }
-      .sponsors-inner {
-        margin-right: auto;
-        max-width: 300px;
-        width: 300px;
-        padding: 20px 10px;
-      }
-      .text-center {
-        text-align: center;
-      }
     </style>
     <div class="inner navigation">
       <nav class="topnav">
 	{% for item in site.data.navigation %}
 	  {% assign html_path = item[1] | append: ".html" %}
-	<a href="{{ item[1] }}" {% if page.url == item[1] or page.url == html_path %}class="active"{% endif %}>
+	<a href="{{ item[1] | relative_url }}" {% if page.url == item[1] or page.url == html_path %}class="active"{% endif %}>
 	  {{ item[0] }}
 	</a>
 	{% endfor %}
@@ -92,35 +77,29 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <a href="https://forge-vtt.com/?referral=beyond20" target="_blank">
-          <img src="/images/forge-adventure.png" style="width: 100%; border: 1px solid black;">
-        </a>
         {{ content }}
       </section>
-      <div class="sponsors-inner">
-        {% include sponsors.html %}
-      </div>
     </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
+        <p>
+          Beyond20 Custom Remix is an unofficial fork of
+          <a href="{{ site.upstream_url }}">{{ site.upstream_name }}</a> by kakaroto,
+          which is released under the GPL v3 license. It is not affiliated with or
+          endorsed by the Beyond20 project, D&amp;D Beyond, Roll20 or Foundry VTT.
+        </p>
+        <p>
+          <a href="{{ '/privacy' | relative_url }}">Privacy</a> &middot;
+          <a href="{{ site.github.repository_url }}">Source code</a> &middot;
+          <a href="{{ site.github.repository_url }}/issues">Report an issue</a>
+        </p>
         {% if site.github.is_project_page %}
         <p class="copyright">{{ site.title | default: site.github.repository_name }} maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
         {% endif %}
         <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-
-    {% if site.google_analytics %}
-    <script async src="https://www.googletagmanager.com/gtag/js?id="{{ site.google_analytics }}></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', '{{ site.google_analytics }}');
-    </script>
-    {% endif %}
   </body>
 </html>

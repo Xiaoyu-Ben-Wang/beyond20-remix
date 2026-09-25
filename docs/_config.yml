@@ -1,41 +1,27 @@
-# Welcome to Jekyll!
+# Jekyll configuration for the Beyond20 Custom Remix documentation site.
 #
-# This config file is meant for settings that affect your whole blog, values
-# which you are expected to set up once and rarely edit after that. If you find
-# yourself editing this file very often, consider using Jekyll's data files
-# feature for the data you need to update frequently.
-#
-# For technical reasons, this file is *NOT* reloaded automatically when you use
-# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
+# This site is published by GitHub Pages straight from the docs/ folder of the
+# repository, so there is no build step and no workflow to run: whatever is
+# committed here is what goes live.
 
 # Site settings
-# These are used to personalize your new site. If you look in the HTML files,
-# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
-# You can create any custom variable you would like, and they will be accessible
-# in the templates via {{ site.myvariable }}.
-title: Beyond20
-description: Integrating D&D Beyond seamlessly with Virtual Tabletops
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://beyond20.here-for-more.info" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: KaKaRoToKS
-github_username:  kakaroto
-google_analytics: UA-10205391-2
+title: Beyond20 Custom Remix
+description: A personal fork of Beyond20 with a Roll20 quick roll launcher, integrating the D&D Beyond Character Sheet with Roll20 and Foundry VTT
+# The site is a GitHub Pages *project* page, so every URL is served under the
+# repository name. Anything linking to an absolute path must go through the
+# `relative_url` filter in the templates, or it will escape the baseurl and 404.
+baseurl: "/beyond20-remix"
+url: "https://xiaoyu-ben-wang.github.io"
+github_username: Xiaoyu-Ben-Wang
 logo: /images/icon128.png
+
+# Where the extension itself lives, used by the layout's credit line.
+upstream_name: Beyond20
+upstream_url: https://github.com/kakaroto/Beyond20
 
 # Build settings
 markdown: kramdown
 theme: jekyll-theme-slate
 plugins:
   - jekyll-feed
-
-# Exclude from processing.
-# The following items will not be processed, by default. Create a custom list
-# to override the default setting.
-# exclude:
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+  - jekyll-seo-tag

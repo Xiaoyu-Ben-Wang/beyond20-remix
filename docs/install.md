@@ -1,19 +1,48 @@
-# Install for Chrome Browser
-[![Chrome Webstore](https://storage.googleapis.com/chrome-gcs-uploader.appspot.com/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/iNEddTyWiMfLSwFD6qGq.png)](https://chrome.google.com/webstore/detail/beyond-20/gnblbpbepfbfmoobegdogkglpbhcjofh)
+# Installation
 
-You can install Beyond20 by visiting the [Chrome Webstore](https://chrome.google.com/webstore/detail/beyond-20/gnblbpbepfbfmoobegdogkglpbhcjofh) and clicking the `Add to Chrome` button.
+Beyond20 Custom Remix is **not** published to the Chrome Web Store, Firefox Add-ons or the Edge Add-ons store. It is installed from source, either by downloading a packaged release or by building it yourself.
 
-# Install for Firefox Browser
-[![Mozilla Firefox](images/firefox-logo-horizontal-lockup.png)](https://addons.mozilla.org/en-US/firefox/addon/beyond-20/)
+If you have the official Beyond20 installed from one of the stores, **disable it first**. Both extensions do the same job, and leaving both enabled means both will answer the same rolls.
 
-For those using Firefox, the extension is now available on the [Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/beyond-20/) website, simply click the `Add to Firefox` button to get it installed.
+## Install a packaged release
 
-# Install for Microsoft Edge
+Head to the [latest release](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest) and download the archive for your browser:
 
-For those using MS Edge, the extension is now available on the [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/beyond-20/pdjnkppffhaiimjopdpdkdaddgcmnbpp?hl=en-US) website and click the `Get` button to get it installed.
+* [Chrome / Edge / Brave (`.zip`)](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest/download/beyond_20-2.21-remix.1-chrome.zip)
+* [Firefox (`.zip`)](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest/download/beyond_20-2.21-remix.1-firefox.zip)
 
-# Install the development version
+The archive names are tied to the release tag, so if a newer release exists those direct links may have moved on — the [releases page](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases) is always the authoritative list.
 
-If you want to download, review and/or learn from the source code of this extension, feel free to head over to the [github](https://github.com/kakaroto/Beyond20/) repository page to download the latest version.
+Extract the archive in a directory of your choice, then follow the instructions for your browser below.
 
-You can download the source code directly from [github](https://github.com/kakaroto/Beyond20/) (click the green `Clone or download` button) and follow the instructions in the [README](https://github.com/kakaroto/Beyond20/blob/master/README.md) file on how to install it into Chrome or Firefox from the source directory.
+## Chrome, Edge and other Chromium browsers
+
+1. Go to the Extensions page (Menu &rarr; More Tools &rarr; Extensions, or `chrome://extensions`)
+2. Enable **Developer mode** (top-right corner)
+3. Click **Load unpacked**
+4. Select the directory where you extracted the extension
+
+## Firefox
+
+[![Mozilla Firefox](images/firefox-logo-horizontal-lockup.png)](https://www.mozilla.org/firefox/)
+
+1. Open `about:debugging#/runtime/this-firefox` in Firefox
+2. Click **Load Temporary Add-on**
+3. Select the `manifest.json` file from the extension's directory
+
+**Note:** Firefox only allows unsigned extensions as temporary add-ons, so this installation is removed when Firefox restarts and you will need to load it again. This is a limitation of Firefox rather than of this extension. On Firefox Developer Edition and Nightly you can set `xpinstall.signatures.required` to `false` in `about:config` for a permanent install.
+
+## Build it yourself
+
+You need [Node.js](https://nodejs.org/) and npm installed. From the source directory:
+
+1. `npm install` to install the build dependencies
+2. `npm run build` to build the extension into `build/chrome/` and `build/firefox/`
+3. `npm test` to run the test suite
+4. `npm run package` to produce the packaged zips in `build/artifacts/`
+
+You can then load `build/chrome/` or `build/firefox/` as described above. The `npm run start:chrome` and `npm run start:firefox` scripts launch a browser with the extension loaded, which is the quickest way to try a change.
+
+## Source code
+
+The source is on [GitHub](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix). The `-src.zip` archive attached to each release contains the source tree for that release.

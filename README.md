@@ -4,6 +4,9 @@ Beyond20 Custom Remix: D&D Beyond & Roll20/Foundry VTT Integration
 A personal fork of [Beyond20](https://beyond20.here-for-more.info/), the browser extension that
 integrates the Character Sheet from D&D Beyond into Roll20, Foundry VTT & Discord.
 
+**Documentation: <https://xiaoyu-ben-wang.github.io/beyond20-remix/>** — install instructions,
+feature list, FAQ and the privacy policy.
+
 This fork is **not** the official Beyond20 and is not affiliated with or endorsed by the Beyond20
 project. It takes upstream's code as its base and adds the changes listed below. Everything
 Beyond20 normally does still works; the additions are on top.

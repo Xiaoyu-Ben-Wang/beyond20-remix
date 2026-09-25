@@ -1,23 +1,36 @@
-## Beyond20 has just been installed or updated
+## Beyond20 Custom Remix has just been installed or updated
 
-Congratulations! Beyond20 was just updated to the latest version : v2.21.0
+Congratulations! Beyond20 Custom Remix is now at version 2.21.1. It is based on Beyond20 v2.21.0 and adds the Roll20 quick roll launcher on top of it.
 
-I hope you like the new features, and hopefully the killer feature you were waiting for was just added.
+Have a look at the [Features](features) page to see what it can do, and the [Install](install) page if you are setting it up on another browser.
 
-If you enjoy using Beyond20 and find it useful for your games, please consider [showing your appreciation](/rations) by offering me some rations or your patronage.
-
-Thank you all for your support!
-
-* [Release Notes](#release-notes)
+* [New in this fork](#new-in-this-fork)
+* [Known issues](#known-issues)
+* [Release notes](#release-notes)
 * [Changelog](#changelog)
+
+# New in this fork
+
+## Roll20 Quick Roll Launcher
+
+Roll a skill, saving throw or ability check from the Roll20 page, without switching tabs. A floating button on the Roll20 page shows your D&D Beyond character's portrait; click it, pick a roll, and it is made on your real D&D Beyond character sheet so every class feature, effect and custom modifier applies. The result appears in the Roll20 chat as usual, and your D&D Beyond tab stays in the background.
+
+It remembers which character you play in each Roll20 game, supports several open sheets, and has light and dark themes with a choice of text and highlight colour. If you would rather not have it, untick **Show the quick roll launcher in Roll20** in the extension's options under the VTT tab.
 
 # Known issues
 
 {% include_relative known_issues.md %}
 
-# Release Notes
+# Release notes
 
-v2.21.0 (September 16th 2026)
+v2.21.1 — Beyond20 Custom Remix
+===
+
+The first release of this fork. It is Beyond20 v2.21.0 with the Roll20 quick roll launcher added, and with the fork's own name and version numbering so that it can sit alongside the official Beyond20 without being confused for it.
+
+Nothing was removed from Beyond20. Every roll, every supported VTT and every setting works exactly as it does upstream.
+
+v2.21.0 (September 16th 2026) — upstream Beyond20
 ===
 
 Hi everyone,
@@ -26,18 +39,21 @@ Today, we're releasing v2.21.0 with a new 2024 Bladesong option for Bladesinger 
 
 We've also fixed versatile weapon quick-rolls, HP updates for legacy Roll20 games, and false-positive dice parsing for sourcebook labels such as D1 and D0.
 
-You can read the full [Changelog](/Changelog#v2210) below to see all the changes included in this release.
+You can read the full [Changelog](Changelog#v2210) below to see all the changes included in this release.
 
 As usual, a big thank you to [@dmportella/Gothyl](https://github.com/dmportella), [@jugarrit](https://github.com/jugarrit), and [@0xguy07](https://github.com/0xguy07) for their work on this release!
-Thank you as well to our generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
-
-Enjoy!
 
 ---
 
-Click [here](/release_notes) for the full release notes from previous versions.
+Click [here](release_notes) for the full release notes from previous versions.
 
 # Changelog
+
+v2.21.1 — Beyond20 Custom Remix
+===
+- **Feature**: *Roll20*: Add the quick roll launcher, which rolls skills, saving throws and ability checks from the Roll20 page without switching to the D&D Beyond tab
+- **Feature**: *Roll20*: Remember the character played in each Roll20 campaign, and let several open character sheets be switched between from the panel
+- **Feature**: *Roll20*: Light and dark themes, and a configurable colour for the panel's text and highlights
 
 v2.21.0 (September 16th 2026)
 ===
@@ -47,20 +63,6 @@ v2.21.0 (September 16th 2026)
 - **Bugfix**: *Roll20*: Fix HP updates for legacy games (by [@dmportella](https://github.com/dmportella))
 - **Bugfix**: Fix false-positive dice parsing for bare D1 and D0 labels (by [@0xguy07](https://github.com/0xguy07))
 
-v2.20.1 (June 7th 2026)
-===
-- **Bugfix**: *Roll20*: Fix duplicate messages in Chrome for Roll20 (by [@dmportella](https://github.com/dmportella))
-- **Bugfix**: *Roll20*: Fix detection of some Roll20 tabs when reloading the extension while the Roll20 tab is already open (by [@0xguy07](https://github.com/0xguy07))
-
-v2.20.0 (June 4th 2026)
-===
-- **Feature**: *Roll20*: Add detection and support for the new Roll20 game URL without a trailing slash (by [@dmportella](https://github.com/dmportella))
-- **Bugfix**: Fix support for new Elemental Affinity formula damage (by [@raystuart](https://github.com/raystuart))
-- **BugFix**: Fix dice formula parsing when it uses a unicode character for the negative sign (by [@dmportella](https://github.com/dmportella))
-- **Bugfix**: Fix support for Versatile weapons and conditional damage for spells (by [@dmportella](https://github.com/dmportella))
-- **Bugfix**: Fix display for Toll the Dead spell (by [@dmportella](https://github.com/dmportella))
-
-
 ---
 
-Click [here](/Changelog) for the full Changelog of previous versions.
+Click [here](Changelog) for the full Changelog of previous versions.

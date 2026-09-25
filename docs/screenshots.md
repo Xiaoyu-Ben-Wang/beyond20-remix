@@ -1,14 +1,13 @@
-### Note: These videos and most of the images are over a year old, the extension has evolved immensely since then, but I always lack the time to update the images and videos here.
-### Please keep that in mind and if anyone is willing to make new and nicer videos and/or screenshots, let me know.
+### Note: these videos and most of the images were made by the upstream Beyond20 project and are several years old. They show an older version of the extension — the roll buttons and the general way it works have not changed, but newer features are not in them. This fork's own addition is pictured on the [Features](features) page.
 
-I've made a [video tour](https://www.youtube.com/watch?v=QRyB7qPEyKw) of all the features of Beyond20 v0.1.
+The upstream author's [video tour](https://www.youtube.com/watch?v=QRyB7qPEyKw) of Beyond20 v0.1:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/QRyB7qPEyKw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe>
 
-If you don't have an entire 15 minutes of your life to sacrifice to my boring video, I've also done a much quicker demo of the most important features [here](https://www.youtube.com/watch?v=vHtR9hsbzP4)
+If you don't have an entire 15 minutes to spend watching that, there is a much quicker demo of the most important features [here](https://www.youtube.com/watch?v=vHtR9hsbzP4)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/vHtR9hsbzP4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-If you don't even have 2 minutes to spend watching that, then here are some screenshots to show you just how amazing Beyond20 is (**click to zoom**):
+If you don't even have 2 minutes to spend watching that, then here are some screenshots to show you how it works (**click to zoom**):
 
 [![s1](images/screenshots/feature-equipment-attack.png)](images/screenshots/feature-equipment-attack.png)
 

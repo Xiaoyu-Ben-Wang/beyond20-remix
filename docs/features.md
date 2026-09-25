@@ -1,7 +1,7 @@
 # Virtual Tabletops supported
 * [Roll 20](https://roll20.net)
 * [Foundry VTT](https://foundryvtt.com)
-* [Discord Integration](https://discord.com) -- [Instructions](/discord)
+* [Discord Integration](https://discord.com) -- [Instructions](discord)
 * DOM custom events, allowing any VTT to integrate with Beyond20 natively
 * Beyond 20 Integrated Dice Roller
 * D&D Beyond Digital Dice Integration

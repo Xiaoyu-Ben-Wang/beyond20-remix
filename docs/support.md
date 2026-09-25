@@ -1,51 +1,40 @@
-# Support 
+# Support
 
+* [Getting help](#getting-help)
+* [Reporting a bug](#reporting-a-bug)
+* [Known issues](#known-issues)
+* [Release notes and changelog](#release-notes-and-changelog)
+* [Official Beyond20](#official-beyond20)
 
-* [Support me?](#support-me)
-* [Help, support and issues](#help-support-and-issues)
-* [FAQ](/faq)
-* [Known Issues](#known-issues)
-* [Release Notes](#release-notes)
-* [Changelog](#changelog)
+## Getting help
 
-## Support me?
+If something is not working, start with the [FAQ](faq) — it covers most of the problems people run into, and the upstream answers apply to this fork too. The [Features](features) page lists what is supported, and the [Install](install) page covers installing and building.
 
-Oh, you want to help support the development of this extension (and more), how nice! You can do so by either contributing in some way (telling your friends about it, reporting bug reports, suggesting awesome features or contributing to the code) or, like many others who have helped make this project a possibility, you can support me on [Patreon](https://patreon.com/kakaroto), [Github](https://github.com/sponsors/kakaroto).
+This fork has no chat server or mailing list. Questions are best asked on the [issue tracker](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/issues), where the answer can be found by the next person with the same problem.
 
-<div>
-{% include_relative buttons/patreon.html %} &nbsp;&nbsp; or &nbsp;&nbsp;
+## Reporting a bug
 
-{% include_relative buttons/github.html %}
-</div>
+Found a bug? Please [open an issue](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/issues/new). To make it fixable, include:
 
-If however, you do not want to use Patreon or Github Sponsors or don't want to pledge on them for any reason, but still want to support this project financially, you can do so by buying me a ration on [Ko-Fi](https://ko-fi.com/kakaroto) using [PayPal](https://paypal.me/KaKaRoTo) or a credit card (no signup necessary).
+* what you did, what you expected, and what happened instead
+* your browser and its version
+* the version of the extension (shown in the extension's popup, and in its options page)
+* which virtual tabletop you were using — Roll20, Foundry VTT, or none
+* whether the problem also happens with the official Beyond20, if you have tried it
 
-{% include_relative buttons/kofi.html %}
+If you have confirmed that the problem also happens with the official Beyond20, then it is an upstream bug and belongs on the [upstream issue tracker](https://github.com/kakaroto/Beyond20/issues) instead, where the people who wrote that code will see it.
 
-## Help, support and issues
+## Known issues
 
-Oh, I misunderstood, you're the ones in need of support! Well, fear not, I am here to help!
+Some issues are already known and being worked on. See the [Known Issues](known_issues) page, or the [issue tracker](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/issues) for the current list and the closed ones.
 
-If you want to ask for help, give feedback or discuss an issue, you can join our [discord server](https://discord.gg/ZAasSVS).
+## Release notes and changelog
 
-[![Discord](/images/discord-logo.png){:width="400px"}](https://discord.gg/ZAasSVS)
+* [Release notes](release_notes) — the notable changes in every release
+* [Changelog](Changelog) — the full list of every change
 
-If you've found a bug or have an issue with Beyond20, or if you have a feature or suggestion to make, you can head over to github's [issue tracker](https://github.com/kakaroto/Beyond20/issues) and submit your bug report or feature request by creating a new issue. 
+Both are inherited from the upstream Beyond20 project, since this fork is based on it, and they describe the extension as a whole.
 
-Alternatively, in case you're not familiar to github (and don't want to create an account there), if you just let me know about your request on Discord, I will take care of creating the issue for you.
+## Official Beyond20
 
-## FAQ
-
-The [FAQ](faq) page is a good resource in case you have an issue that may have already been answered.
-
-## Known Issues
-
-{% include_relative known_issues.md %}
-
-## Release Notes
-
-{% include_relative release_notes.md %}
-
-## Changelog
-
-{% include_relative Changelog.md %}
+This fork exists only to add a Roll20 quick roll launcher to a project that already does its job very well. For everything else — the store versions, the newest features, and the people who actually wrote most of this code — see the [official Beyond20 project](https://github.com/kakaroto/Beyond20).

@@ -269,7 +269,7 @@ v2.9.0 (June 24th 2023)
 ===
 
 * **Feature**: Add support for custom sheet websites to send rolls to VTTs through Beyond20
-* **Feature**: Added full [API](/api) documentation for Beyond20 internal messaging and DOM events
+* **Feature**: Added full [API](api) documentation for Beyond20 internal messaging and DOM events
 * **Feature**: Add support for custom modifiers/damages to Wild Shape extra creatures
 * **Feature**: Add support for posting read-aloud text to Discord
 * **Feature**: Add support for Radiant Soul from Celestial Aasimar (MotM) (by [@Aeristoka](https://github.com/Aeristoka))
@@ -628,7 +628,7 @@ v2.4.0 (March 30th 2021)
 * **Misc**: Re-order character specific settings to be sorted more naturally
 * **Misc**: Build a CI pipeline with Github Actions and remove dist folder from source repository
 * **Misc**: Refactored special melee, ranged, weapon and spell attacks into more generic and less error-prone functions (by [@KaKaRoTo](https://github.com/kakaroto) and [@Aeristoka](https://github.com/Aeristoka))
-* **Misc**: Add sponsored section to the website and sponsor links for [The Forge](https://forge-vtt.com/?referral=beyond20) and [Toucan](https://jointoucan.com/partners/beyond20)
+* **Misc**: Add sponsored section to the website and sponsor links for [The Forge](https://forge-vtt.com/) and [Toucan](https://jointoucan.com/partners/beyond20)
 
 v2.3.0 (December 8th 2020)
 ===
@@ -918,7 +918,7 @@ v1.1 (April 9th 2020)
 
 v1.0 (March 16th 2020)
 ===
-* **Feature**: Added [Discord integration](/discord) via the new Beyond20 Discord Bot!
+* **Feature**: Added [Discord integration](discord) via the new Beyond20 Discord Bot!
 * **Feature**: Add setting for adding a dexterity tie breaker to initiative rolls (Contributed by Jeremy '[@jaypoulz](https://github.com/jaypoulz)' Poulin)
 * **Feature**: Track the monster stat blocks from the new encounter page and combat tracker
 * **Feature**: Add support for parsing the avatar of the character/monster and preview image of attacks/items/spells (used in Discord integration)

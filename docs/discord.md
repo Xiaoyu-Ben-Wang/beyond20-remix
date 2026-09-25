@@ -2,6 +2,8 @@
 
 You can integrate your Beyond 20 rolls with Discord, where all yours rolls get sent to a discord channel of your choice.
 
+**Note:** the Discord bot used here is hosted by the **upstream Beyond20 project** at `beyond20.kicks-ass.org`, not by this fork, and this fork cannot fix problems with the bot itself. Sending rolls to Discord is the one optional feature that sends anything outside your browser — see the [Privacy](privacy) page for exactly what it sends. If you leave the Discord settings empty, nothing is ever sent.
+
 The process is easy and involves three simple steps :
 
 ## 1 - Invite the Beyond20 Discord Bot

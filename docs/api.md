@@ -926,7 +926,7 @@ To integrate your website or extension with Beyond20, it should now be fairly ea
 
 Use the documentation above to find the available events you can send, and what fields they contain.
 
-The user will need to add your site's domain to Beyond20's custom domain list under the advanced options, or you can [contact us](https://github.com/kakaroto/Beyond20/issues/new) to add your site to the list of known sites which support Beyond20.
+The user will need to add your site's domain to Beyond20's custom domain list under the advanced options, or you can [contact us](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/issues/new) to add your site to the list of known sites which support Beyond20.
 
 ### Example
 Using a simple website with source book content as an example, we can implement a small extension that integrates the read-aloud text with Beyond20 with the following code:

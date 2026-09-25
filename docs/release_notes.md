@@ -7,10 +7,10 @@ Today, we're releasing v2.21.0 with a new 2024 Bladesong option for Bladesinger 
 
 We've also fixed versatile weapon quick-rolls, HP updates for legacy Roll20 games, and false-positive dice parsing for sourcebook labels such as D1 and D0.
 
-You can read the full [Changelog](/Changelog#v2210) to see all the changes included in this release.
+You can read the full [Changelog](Changelog#v2210) to see all the changes included in this release.
 
 As usual, a big thank you to [@dmportella/Gothyl](https://github.com/dmportella), [@jugarrit](https://github.com/jugarrit), and [@0xguy07](https://github.com/0xguy07) for their work on this release!
-Thank you as well to our generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
+Thank you as well to our generous Patrons and Ko-fi/Github supporters.
 
 Enjoy!
 
@@ -36,10 +36,10 @@ Today's release adds a few small bugfixes to Beyond20, but also tackles a recent
 
 This should get rid of the warning users would see, when they access their games through the new URL, which prevented Beyond20 from sending rolls to Roll20. 
 
-You can read the full [Changelog](/Changelog#v2200) below to see all the changes included in this release.
+You can read the full [Changelog](Changelog#v2200) below to see all the changes included in this release.
 
 As usual, a big thank you to [@dmportella/Gothyl](https://github.com/dmportella) and to[@raystuart](https://github.com/raystuart) for their work on this release!
-Thank you as well to our generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
+Thank you as well to our generous Patrons and Ko-fi/Github supporters.
 
 Enjoy!
 
@@ -54,10 +54,10 @@ This release adds support for the Blood Hunter's Crimson Rite feature, as well a
 
 On the bugfix side, we've resolved several issues affecting the D&D Beyond Game Log and Roll20 to improve roll display and messaging, as well as we've fixed critical damage handling for Booming Blade and Green-Flame Blade.
 
-You can read the full [Changelog](/Changelog#v2190) to see all the changes included in this release.
+You can read the full [Changelog](Changelog#v2190) to see all the changes included in this release.
 
 As usual, a big thank you to [@dmportella/Gothyl](https://github.com/dmportella) who made the release!
-Thank you as well to our generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
+Thank you as well to our generous Patrons and Ko-fi/Github supporters.
 
 Enjoy!
 
@@ -73,10 +73,10 @@ This release adds support for HP sync with the 2024 Roll20 character sheet templ
 
 On the bugfix side, we've resolved issues related to the new Digital Dice support, improved action matching for action customisation entries, and fixed Extras HP sync for familiars, summons, and similar creatures. We've also changed the way we integrate with D&D Beyond's Digital Dice to better support the feature and finally we added support for custom rolls when the digital dice is disabled.
 
-You can read the full [Changelog](/Changelog#v2180) to see all the changes included in this release.
+You can read the full [Changelog](Changelog#v2180) to see all the changes included in this release.
 
 As usual, a big thank you to [@dmportella/Gothyl](https://github.com/dmportella), who handled this release in its entirety! He also received help from our first time contributors [@kristiandueholm](https://github.com/kristiandueholm), [@TyReg88](https://github.com/TyReg88), and [@nox404](https://github.com/nox-4O4), making this release the one with the most contributions from the community so far!
-Thank you as well to our generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
+Thank you as well to our generous Patrons and Ko-fi/Github supporters.
 
 Enjoy!
 
@@ -92,9 +92,9 @@ Today, we're releasing a small bugfix release which fixes an issue on the Chrome
 
 We've also fixed a bug which caused the Confusion spell not to display to VTT and differentiating between the 2014 and 2024 versions of the Cleric's Blessed Strikes.
 
-You can read the full [Changelog](/Changelog#v2171) to see all the changes included in this release.
+You can read the full [Changelog](Changelog#v2171) to see all the changes included in this release.
 
-As usual, a big thank you to [@dmportella](https://github.com/dmportella) for his work, as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters. 
+As usual, a big thank you to [@dmportella](https://github.com/dmportella) for his work, as well as to my generous Patrons and Ko-fi/Github supporters. 
 
 Enjoy!
 
@@ -106,9 +106,9 @@ Hi everyone,
 
 This week, an update to D&D Beyond's website broke our ability to roll using Digital Dice. This update fixes that, as well as many other fixes and additional support for special class features.
 
-You can read the full [Changelog](/Changelog#v2170) to see all the changes included in this release.
+You can read the full [Changelog](Changelog#v2170) to see all the changes included in this release.
 
-A big thank you to [@dmportella](https://github.com/dmportella) for making this release, as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters. 
+A big thank you to [@dmportella](https://github.com/dmportella) for making this release, as well as to my generous Patrons and Ko-fi/Github supporters. 
 
 This is also the perfect moment to wish everyone happy holidays, and a happy new year!
 
@@ -136,7 +136,7 @@ We're releasing today a small Beyond20 update which has fixes for Psy Warrior at
 
 This update also adds support for the Rogue's Assassinate class feature from the 2024 rules, which behaves differently from the 2014 PHB rules for Assassinate.
 
-As usual, a big thank you to [@dmportella](https://github.com/dmportella) for his changes, as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters. 
+As usual, a big thank you to [@dmportella](https://github.com/dmportella) for his changes, as well as to my generous Patrons and Ko-fi/Github supporters. 
 
 Enjoy!
 
@@ -152,9 +152,9 @@ In this update, we're adding support for Foundry v13, which was recently release
 
 Another cool feature I'm excited about is the ability to lock/unlock some of the per-character settings. This feature, brought to you by [@dmportella](https://github.com/dmportella), would allow you, for example, to enable Sneak Attack only for the next roll, or enable Great Weapon Master permanently, so it doesn't reset after each attack.
 
-There are many other improvements in this release, check out the full [Changelog](/Changelog#v2150) to see all the changes.
+There are many other improvements in this release, check out the full [Changelog](Changelog#v2150) to see all the changes.
 
-As usual, a big thank you to our contributors, as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters. 
+As usual, a big thank you to our contributors, as well as to my generous Patrons and Ko-fi/Github supporters. 
 
 Have fun!
 
@@ -171,9 +171,9 @@ We've also added the lock feature to the Sneak Attack option (locked by default)
 
 Apart form that, this release also brings many small bugfixes, continuing to catch up to changes to the D&D Beyond website that continue to break Beyond20 functionality. 
 
-Check out the full [Changelog](/Changelog#v2140) to see all the changes added in this release.
+Check out the full [Changelog](Changelog#v2140) to see all the changes added in this release.
 
-As usual, a big thank you to [@dmportella](https://linktr.ee/dmportella) for the work they've done, as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters. 
+As usual, a big thank you to [@dmportella](https://linktr.ee/dmportella) for the work they've done, as well as to my generous Patrons and Ko-fi/Github supporters. 
 
 Have fun!
 
@@ -198,9 +198,9 @@ Hi everyone,
 With the release last week of the new Monster Manual 2024, we have seen the introduction of a new statblock format to the monsters!
 Today's update adds support for the new 2024 monster stat blocks, as well as adds a couple of small bugfixes.
 
-Check out the full [Changelog](/Changelog#v2130) to see all the changes added in this release.
+Check out the full [Changelog](Changelog#v2130) to see all the changes added in this release.
 
-As usual, a big thank you to [@dmportella](https://linktr.ee/dmportella) as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters. 
+As usual, a big thank you to [@dmportella](https://linktr.ee/dmportella) as well as to my generous Patrons and Ko-fi/Github supporters. 
 
 P.S: The version 2.13.0 being released on February 13th is purely a coincidence! :D
 
@@ -217,9 +217,9 @@ We've had a lot of changes to the D&D Beyond website in recent weeks and a few t
 
 This release adds quite a few bugfixes and improvements, and adds a few interesting features as well, such as the ability to send to the VTT the images and art from source books, as well as the ability to apply exhaustion effects on your rolls automatically.
 
-Check out the full [Changelog](/Changelog#v2120) to see all the changes added in this release.
+Check out the full [Changelog](Changelog#v2120) to see all the changes added in this release.
 
-As usual, a big thank you to [@dmportella](https://linktr.ee/dmportella) as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters. 
+As usual, a big thank you to [@dmportella](https://linktr.ee/dmportella) as well as to my generous Patrons and Ko-fi/Github supporters. 
 
 Enjoy.
 
@@ -233,7 +233,7 @@ I hope everyone had a chance to rest and find moments of peace and reflection du
 
 We're releasing today a bugfix release as character sheet changes continue on D&D Beyond and rolling actions (like unarmed strike) from character sheets were broken. This release also fixes the bug preventing Strength checks from working from within a character sheet's Extra creature's statblock.
 
-Thanks again to [@dmportella](https://linktr.ee/dmportella) for the fixes, as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters. 
+Thanks again to [@dmportella](https://linktr.ee/dmportella) for the fixes, as well as to my generous Patrons and Ko-fi/Github supporters. 
 
 Enjoy.
 
@@ -248,9 +248,9 @@ This release, the last release of 2024, brings support for many of the new class
 
 One of the new features that was introduced that I'm particularly happy about is the support for spell effects, with an initial support for Bless, Bane, Enlarge and Reduce. With one option (or hotkey) you can toggle the effects of one of those spells on your rolls. 
 
-The biggest issue we've seen with the DDB site changes that this release fixes is the statblocks of creatures in Extras tab which had stopped working, as well as rolling ability checks when using non default ability score/modifier display setting. You can see the full list of changes in the [Changelog](/Changelog#v2110).
+The biggest issue we've seen with the DDB site changes that this release fixes is the statblocks of creatures in Extras tab which had stopped working, as well as rolling ability checks when using non default ability score/modifier display setting. You can see the full list of changes in the [Changelog](Changelog#v2110).
 
-As usual, thank you to all contributors, especially [@dmportella](https://linktr.ee/dmportella) who did most of the work in this release, as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters. 
+As usual, thank you to all contributors, especially [@dmportella](https://linktr.ee/dmportella) who did most of the work in this release, as well as to my generous Patrons and Ko-fi/Github supporters. 
 
 Enjoy and may you have a peaceful holiday season.
 
@@ -265,9 +265,9 @@ It's time for another update to Beyond20. This release fixes some of the few par
 Other than adding support for some of the new 2024 rules (new monsters, species, backgrounds, Great Weapon Fighting, Great Weapon Master, Polearm Master), it also finally properly implements Firefox's optional permissions API, allowing Firefox users to enjoy the same dynamic permissions as Chrome user had. This also removes for Firefox users the previously mandatory discord permissions and brings support for Roll20's Discord Activity on par with the Chrome implementation.
 
 There's more work to be done in the next few weeks and months to continue supporting the new changes with the 2024 rules, but this is a very good starting point.
-You can see the full list of changes in the [Changelog](/Changelog#v2100).
+You can see the full list of changes in the [Changelog](Changelog#v2100).
 
-As usual, thank you to all contributors, especially [@dmportella](https://linktr.ee/dmportella), as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters. 
+As usual, thank you to all contributors, especially [@dmportella](https://linktr.ee/dmportella), as well as to my generous Patrons and Ko-fi/Github supporters. 
 
 Happy rolling!
 
@@ -280,7 +280,7 @@ Another few weeks have passed and another update to D&D Beyond's website has bro
 
 **Note**: The v2.9.8 update fixes a small issue with To Hit detection which slipped through the 2.9.7 release from the day before.
 
-As always, thank you to [@dmportella](https://linktr.ee/dmportella) for his contributions and to everyone who supports the project, and thank you to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
+As always, thank you to [@dmportella](https://linktr.ee/dmportella) for his contributions and to everyone who supports the project, and thank you to my generous Patrons and Ko-fi/Github supporters.
 
 Enjoy!
 
@@ -291,7 +291,7 @@ Hi again,
 
 Another few weeks have passed and another update to D&D Beyond's website has broken Beyond 20. This update fixes the recent issue of being unable to roll items/weapon attacks. It also adds support to some of the new 2024 rules and minor bugfixes.
 
-As always, thank you to [@dmportella](https://linktr.ee/dmportella) for his contributions and to everyone who supports the project, and thank you to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
+As always, thank you to [@dmportella](https://linktr.ee/dmportella) for his contributions and to everyone who supports the project, and thank you to my generous Patrons and Ko-fi/Github supporters.
 
 Enjoy!
 
@@ -304,9 +304,9 @@ I'm releasing another small bugfix update to Beyond20 after recent changes to D&
 
 This update also includes support for the Roll20 Discord Activity, thanks to the contribution by Riley Dutton from Roll20. Note however that it only works if you open Discord inside of your browser alongside the D&D Beyond page. Also note that Chrome/Edge users will need to click on the Beyond20 icon in the address bar and authorize the extension to work on the Discord page before you can use the new feature. Firefox users will be prompted to accept the new permissions upon updating, as unfortunately, Firefox does not support optional permissions and the permissions request API.
 
-Another big thank you to [@dmportella](https://linktr.ee/dmportella) who helped fix the issue with class feature detection and added support for the Sorcereus Burst spell. And like last time, you should continue to direct your thanks to him, perhaps via his [Ko-fi page](https://ko-fi.com/gothyl)! 
+Another big thank you to [@dmportella](https://linktr.ee/dmportella) who helped fix the issue with class feature detection and added support for the Sorcereus Burst spell. And like last time, you should continue to direct your thanks to him, perhaps via his Ko-fi page! 
 
-As always, thank you everyone who contributed to the project, and thank you to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
+As always, thank you everyone who contributed to the project, and thank you to my generous Patrons and Ko-fi/Github supporters.
 
 Enjoy!
 
@@ -322,9 +322,9 @@ This release also works around a bug in Foundry's v12 dnd5e system which prevent
 
 After multiple pokes, and waiting more than reasonable, it appears that D&D Beyond has no interest in re-establishing communications with the Beyond20 team and ensuring the extension remains compatible with their continuous changes to the website. It is certainly a great disappointment to be honest, but it is what it is, unfortunately.
 
-This release is dedicated to [@dmportella](https://linktr.ee/dmportella) from the community who has stepped up in the past couple of weeks, submitted all the fixes for the extension and helped with github issues. A huge huge thank you for taking care of things while I was incapacitated, and I'd recommend people [buy him a coffee](https://ko-fi.com/gothyl) instead of me this time around! 
+This release is dedicated to [@dmportella](https://linktr.ee/dmportella) from the community who has stepped up in the past couple of weeks, submitted all the fixes for the extension and helped with github issues. A huge huge thank you for taking care of things while I was incapacitated, and I'd recommend people buy him a coffee instead of me this time around! 
 
-As always, thank you everyone who contributed to the project, including my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
+As always, thank you everyone who contributed to the project, including my generous Patrons and Ko-fi/Github supporters.
 
 Enjoy!
 
@@ -338,7 +338,7 @@ This small update fixes that as well as a couple of other small issues.
 
 A special thank you for those who debugged the issue, contributed fixes to Beyond20 and helped with support. I love seeing the open-source spirit within our community.
 
-Thank you as well to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
+Thank you as well to my generous Patrons and Ko-fi/Github supporters.
 
 Enjoy!
 
@@ -355,7 +355,7 @@ At this time, as it's been 3 days (thanks everyone for your patience), I've deci
 
 I'm keeping a close eye on the situation, and I expect to be in contact again with the DDB team soon so that future updates can have a minimal impact on your games.
 
-Thanks for everyone who helped out with this issue and provided support on Github and Discord. And as usual, thank you as well to all contributors and to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters.
+Thanks for everyone who helped out with this issue and provided support on Github and Discord. And as usual, thank you as well to all contributors and to my generous Patrons and Ko-fi/Github supporters.
 
 Enjoy!
 
@@ -366,14 +366,14 @@ v2.9.2 (April 24th 2024)
 Hi everyone, long time no see!
 
 Today, D&D Beyond has released an update to their character sheets which unfortunately broke Beyond 20 support as many things have changed behind the scenes, making it unable to parse the sheet and make rolls.
-This hotfix update fixes that and restores full Beyond 20 functionality, as well as adds a few other bugfixes to the extension and some small new features (See [Changelog](/Changelog#v292) for the full list).
+This hotfix update fixes that and restores full Beyond 20 functionality, as well as adds a few other bugfixes to the extension and some small new features (See [Changelog](Changelog#v292) for the full list).
 Hopefully I didn't miss anything and it won't break again in the near future, but if D&D Beyond are going to push additional updates, I thank you all in advance for your patience and I promise to be on top of things and release fixes as soon as humanly possible!
 
 In other news, I have been working on Beyond20 recently to add a new cool feature, but it's not yet ready for release. I'm quite excited about this and I can't wait to show you all what we've been cooking up in secret 🤫!
 
 For now, enjoy this small update, and stay ready for a larger upcoming release!
 
-As usual, thank you to all contributors, as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters, who are making this all possible and keep me motivated. 
+As usual, thank you to all contributors, as well as to my generous Patrons and Ko-fi/Github supporters, who are making this all possible and keep me motivated. 
 
 Thanks and happy rolling!
 
@@ -390,7 +390,7 @@ There's also a few small fixes to the "Display Avatar" feature that also snuck i
 
 We hope Roll20 don't change anything further and the extension continues to work for months to come.
 
-As usual, thank you to all contributors, as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters, who are making this all possible. 
+As usual, thank you to all contributors, as well as to my generous Patrons and Ko-fi/Github supporters, who are making this all possible. 
 
 Thanks and enjoy!
 
@@ -404,14 +404,14 @@ It's time for another update to your favorite extension! This one has been cooki
 
 The OGL scandal from WotC in January has definitely had a negative impact on the community as a whole, but Beyond20 has also never been so stable and in need of so little maintenance. While the extension is pretty much "feature complete" at this stage, and the very few bugs that have been reported were not critical, we've still worked to bring a new exciting feature which I think might open up Beyond20 to even more future possibilities.
 
-This update brings a few corrections to small bugs that have been reported in the last months, as well as the addition of some new features. I encourage you to check the [Changelog](/Changelog#v290) for the full list of changes. The big chunk of this update though is the new ability for websites to integrate with Beyond20, not just as a VTT, but also as character sheets. This means that Beyond20 can become the glue that connects any character sheet website to any VTT website.
+This update brings a few corrections to small bugs that have been reported in the last months, as well as the addition of some new features. I encourage you to check the [Changelog](Changelog#v290) for the full list of changes. The big chunk of this update though is the new ability for websites to integrate with Beyond20, not just as a VTT, but also as character sheets. This means that Beyond20 can become the glue that connects any character sheet website to any VTT website.
 
-In order to make that possible, an extensive documentation of our [API](/api) has been written and this should hopefully allow various websites to send their rolls to Beyond20, letting it pass along that data to the player's VTT, making it a truly universal extension. I have heard from quite a few websites who are excited to bring the ability to roll from their sheets to any VTT via Beyond20!
+In order to make that possible, an extensive documentation of our [API](api) has been written and this should hopefully allow various websites to send their rolls to Beyond20, letting it pass along that data to the player's VTT, making it a truly universal extension. I have heard from quite a few websites who are excited to bring the ability to roll from their sheets to any VTT via Beyond20!
 
 I expect, as more websites start supporting Beyond20, that we'll see additional improvements to the API and a possible increase in activity to support various use cases that may be non-d&d specific.
 I can't wait to see what the future brings and how Beyond20's horizon gets expanded with this new feature.
 
-As usual, thank you to all contributors, as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters, who are making this all possible. 
+As usual, thank you to all contributors, as well as to my generous Patrons and Ko-fi/Github supporters, who are making this all possible. 
 
 Thank you everyone and keep on rolling!😄
 
@@ -427,12 +427,12 @@ This long-awaited release adds quite a few small quality of life features, expan
 
 Most of the bugfixes were for rare use cases, though some significant work went into adding Foundry V10 support, as well as dramatically improving the support for the "Native Rolls" feature in Foundry VTT (requires v10) with our most recent FVTT module update (1.5.x).
 
-This release adds quite a few features and bugfixes, so please refer to the [Changelog](/Changelog#v280) for the full details of the changes.
+This release adds quite a few features and bugfixes, so please refer to the [Changelog](Changelog#v280) for the full details of the changes.
 
 One item that doesn't appear in the Changelog but which we worked on as well is the Chrome extension Manifest V3 support. One of the challenges we've had to face unfortunately is the forced upgrade by the Chrome store from Manifest V2 to their Manifest V3 for Chrome extensions. While we did the upgrade and it mostly worked, there were some issues with it that we couldn't fix reliably, and after delaying this release for too long, we decided to downgrade back to Manifest V2 for now so we don't release a version that may be unreliable to our users.
 The Chrome decision to force extensions to move to their new MV3 design (by June 2023) is a very controversial one and has been a headache for many developers. We'll take the time in the next few months to ensure the upgrade is smooth and doesn't introduce any new issues in how Beyond20 functions, and we'll hopefully release MV3 support in the next release, without affecting any of our features.
 
-As usual, thank you to all contributors, as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters, who are making this possible. 
+As usual, thank you to all contributors, as well as to my generous Patrons and Ko-fi/Github supporters, who are making this possible. 
 
 Finally, while it may be a bit too early for it, I want to wish everyone happy holidays and happy new year!
 Keep rolling! 😄
@@ -450,9 +450,9 @@ I'm super excited about one of the features that's been brewing for a very long 
 
 Another big change is to the Roll20 combat tracker support, as it will now hide the monster names by default, to avoid spoilers, but it will also be able to match tokens to multiple monsters with the same name without the need to add the "(A)", "(B)", etc.. prefixes to every token. 
 
-This release adds a total of 8 new features and fixes 7 issues. Please refer to the [Changelog](/Changelog#v270) for the full details of the changes.
+This release adds a total of 8 new features and fixes 7 issues. Please refer to the [Changelog](Changelog#v270) for the full details of the changes.
 
-As usual, thank you to all contributors, as well as to my generous [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters, who are making this possible. 
+As usual, thank you to all contributors, as well as to my generous Patrons and Ko-fi/Github supporters, who are making this possible. 
 
 Happy rolling!
 
@@ -465,7 +465,7 @@ Today (April 12th), D&D Beyond updated their character sheet, which broke the pa
 
 We also fixed a couple of issues that might have affected the DDB mobile app parsing of the game log when rolling from Beyond20, and added support for Foundry VTT's upcoming v10 release.
 
-As usual, thank you to all my [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters, who are making this possible. 
+As usual, thank you to all my Patrons and Ko-fi/Github supporters, who are making this possible. 
 
 Happy rolling!
 
@@ -476,9 +476,9 @@ Hi again, we're releasing another small bugfix release today for your favorite e
 
 This update had to be quickly released as there were two breaking changes that happened this week, one change in the D&D Beyond character sheet which caused some issues with the character specific settings not working properly, and also a change in the Roll20 website which caused HP syncing to stop working in most situations. 
 
-This release also adds a couple of other small but important bug fixes and features as well. See the short [Changelog](/Changelog#v262) below for more details.
+This release also adds a couple of other small but important bug fixes and features as well. See the short [Changelog](Changelog#v262) below for more details.
 
-As usual, thank you to all my [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters, who are making this possible. 
+As usual, thank you to all my Patrons and Ko-fi/Github supporters, who are making this possible. 
 
 Happy rolling!
 
@@ -491,9 +491,9 @@ This update is a bugfix release, which we felt needed to be out sooner rather th
 
 The big feature introduced in this update (which served to fix another bug) was the ability to roll from the digital dice boxes in monster stat blocks. So if you're on the Encounters page and looking at your monsters, you can roll with Beyond20 directly using the clickable digital dice buttons from D&D Beyond, instead of the Beyond20 icons that we added to the statblocks. This makes for a much cleaner look as well!
 
-This release was almost entirely brought to you by [@Aeristoka](https://github.com/Aeristoka), thank you as usual for helping with Beyond20 and keeping all those pesky bugs away! If anyone wants to thank Aeristoka for his work, you can buy him a coffee on [Ko-fi](https://ko-fi.com/aeristoka)! This release has also seen the addition of a new contributor to the project, so I want to say welcome and thanks to [@jjchambl](https://github.com/jjchambl) for his contribution!
+This release was almost entirely brought to you by [@Aeristoka](https://github.com/Aeristoka), thank you as usual for helping with Beyond20 and keeping all those pesky bugs away! If anyone wants to thank Aeristoka for his work, you can buy him a coffee on Ko-fi! This release has also seen the addition of a new contributor to the project, so I want to say welcome and thanks to [@jjchambl](https://github.com/jjchambl) for his contribution!
 
-And finally, I want to thank all of my [Patrons](https://patreon.com/kakaroto) and [Ko-fi/Github](/rations) supporters, and those who reported the bugs they've found and for everyone else who helped make this release possible. Thank you all for your support and your love!
+And finally, I want to thank all of my Patrons and Ko-fi/Github supporters, and those who reported the bugs they've found and for everyone else who helped make this release possible. Thank you all for your support and your love!
 
 I hope this update makes your games run smoother, and happy gaming!
 
@@ -515,9 +515,9 @@ In other news, we've added a new "Advanced options" section, both to the per-cha
 
 Another small, but important feature, is that the Beyond20 changelog, which is displayed when the extension is updated, will now only be displayed when you access a D&D Beyond or VTT page. It's a very welcome change, as it used to display the changelog when the extension was updated, which could happen at any time, and could disrupt a user's browsing experience. I'd like to thank [@sleepkever](https://github.com/sleepkever) for the [suggestion](https://github.com/kakaroto/Beyond20/issues/867), because I know it was something annoying (especially last June where there were multiple consecutive updates in a short span of time), and that some users didn't want to disable the option to open the changelog either. This should make everyone happy!
 
-That's it, as always, check out the full [Changelog](/Changelog#v260) to see all of the new features and bugfixes that went into this release.
+That's it, as always, check out the full [Changelog](Changelog#v260) to see all of the new features and bugfixes that went into this release.
 
-As usual, I want to thank all of my [Patrons](https://patreon.com/kakaroto) and [ko-fi/github](/rations) supporters, and for everyone who helped make this release possible. Thank you all for your support and your love! You're the ones making Beyond20 possible!
+As usual, I want to thank all of my Patrons and ko-fi/github supporters, and for everyone who helped make this release possible. Thank you all for your support and your love! You're the ones making Beyond20 possible!
 
 Enjoy this update, and may 2022 bring you lots of natural 20s!
 
@@ -533,9 +533,9 @@ Another cool feature is the ability to set a target Discord channel to send roll
 
 Finally, last but not least, I'm happy to announce the ability to send read aloud text from source books directly into the chat of your favorite VTT!
 
-This is of course only a small subset of the changes, and I recommend you check out the full [Changelog](/Changelog#v250) to see all of the new features and bugfixes that went into this release.
+This is of course only a small subset of the changes, and I recommend you check out the full [Changelog](Changelog#v250) to see all of the new features and bugfixes that went into this release.
 
-As usual, I want to thank all of my [Patrons](https://patreon.com/kakaroto) and [ko-fi/github](/rations) supporters, and for everyone who helped make this release possible. Thank you all for your support and your love!
+As usual, I want to thank all of my Patrons and ko-fi/github supporters, and for everyone who helped make this release possible. Thank you all for your support and your love!
 
 Enjoy this update, and keep rolling!
 
@@ -546,11 +546,11 @@ Hi everyone. We're releasing today another bugfix release to Beyond20, due to re
 
 Another exciting change in this release is a new styling for the roll results, which will show a much cleaner look when rolling into D&D Beyond's site or to your Foundry VTT game. If using FVTT and you have the Beyond20 companion module installed, make sure to update the module too. This change was contributed by [@LorduFreeman](https://github.com/LorduFreeman) and I'm really happy with the results!
 
-Other than these bugfixes and the new styling, there's also a bunch of new special class features added, thanks to [@Aeristoka](https://github.com/Aeristoka) as usual, who has been the main contributor to this release! You can see all the new features in the [Changelog](/Changelog#v246).
+Other than these bugfixes and the new styling, there's also a bunch of new special class features added, thanks to [@Aeristoka](https://github.com/Aeristoka) as usual, who has been the main contributor to this release! You can see all the new features in the [Changelog](Changelog#v246).
 
 Hopefully, there won't be any new bugfixes after this (Last month's multiple releases were annoying to us both!) and the next release, in a couple of months hopefully, will bring in some new major features.
 
-As usual, thank you everyone for your support, and a special thank you to all my [Patrons](https://patreon.com/kakaroto) and [ko-fi/github](/rations) supporters, and for everyone who helped make this possible.
+As usual, thank you everyone for your support, and a special thank you to all my Patrons and ko-fi/github supporters, and for everyone who helped make this possible.
 
 Enjoy, and happy rolling!
 
@@ -582,10 +582,10 @@ If you haven't seen the latest Foundry update video (with a nice feature tour of
 
 Among other smaller bugfixes, a long standing bug that was fixed in this release is the one where dice formulas in the class features list or action snippets might get split in two and appear as two separate formulas. I finally managed to figure out a way to fix that bug, so hopefully there are no more issues there.
 
-Overall, I'm quite happy with this release, and I suggest you check out the [Changelog](/Changelog#v242) for the full list of changes (a small/readable changelog for once).
-I have recently posted a [status update](https://www.patreon.com/posts/status-update-51779621) on my Patreon that lists my current projects and plans for the short term, if anyone is curious and/or interested in giving it a read.
+Overall, I'm quite happy with this release, and I suggest you check out the [Changelog](Changelog#v242) for the full list of changes (a small/readable changelog for once).
+I have recently posted a status update on my Patreon that lists my current projects and plans for the short term, if anyone is curious and/or interested in giving it a read.
 
-Thank you to all my [Patrons](https://patreon.com/kakaroto) and [ko-fi/github](/rations) supporters, and for everyone who helped make this possible.
+Thank you to all my Patrons and ko-fi/github supporters, and for everyone who helped make this possible.
 
 Thank you all for using this software and for being part of this amazing community.
 Enjoy, and keep rolling!
@@ -596,11 +596,11 @@ v2.4.1 (April 25th 2021)
 Hello everyone! We're releasing a small bugfix release that polishes some of the new features introduced in 2.4.0 and fixes some newly found bugs. 
 This release was also necessary due to the recent changes in Roll20 who changed the way the character sheet template is detected, causing Beyond20 to revert back to the default template. This is unfortunately the third time they changed it in recent weeks (I mentioned that in the 2.4.0 release notes) and they kept switching back and forth between the old and the new method, so I wanted it to stabilize a bit first before releasing a fix. This update supports 3 different detection methods, so hopefully, we got you covered for the foreseeable future!
 
-There are also a few new features in this release, such as support for Raging from a Druid/Barbarian Wildshape creature, or displaying a monster's non-attack traits. I'd recommend you check out the full [Changelog](/Changelog#v241) for details. 
+There are also a few new features in this release, such as support for Raging from a Druid/Barbarian Wildshape creature, or displaying a monster's non-attack traits. I'd recommend you check out the full [Changelog](Changelog#v241) for details. 
 
 In other news, I'm continuing my work on bringing integrations with D&D Beyond to make life easier for my users. This time, it's in the form of a source book conversion integration with [The Forge](https://forge-vtt.com). The feature is still in beta and available as early access to my Patrons, and you can see it in action here : [https://youtu.be/DkS7w7hkg3Y](https://youtu.be/DkS7w7hkg3Y)
 
-Speaking of patrons, another thank you goes to all my [Patrons](https://patreon.com/kakaroto) and [ko-fi/github](/rations) supporters as well as to those who contributed code to this release: Thank you all!
+Speaking of patrons, another thank you goes to all my Patrons and ko-fi/github supporters as well as to those who contributed code to this release: Thank you all!
 
 Enjoy, and as always, happy dice rolling!
 
@@ -619,11 +619,11 @@ A recent change in Roll20 has also caused Beyond20 to break a couple of days ago
 
 I'd like to give a special thank you to `@Aeristoka` who has been holding down the fort and doing a lot of work in recent months to keeping Beyond20 updated with new class features support, UA changes as well as general tech support, bug triaging and bugfixing.
 
-A big thank you as usual to all my [Patrons](https://patreon.com/kakaroto) as well as those who sent their support via [ko-fi or github](/rations), and for all the love we receive from this community. And thank you for the contributors who helped make this release possible: `@Aeristoka`, `@adriangaro`, `@Stoneguard001` and `@IvanGirderboot`.
+A big thank you as usual to all my Patrons as well as those who sent their support via ko-fi or github, and for all the love we receive from this community. And thank you for the contributors who helped make this release possible: `@Aeristoka`, `@adriangaro`, `@Stoneguard001` and `@IvanGirderboot`.
 
-Again, shameless plug: If you're interested in trying out [Foundry VTT](https://foundryvtt.com), give it a try at [The Forge](https://forge-vtt.com/?referral=beyond20) which allows you to explore Foundry fully with a temporary license. Just sign up and and click the "[Try Foundry Now](https://www.youtube.com/watch?v=XJUIDvaqPcg)" button to get your game setup instantly, and feel free to try it as many times as you need until you fall in love with it, like the rest of us.
+Again, shameless plug: If you're interested in trying out [Foundry VTT](https://foundryvtt.com), give it a try at [The Forge](https://forge-vtt.com/) which allows you to explore Foundry fully with a temporary license. Just sign up and and click the "[Try Foundry Now](https://www.youtube.com/watch?v=XJUIDvaqPcg)" button to get your game setup instantly, and feel free to try it as many times as you need until you fall in love with it, like the rest of us.
 
-We've also recently launched a marketplace on the [Bazaar](https://forge-vtt.com/bazaar/?referral=beyond20) where you can find some amazing modules, maps, and assets packs for your games, and you can even download them for use in your self-hosted Foundry or Roll20 games, if you wish to do so.
+We've also recently launched a marketplace on the [Bazaar](https://forge-vtt.com/bazaar/) where you can find some amazing modules, maps, and assets packs for your games, and you can even download them for use in your self-hosted Foundry or Roll20 games, if you wish to do so.
 
 Enjoy this release and happy dice rolling!
 
@@ -647,9 +647,9 @@ As always, `@Aeristoka` has been hard at work implementing support for all the n
 
 Thanks to everyone who submitted bug reports, who suggested feature requests, those who contributed to the project with their own pull requests (`@Aeristoka`, `@adriangaro`, `@rispig`, `@flangelier` and `@Kvalyr`) as well as those who answer questions and offer tech support to others in our [Discord server](https://discord.gg/ZAasSVS).
 
-A big thank you as well to all my [Patrons](https://patreon.com/kakaroto) as well as those who sent their support via [ko-fi or github](/rations), and for all the encouragement I received over the past few months. You keep motivating me to continue supporting this amazing software that I love, despite my perpetually full schedule.
+A big thank you as well to all my Patrons as well as those who sent their support via ko-fi or github, and for all the encouragement I received over the past few months. You keep motivating me to continue supporting this amazing software that I love, despite my perpetually full schedule.
 
-For anyone who was interested in trying out [Foundry VTT](https://foundryvtt.com), but you've been put off by the initial license purchase requirement, one of the recent features I added to [The Forge](https://forge-vtt.com/?referral=beyond20) is the ability to try out and explore Foundry and all of its features before buying it, so head over to The Forge, and click the "[Try Foundry Now](https://www.youtube.com/watch?v=XJUIDvaqPcg)" button to give it a try with a temporary license so you can see how amazing Foundry is, before you buy it. Then when you do, I'd appreciate it if you also used [The Forge](https://forge-vtt.com/?referral=beyond20) for your hosting services :)
+For anyone who was interested in trying out [Foundry VTT](https://foundryvtt.com), but you've been put off by the initial license purchase requirement, one of the recent features I added to [The Forge](https://forge-vtt.com/) is the ability to try out and explore Foundry and all of its features before buying it, so head over to The Forge, and click the "[Try Foundry Now](https://www.youtube.com/watch?v=XJUIDvaqPcg)" button to give it a try with a temporary license so you can see how amazing Foundry is, before you buy it. Then when you do, I'd appreciate it if you also used [The Forge](https://forge-vtt.com/) for your hosting services :)
 
 Enjoy this release, and happy dice rolling!
 
@@ -666,15 +666,15 @@ v2.2
 
 Hi again, it's time to drop another massive Beyond20 update!
 
-This update has been brewing for a while, and every day for the last month, I thought I'd finally be ready to release it, but there was always something taking up my time, or some new issue that needed to be fixed first. I felt bad, because I thought this overdue update wasn't going to amount to much, as I've been too busy spending most of my time working on [The Forge](https://forge-vtt.com/?referral=beyond20), but it turns out I was wrong, and this update is **massive**. It has 73 items in its changelog, over 30% more than the previous 2.0 release, making it the biggest release yet! It's hard to believe it!
+This update has been brewing for a while, and every day for the last month, I thought I'd finally be ready to release it, but there was always something taking up my time, or some new issue that needed to be fixed first. I felt bad, because I thought this overdue update wasn't going to amount to much, as I've been too busy spending most of my time working on [The Forge](https://forge-vtt.com/), but it turns out I was wrong, and this update is **massive**. It has 73 items in its changelog, over 30% more than the previous 2.0 release, making it the biggest release yet! It's hard to believe it!
 
-Enough chit chat, let's get down to business. This release has a lot of bugfixes, taking care of all the small issues that you may have had, as well as a bunch of quality of life improvements all over the place, I'll let you discover it all through the [Changelog](/Changelog#v22). There are a couple of big features coming in this update, most notably, the support for [Astral Tabletop](https://www.astraltabletop.com) which was contributed by [@adriangaro](https://github.com/adriangaro), who did an amazing job with it. We also now have a much better integration with the D&D Beyond digital dice, as you can finally roll attack and damages separately, as well as see the nice OGL sheet template output on Roll20.
+Enough chit chat, let's get down to business. This release has a lot of bugfixes, taking care of all the small issues that you may have had, as well as a bunch of quality of life improvements all over the place, I'll let you discover it all through the [Changelog](Changelog#v22). There are a couple of big features coming in this update, most notably, the support for [Astral Tabletop](https://www.astraltabletop.com) which was contributed by [@adriangaro](https://github.com/adriangaro), who did an amazing job with it. We also now have a much better integration with the D&D Beyond digital dice, as you can finally roll attack and damages separately, as well as see the nice OGL sheet template output on Roll20.
 
 Another useful new feature is that when you first open your character sheet, or when you level up, Beyond20 will remind you to go the `Features & Traits` page of your sheet to update the information it has about the character. There's also support added for quite a few special class features (courtesy of [@Aeristoka](https://github.com/Aeristoka)) and the ability to set a custom message to be sent along specific attacks (to run macros when casting a specific spell or display an image when using your weapon for example), thanks to [@John-Paul-R](https://github.com/John-Paul-R).
 
-As you have noticed, there are quite a few contributors who have helped make this release possible, so I'd like to thank them for their code contributions, as well as thank those who have been helping out/answering questions in our [Discord server](https://discord.gg/ZAasSVS). Finally, a big thank you as well to all of you who have sent me [rations](https://ko-fi.com/kakaroto) or who support me via [Patreon](https://patreon.com/kakaroto). You are the ones motivating me to keep on improving this beautiful piece of software!
+As you have noticed, there are quite a few contributors who have helped make this release possible, so I'd like to thank them for their code contributions, as well as thank those who have been helping out/answering questions in our [Discord server](https://discord.gg/ZAasSVS). Finally, a big thank you as well to all of you who have sent me rations or who support me via Patreon. You are the ones motivating me to keep on improving this beautiful piece of software!
 
-If you find Beyond20 useful and it helps you run your games more smoothly, please consider [supporting](/rations) me and Beyond20. Alternatively, I'd invite you all to check out [The Forge](https://forge-vtt.com/?referral=beyond20), my hosting service for Foundry VTT which makes it super easy to get started playing on the best Virtual Tabletop that exists.
+If you find Beyond20 useful and it helps you run your games more smoothly, please consider supporting me and Beyond20. Alternatively, I'd invite you all to check out [The Forge](https://forge-vtt.com/), my hosting service for Foundry VTT which makes it super easy to get started playing on the best Virtual Tabletop that exists.
 
 Thank you, and, as usual, happy rolling!
 
@@ -697,11 +697,11 @@ This time, it's mostly a bugfix release, and while I wanted to release this earl
 
 Today unfortunately, D&D Beyond have [updated](https://www.dndbeyond.com/changelog/844-character-sheet-changelog-july-7th-updates) the character sheet and it broke Beyond20 pretty much instantly for everybody. This has forced me to rush out this release to you all, but I didn't want it to be an underwhelming release with just a few fixes, so I spent the afternoon and all night working on trying to cram as much features and bugfixes into this release. I still managed to do about half (23 out of 51) of the originally planned features/fixes for 2.1, so I'm pretty happy with that.
 
-That's about it, a short release notes this time, the main changes here are bugfixes, especially for the break from the July 7th update of D&D Beyond, and a few general improvements to the user experience. There's still plenty of changes to read about in the [Changelog](/Changelog#v21).
+That's about it, a short release notes this time, the main changes here are bugfixes, especially for the break from the July 7th update of D&D Beyond, and a few general improvements to the user experience. There's still plenty of changes to read about in the [Changelog](Changelog#v21).
 
-Finally, as usual, a big thank you to all who have sent me [rations](https://ko-fi.com/kakaroto) or who support me via [Patreon](https://patreon.com/kakaroto).
+Finally, as usual, a big thank you to all who have sent me rations or who support me via Patreon.
 
-If you find Beyond20 useful and it helps you run your games more smoothly, please consider [supporting](/rations) me and Beyond20.
+If you find Beyond20 useful and it helps you run your games more smoothly, please consider supporting me and Beyond20.
 
 Thank you, stay safe, and, as usual, happy rolling!
 
@@ -713,9 +713,9 @@ Hi and welcome to the Two-Point-Oh release of Beyond20!
 
 This is yet another major release version of Beyond20. I have decided to make the jump directly to the 2.0 version because of just how massive this release is and the amount of work that went into it. One of the big changes and which took the most time was a near rewrite of the entire extension into pure Javascript, making the move from the python-like Rapydscript language that I used previously. The change makes Beyond20 generally better, easier to work with and maintain long term.
 
-I usually say this at the end, but this time, I want to start by giving a very special thank you to all my [patrons](https://www.patreon.com/kakaroto) and all the generous people who supported my work by sending rations through [Ko-fi](https://ko-fi.com/kakaroto) or other means. Without you, I wouldn't have had the courage and motivation to spend this much time working on making this release, especially with how busy and chaotic my life has been in the last few months.
+I usually say this at the end, but this time, I want to start by giving a very special thank you to all my patrons and all the generous people who supported my work by sending rations through Ko-fi or other means. Without you, I wouldn't have had the courage and motivation to spend this much time working on making this release, especially with how busy and chaotic my life has been in the last few months.
 
-As some of you may already know, I've worked relentlessly in the past few months on my new D&D related project and new business venture, [The Forge](https://forge-vtt.com), which is a hosting service for [Foundry VTT](https://foundryvtt.com) games. With Foundry VTT officially releasing just last week (on May 22nd) and me doing my best to [release The Forge](https://www.patreon.com/posts/release-party-37398469) on the same date, it has been a very stressful and chaotic time, but the launch went smoothly and I'm very happy with the results so far. I have still managed to take the time every few days and dedicate myself to working on Beyond20, and that has paid off greatly with this release being ready so soon and being so extensive.
+As some of you may already know, I've worked relentlessly in the past few months on my new D&D related project and new business venture, [The Forge](https://forge-vtt.com), which is a hosting service for [Foundry VTT](https://foundryvtt.com) games. With Foundry VTT officially releasing just last week (on May 22nd) and me doing my best to release The Forge on the same date, it has been a very stressful and chaotic time, but the launch went smoothly and I'm very happy with the results so far. I have still managed to take the time every few days and dedicate myself to working on Beyond20, and that has paid off greatly with this release being ready so soon and being so extensive.
 
 Another big and important thing to mention relating to this release is the number of external contributions that were received, making Beyond20 greater than one man's work. Some of the contributions were small, others were large, and others were non quantifiable. We now have new amazing artwork, made by [Jerry Escandon](https://github.com/Jerryescandon) that makes the Beyond20 icons look beautiful and sleek and much nicer at the low resolutions needed by Beyond20. We've also had code contributions by [@Brunhine](https://github.com/Brunhine), [@spisin](https://github.com/spisin), [@kbuzsaki](https://github.com/kbuzsaki), [@Ainias](https://github.com/Ainias) and last but not least [@Aeristoka](https://github.com/Aeristoka). Aeristoka has also been a huge help in systematically testing every feature of Beyond20 after the rewrite of the extension and reporting all the bugs he could find as well as fixing many of them himself. What this means is that if you find a bug, you can now blame Aeristoka, not me!🤣
 
@@ -735,15 +735,15 @@ Oh and by the way, Beyond20 now has over 135 000 users which is just incredible!
 
 Now let's get down to the interesting bits. What does this release bring you?
 
-You should definitely check out the full [Changelog](/Changelog#v20) to see all of the new features and bugfixes that this release brings. I personally think the most important new feature is the rewrite to Javascript, but none of you will care about that, so you'll probably be most excited about the integration with D&D Beyond's amazing new Digital Dice feature. You can now do all your rolls using the dice from D&D Beyond, and have it roll all your To Hit and Damage dice and send all of the results to your VTT of choice.
+You should definitely check out the full [Changelog](Changelog#v20) to see all of the new features and bugfixes that this release brings. I personally think the most important new feature is the rewrite to Javascript, but none of you will care about that, so you'll probably be most excited about the integration with D&D Beyond's amazing new Digital Dice feature. You can now do all your rolls using the dice from D&D Beyond, and have it roll all your To Hit and Damage dice and send all of the results to your VTT of choice.
 
-The other big change, is with regards to Discord Integration. I promised you last time, that I would enhance the features of the Discord integration, and I did. It is still not as complete as I would hope, but it should hold you over until the next round of features are added. You can now add multiple Discord destination channels to Beyond20 and choose where you want the rolls to go. You can also give a friendly name to the channel so you don't need to remember which secret key goes to which channel. I have also added support for specifying a channel dedicated to whispers when creating your secret key, as well as specifying options, the only one available now being the ability to disable the spoiler tags for the roll formulas. See the updated instructions on the [Discord](/discord) page for more information.
+The other big change, is with regards to Discord Integration. I promised you last time, that I would enhance the features of the Discord integration, and I did. It is still not as complete as I would hope, but it should hold you over until the next round of features are added. You can now add multiple Discord destination channels to Beyond20 and choose where you want the rolls to go. You can also give a friendly name to the channel so you don't need to remember which secret key goes to which channel. I have also added support for specifying a channel dedicated to whispers when creating your secret key, as well as specifying options, the only one available now being the ability to disable the spoiler tags for the roll formulas. See the updated instructions on the [Discord](discord) page for more information.
 
-Another change that I am very happy about is the automatic detection of the character sheet template used on Roll20. We've had so many people asking about "why does Beyond20 send an empty message" and us having to point them to the [FAQ](/faq) that I've had to tackle that issue and make Beyond20 smarter. Now if your game is not using the 'D&D 5e By Roll20' character sheet template, then it will automatically use the default template instead. This also applies when using pre-rendered rolls when you roll using the Digital Dice.
+Another change that I am very happy about is the automatic detection of the character sheet template used on Roll20. We've had so many people asking about "why does Beyond20 send an empty message" and us having to point them to the [FAQ](faq) that I've had to tackle that issue and make Beyond20 smarter. Now if your game is not using the 'D&D 5e By Roll20' character sheet template, then it will automatically use the default template instead. This also applies when using pre-rendered rolls when you roll using the Digital Dice.
 
-Finally, I'd like to reiterate my thank you to all who have sent me rations/coffees through the [Ko-fi](https://ko-fi.com/kakaroto) link or who pledged on [Patreon](https://patreon.com/kakaroto).
+Finally, I'd like to reiterate my thank you to all who have sent me rations/coffees through the Ko-fi link or who pledged on Patreon.
 
-If you find Beyond20 useful to you and it helps you run your games more smoothly, please consider [supporting](/rations) me and Beyond20.
+If you find Beyond20 useful to you and it helps you run your games more smoothly, please consider supporting me and Beyond20.
 
 Thank you, stay safe, and, as usual, happy rolling!
 
@@ -768,11 +768,11 @@ When I made the last release, I had announced that I'd achieved, ten months afte
 
 I like to end these release notes with my usual thank yous. First, I'd like to thank the D&D Beyond team who have reached out to me and have granted me access to the alpha character sheet in advance so I could update Beyond20 to work with the new layout. Working with them has been a real pleasure, and I wanted to thank them for being so friendly and open.
 
-I'd also like to thank all of you who have sent me rations/coffees through the [Ko-fi](https://ko-fi.com/kakaroto) link or who pledged on [Patreon](https://patreon.com/kakaroto) through my [support](/support) page. The outpouring of love and support has been tremendous and is what keeps me working and updating Beyond20 for you all. 
+I'd also like to thank all of you who have sent me rations/coffees through the Ko-fi link or who pledged on Patreon through my [support](support) page. The outpouring of love and support has been tremendous and is what keeps me working and updating Beyond20 for you all. 
 
 Thank you as well for all of you who told others of the extension or who came to my [Discord](https://discord.gg/ZAasSVS) to thank me or to tell me how much you loved my work.
 
-If you find Beyond20 useful to you and it helps you run your games more smoothly, please consider [supporting](/rations) me and Beyond20.
+If you find Beyond20 useful to you and it helps you run your games more smoothly, please consider supporting me and Beyond20.
 
 Thank you, stay safe, and, as usual, happy rolling!
 
@@ -800,7 +800,7 @@ I expect v1.1 to be ready in a month or two, to keep up with my usual release sc
 
 As usual, I can't end without saying a big thank you to all those who supported this project and who contributed in one way or another. A big thank you to my patrons of course, who are making this possible, and to the 15226 chrome users and 1611 Firefox users (as of today, March 16th) of the extension who are using it, sharing it with their groups and friends, and who write reviews and send me praise/encouragement every day. Thank you all!
 
-If you find Beyond20 useful to you and it helps you in your games, please consider supporting me, either on [Patreon](https://patreon.com/kakaroto), [Github](https://github.com/sponsors/kakaroto) or [Ko-fi](https://ko-fi.com/kakaroto).
+If you find Beyond20 useful to you and it helps you in your games, please consider supporting me, either on Patreon, Github or Ko-fi.
 
 Thank you, and happy rolling!
 
@@ -813,11 +813,11 @@ It's time for the v0.9 release of your favorite extension! This adds support for
 
 Another cool feature, is the syncing of Temp HP for your characters and the HP and Temp HP for your Extra creatures. Make sure you rename that "Wolf" Beast Companion that follows you into a unique name to avoid changing the HP of all the wolves attacking you in your next battle. And one final thing which took way too long to achieve was the addition of the quick settings button for Firefox users. I originally thought it was a Firefox bug but I finally realized that Chrome was not following the specification and I had to work around it to achieve what I was trying to do. But now it works, so that's great.
 
-As usual, big thanks to everyone who helped, supported me, reported bugs, gave feature suggestions, or just spread the word about this extension to their friends and gaming groups. A special thank you as always to [my Patrons](https://patreon.com/kakaroto) who keep me motivated.
+As usual, big thanks to everyone who helped, supported me, reported bugs, gave feature suggestions, or just spread the word about this extension to their friends and gaming groups. A special thank you as always to my Patrons who keep me motivated.
 
-I have also recently joined the [Github Sponsors](https://github.com/sponsors/kakaroto) program, and for the first year, Github is matching contributions up to 5000$ per developer, so [check it out!](https://github.com/sponsors/kakaroto)
+I have also recently joined the Github Sponsors program, and for the first year, Github is matching contributions up to 5000$ per developer, so check it out!
 
-If you find Beyond20 useful to you and it helps you in your games, please consider supporting me, either on [Patreon](https://patreon.com/kakaroto), [Github](https://github.com/sponsors/kakaroto) or [Ko-fi](https://ko-fi.com/kakaroto).
+If you find Beyond20 useful to you and it helps you in your games, please consider supporting me, either on Patreon, Github or Ko-fi.
 
 Thank you, and happy rolling!
 
@@ -833,7 +833,7 @@ Last major feature that was added is the condition tracking for the character sh
 
 Finally, I've fixed a bunch of bugs from the last release, and added support for a new Paladin class feature and handling for three special spells. As usual, I suggest you check out the full [Changelog](Changelog#v08) for more details.
 
-Also, as usual, I'll thank everyone who helped, supported this project, reported bugs or gave feature suggestions, or just spread the word about this extension to their friends and gaming groups. A special thank you as always to [my Patrons](https://patreon.com/kakaroto) who are always motivating me to keep doing what I love!
+Also, as usual, I'll thank everyone who helped, supported this project, reported bugs or gave feature suggestions, or just spread the word about this extension to their friends and gaming groups. A special thank you as always to my Patrons who are always motivating me to keep doing what I love!
 
 Happy Rolling!
 
@@ -843,7 +843,7 @@ v0.7
 
 The #ThankYouPatrons release!
 
-This release is dedicated to my generous [patrons](https://patreon.com/kakaroto) who are making this possible by supporting my projects. Today (November 19th) is the [#ThankYouPatrons event](https://www.thankyoupatrons.com) organized by Patreon. As I asked recently my patrons which projects they would like me to focus on, I was surprised to see Beyond 20 at the top of the poll results, so I've worked day and night to making this release possible for today in order to celeberate all those who have generously given me their support.
+This release is dedicated to my generous patrons who are making this possible by supporting my projects. Today (November 19th) is the [#ThankYouPatrons event](https://www.thankyoupatrons.com) organized by Patreon. As I asked recently my patrons which projects they would like me to focus on, I was surprised to see Beyond 20 at the top of the poll results, so I've worked day and night to making this release possible for today in order to celeberate all those who have generously given me their support.
 
 As a way of thanking them for their support, I've made this a big release with some major improvements and new features. The most important of which is the addition of a new Dice Roller for anyone using D&D Beyond without a Virtual TableTop (or using one that isn't supported by Beyond20).
 
@@ -857,7 +857,7 @@ There are many other smaller improvements or bugfixes, and I invite you to check
 
 Thank you to everyone who submitted their feature requests or reported bugs they found, please continue to do so and I'll be happy to tackle those as soon as possible.
 
-And finally, again and always, a special thank you to [my Patrons](https://patreon.com/kakaroto) who are making this possible and for everything they've done for me!
+And finally, again and always, a special thank you to my Patrons who are making this possible and for everything they've done for me!
 
 Happy rolling!
 
@@ -873,7 +873,7 @@ There are other features and bugfixes as well, so I recommend checking out the [
 
 A big milestone this week is that Beyond20 has now reached 5000 active Chrome users (according to Chrome Web Store statistics) and nearly 450 installs on Firefox. Since I don't really promote Beyond20, this has mostly happened thanks to word of mouth and thanks to the great reviews people have been giving this extension. Thank you everyone for sharing and talking about it and thank you for all the love and words of appreciation I'm receiving from the community, it really means a lot! I'd also like to thank those who reported the bugs or gave the ideas for the features that were added in this release!
 
-And finally, again and always, a special thank you for all those who donated as well as to my [Patrons](https://patreon.com/kakaroto) who have paid for the development of this update.
+And finally, again and always, a special thank you for all those who donated as well as to my Patrons who have paid for the development of this update.
 
 
 v0.5
@@ -889,7 +889,7 @@ Other than that, most of my work in the last month has been concentrated on maki
 
 That being said, on that same forum, I've seen a few people worried that it means Beyond20 will stop supporting Roll 20 and I want to assure you that this isn't the case. While I'm not a Roll 20 user anymore, I will keep implementing all new features for both Roll 20 and FVTT and will keep maintaining the software (bugfixes) for both platforms as well. In the same way that I fix and test Beyond20 on Firefox even though I don't use Firefox personally.
 
-Finally, a big shout out to all those who donated to me via Paypal and to my [Patron](https://patreon.com/kakaroto) subscribers who have been supporting my work in the recent months (and therefore, paid for this Beyond20 update).  
+Finally, a big shout out to all those who donated to me via Paypal and to my Patron subscribers who have been supporting my work in the recent months (and therefore, paid for this Beyond20 update).  
 Thank you all!
 
 
@@ -910,6 +910,6 @@ Another consequence is that the extension now needs permission to access all web
 
 Roll20 support will continue of course, so you don't need to worry about that, but now you can also use Beyond20 with FVTT.
 
-A lot of my time was also spent on writing a full campaign exporter and a Roll20 -> FVTT converter which I might release at some point in the future. For now it's available in beta to my [Patreon](https://patreon.com/kakaroto) subscribers. 
+A lot of my time was also spent on writing a full campaign exporter and a Roll20 -> FVTT converter which I might release at some point in the future. For now it's available in beta to my Patreon subscribers. 
 
 There's a couple of bugfixes and some new features, but the FVTT support is the major take away from this version!
