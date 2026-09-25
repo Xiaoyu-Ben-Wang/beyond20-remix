@@ -42,12 +42,6 @@ function createOptionList() {
             )
         )
     );
-    const img = $("#donate").find("img");
-    img.attr({
-        "src": img.attr("src").replace("donate.png", "donate32.png"),
-        "width": 32,
-        "height": 32
-    });
     $("#openOptions").on('click', (ev) => {
         chrome.runtime.openOptionsPage();
     });

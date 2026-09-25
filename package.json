@@ -21,15 +21,15 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/kakaroto/Beyond20.git"
+        "url": "git+https://github.com/Xiaoyu-Ben-Wang/beyond20-remix.git"
     },
     "keywords": [],
     "author": "",
     "license": "GNU",
     "bugs": {
-        "url": "https://github.com/kakaroto/Beyond20/issues"
+        "url": "https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/issues"
     },
-    "homepage": "https://beyond20.here-for-more.info",
+    "homepage": "https://xiaoyu-ben-wang.github.io/beyond20-remix",
     "devDependencies": {
         "cross-var": "^1.1.0",
         "gulp": "^4.0.2",

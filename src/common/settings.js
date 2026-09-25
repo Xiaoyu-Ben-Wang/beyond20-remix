@@ -407,7 +407,7 @@ const options_list = {
         "description": "You can get rolls sent to Discord by enabling Discord Integration!\n" +
             "Click the link, follow the instructions and enter your secret key below.",
         "type": "link",
-        "default": "https://beyond20.here-for-more.info/discord",
+        "default": "https://xiaoyu-ben-wang.github.io/beyond20-remix/discord",
         "icon": "/images/discord-logo.png",
         "icon-height": "100%",
         "icon-width": "auto"
@@ -489,29 +489,6 @@ const options_list = {
         "default": null
     },
 
-    "donate": {
-        "short": "Buy rations (1 day) to feed my familiar",
-        "title": "Become a patron of the art of software development!",
-        "description": "If you wish to support my work on Beyond 20 or my other D&D related project, subscribe to my patreon " +
-            "or donate via paypal!\nI am grateful for your generosity!",
-        "type": "link",
-        "default": "https://beyond20.here-for-more.info/rations",
-        "icon": "/images/donate.png",
-        "icon-width": "64",
-        "icon-height": "64"
-    },
-    "donate-advanced": {
-        "short": "Buy rations (1 day) to feed my familiar",
-        "title": "Become a patron of the art of software development!",
-        "description": "If you wish to support my work on Beyond 20 or my other D&D related project, subscribe to my patreon " +
-            "or donate via paypal!\nI am grateful for your generosity!",
-        "type": "link",
-        "default": "https://beyond20.here-for-more.info/rations",
-        "icon": "/images/donate.png",
-        "icon-width": "64",
-        "icon-height": "64",
-        "advanced": true
-    }
 }
 
 const character_settings = {

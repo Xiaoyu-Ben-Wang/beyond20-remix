@@ -9,7 +9,6 @@ function createOptionList() {
                         "VTT and Character specific options will be available from their respective pages.",
         "type": "info"
     }));
-    options.append(createHTMLOptionEx("donate", options_list["donate"], true));
     options.append(
         E.li({ class: "list-group-item beyond20-option" },
             E.a({ id: "openOptions", class: "list-content", href: '#' },
@@ -17,12 +16,6 @@ function createOptionList() {
             )
         )
     );
-    const img = $("#donate").find("img");
-    img.attr({
-        "src": img.attr("src").replace("donate.png", "donate32.png"),
-        "width": 32,
-        "height": 32
-    });
     $("#openOptions").bind('click', (ev) => {
         chrome.runtime.openOptionsPage();
     });
