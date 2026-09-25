@@ -1,0 +1,492 @@
+/* ==========================================================================
+   Beyond20 Custom Remix — site stylesheet
+
+   Parchment and ink, with a d20 worked into the details. Everything here is
+   served from this site: the display font is self-hosted (see
+   /assets/fonts/OFL-Cinzel.txt) and the dice are inline SVG data URIs, so
+   loading a page makes no request to anyone else. There is no JavaScript.
+
+   Colours are defined once as tokens and redefined for dark mode, so the two
+   themes stay in step.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Cinzel";
+  src: url("../fonts/cinzel-latin.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --------------------------------------------------------------------------
+   Tokens — light: parchment and ink
+   -------------------------------------------------------------------------- */
+
+:root {
+  --parchment:       #f4ecdb;
+  --parchment-deep:  #e9dcc3;
+  --surface:         #fffdf7;
+  --ink:             #241c15;
+  --ink-soft:        #5f5142;
+  --ink-faint:       #8a7a66;
+  --rule:            #d6c6a8;
+  --rule-strong:     #bda87f;
+  --gold:            #9c7a24;
+  --gold-bright:     #c8a13c;
+  --crimson:         #96271f;
+  --crimson-deep:    #7a1d16;
+  --crimson-text:    #ffffff;
+  --header-bg:       #1d1611;
+  --header-ink:      #f2e7d2;
+  --header-ink-soft: #bda98c;
+  --code-bg:         #efe4cd;
+  --code-ink:        #4a3520;
+  --shadow:          0 1px 2px rgba(60, 40, 20, .08), 0 8px 24px rgba(60, 40, 20, .07);
+
+  --d20: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23000' stroke-width='5' stroke-linejoin='round'%3E%3Cpolygon points='50,4 93,27 93,73 50,96 7,73 7,27'/%3E%3Cpolygon points='50,4 93,73 7,73'/%3E%3Cpolygon points='7,27 93,27 50,96'/%3E%3C/g%3E%3C/svg%3E");
+
+  --wrap: 60rem;
+  --measure: 46rem;
+}
+
+/* Dark: the same room with the lanterns out. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --parchment:       #15110d;
+    --parchment-deep:  #1d1712;
+    --surface:         #1e1813;
+    --ink:             #ece1cd;
+    --ink-soft:        #b5a58d;
+    --ink-faint:       #8d7d68;
+    --rule:            #3a2f23;
+    --rule-strong:     #4d3f2e;
+    --gold:            #d3ab55;
+    --gold-bright:     #e3c274;
+    --crimson:         #c8483c;
+    --crimson-deep:    #a93a2f;
+    --crimson-text:    #1a1210;
+    --header-bg:       #0e0b09;
+    --header-ink:      #ece1cd;
+    --header-ink-soft: #9c8c76;
+    --code-bg:         #241d16;
+    --code-ink:        #e0cfae;
+    --shadow:          0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background-color: var(--parchment);
+  /* Faint paper grain, drawn with gradients so it costs no request. */
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(156, 122, 36, .07), transparent 42%),
+    radial-gradient(circle at 82% 78%, rgba(150, 39, 31, .05), transparent 46%);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--crimson);
+  color: var(--crimson-text);
+  padding: .6rem 1rem;
+  z-index: 10;
+}
+.skip-link:focus { left: 0; }
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+
+.site-header {
+  background: var(--header-bg);
+  color: var(--header-ink);
+  border-bottom: 3px solid var(--gold);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  flex-wrap: wrap;
+  padding-block: .85rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  text-decoration: none;
+  color: inherit;
+  margin-right: auto;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 9px;
+  box-shadow: 0 0 0 1px var(--gold), 0 2px 10px rgba(0, 0, 0, .45);
+}
+
+.brand-text { display: flex; flex-direction: column; line-height: 1.15; }
+
+.brand-title {
+  font-family: "Cinzel", Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: .04em;
+}
+
+.brand-sub {
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .22em;
+  color: var(--gold-bright);
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .15rem .35rem;
+}
+
+.site-nav a {
+  display: block;
+  padding: .4rem .7rem;
+  border-radius: 6px;
+  color: var(--header-ink-soft);
+  text-decoration: none;
+  font-size: .82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  border-bottom: 2px solid transparent;
+}
+
+.site-nav a:hover { color: var(--header-ink); background: rgba(255, 255, 255, .06); }
+
+.site-nav a.active {
+  color: var(--header-ink);
+  border-bottom-color: var(--gold-bright);
+}
+
+/* --------------------------------------------------------------------------
+   Hero — home page only
+   -------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--rule);
+  background:
+    linear-gradient(180deg, var(--parchment-deep), transparent 85%);
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  padding-block: 3.5rem 3rem;
+  max-width: 44rem;
+}
+
+/* The big d20, watermarked behind the hero. */
+.hero::after {
+  content: "";
+  position: absolute;
+  right: -3rem;
+  top: 50%;
+  width: 22rem;
+  height: 22rem;
+  transform: translateY(-50%) rotate(-12deg);
+  background-color: var(--gold);
+  opacity: .13;
+  -webkit-mask: var(--d20) center / contain no-repeat;
+  mask: var(--d20) center / contain no-repeat;
+  pointer-events: none;
+}
+
+.hero .eyebrow {
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .22em;
+  color: var(--gold);
+  margin: 0 0 .8rem;
+}
+
+.hero h1 {
+  font-family: "Cinzel", Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(2.1rem, 5.2vw, 3.3rem);
+  line-height: 1.1;
+  letter-spacing: .01em;
+  margin: 0 0 1rem;
+  border: 0;
+  padding: 0;
+}
+
+.hero p {
+  font-size: 1.12rem;
+  color: var(--ink-soft);
+  margin: 0 0 1.8rem;
+  max-width: 34rem;
+}
+
+.hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .7rem 1.3rem;
+  border-radius: 8px;
+  font-weight: 650;
+  font-size: .95rem;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform .08s ease, background-color .15s ease, border-color .15s ease;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+  background: var(--crimson);
+  color: var(--crimson-text);
+  box-shadow: var(--shadow);
+}
+.btn-primary:hover { background: var(--crimson-deep); }
+
+.btn-ghost {
+  border-color: var(--rule-strong);
+  color: var(--ink);
+  background: var(--surface);
+}
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Header-sized ghost button. */
+.site-header .btn-ghost {
+  background: transparent;
+  border-color: rgba(211, 171, 85, .5);
+  color: var(--header-ink);
+  padding: .45rem .9rem;
+  font-size: .82rem;
+}
+.site-header .btn-ghost:hover { border-color: var(--gold-bright); color: var(--gold-bright); }
+
+/* --------------------------------------------------------------------------
+   Content
+   -------------------------------------------------------------------------- */
+
+main { padding-block: 2.5rem 4rem; }
+
+.prose { max-width: var(--measure); }
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  font-family: "Cinzel", Georgia, serif;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: .01em;
+  scroll-margin-top: 5rem;
+}
+
+.prose h1 { font-size: 2.1rem; margin: 0 0 1.4rem; }
+
+.prose h2 {
+  font-size: 1.5rem;
+  margin: 3rem 0 1.1rem;
+  padding-bottom: .55rem;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+
+/* A small gold d20 sitting on the rule under each h2. */
+.prose h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -9px;
+  width: 17px;
+  height: 17px;
+  background-color: var(--gold);
+  -webkit-mask: var(--d20) center / contain no-repeat;
+  mask: var(--d20) center / contain no-repeat;
+}
+
+.prose h3 { font-size: 1.16rem; margin: 2.2rem 0 .7rem; }
+.prose h4 { font-size: 1rem; margin: 1.8rem 0 .5rem; letter-spacing: .04em; }
+
+.prose p { margin: 0 0 1.15rem; }
+
+.prose a {
+  color: var(--crimson);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.prose a:hover { color: var(--gold); text-decoration-thickness: 2px; }
+
+.prose strong { font-weight: 680; color: var(--ink); }
+
+.prose ul, .prose ol { margin: 0 0 1.15rem; padding-left: 1.4rem; }
+.prose li { margin-bottom: .45rem; }
+.prose li::marker { color: var(--gold); }
+
+.prose hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule-strong), transparent);
+  margin: 2.5rem 0;
+}
+
+/* Images: framed like a plate in a rulebook. */
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid var(--rule);
+  box-shadow: var(--shadow);
+  background: var(--surface);
+}
+.prose p > img:only-child { display: block; }
+
+.prose iframe {
+  max-width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: #000;
+}
+
+/* Code */
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .88em;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  padding: .12em .38em;
+  border-radius: 5px;
+  border: 1px solid var(--rule);
+}
+
+.prose pre {
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--gold);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  margin: 0 0 1.3rem;
+}
+.prose pre code { background: none; border: 0; padding: 0; font-size: .86rem; color: var(--code-ink); }
+
+/* Quotes and callouts */
+.prose blockquote {
+  margin: 0 0 1.3rem;
+  padding: .9rem 1.2rem;
+  background: var(--surface);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink-soft);
+  box-shadow: var(--shadow);
+}
+.prose blockquote p:last-child { margin-bottom: 0; }
+
+/* Tables — a ledger from the character sheet. */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.5rem;
+  font-size: .94rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.prose thead th {
+  background: var(--header-bg);
+  color: var(--header-ink);
+  font-family: "Cinzel", Georgia, serif;
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.prose th, .prose td {
+  padding: .7rem .9rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+
+.prose tbody tr:nth-child(even) { background: var(--parchment-deep); }
+.prose tbody tr:last-child td { border-bottom: 0; }
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+
+.site-footer {
+  background: var(--header-bg);
+  color: var(--header-ink-soft);
+  border-top: 3px solid var(--gold);
+  padding-block: 2.5rem;
+  font-size: .9rem;
+}
+
+.site-footer p { margin: 0 0 .8rem; max-width: 52rem; }
+.site-footer a { color: var(--header-ink); text-decoration: underline; text-underline-offset: 2px; }
+.site-footer a:hover { color: var(--gold-bright); }
+.site-footer .fine { font-size: .82rem; color: var(--ink-faint); }
+
+/* --------------------------------------------------------------------------
+   Small screens
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 46rem) {
+  body { font-size: 16px; }
+  .header-inner { padding-block: .7rem; }
+  .brand-mark { width: 34px; height: 34px; }
+  .brand-title { font-size: 1.1rem; }
+  .site-nav { order: 3; width: 100%; }
+  .site-nav a { padding: .35rem .5rem; font-size: .74rem; letter-spacing: .06em; }
+  .hero-inner { padding-block: 2.25rem 2rem; }
+  .hero::after { right: -6rem; width: 16rem; height: 16rem; opacity: .1; }
+  .prose h2 { margin-top: 2.25rem; }
+  .prose table { font-size: .88rem; }
+  .prose th, .prose td { padding: .55rem .6rem; }
+}
+
+@media print {
+  .site-header, .hero::after, .site-footer { display: none; }
+  body { background: #fff; color: #000; }
+}

@@ -2,23 +2,19 @@
 layout: default
 ---
 
-<style type="text/css" media="screen">
-  .container {
-    margin: 10px auto;
-    max-width: 600px;
-    text-align: center;
-  }
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-</style>
+<h1>404 &mdash; this page rolled a natural 1</h1>
 
-<div class="container">
-  <h1>404</h1>
+<p>The page you asked for is not here. It may have been renamed, or the link that brought you
+here may be wrong.</p>
 
-  <p><strong>Page not found :(</strong></p>
-  <p>The requested page could not be found.</p>
-</div>
+<p>Try one of these instead:</p>
+
+<ul>
+  <li><a href="{{ '/' | relative_url }}">Home</a></li>
+  <li><a href="{{ '/install' | relative_url }}">Install</a></li>
+  <li><a href="{{ '/features' | relative_url }}">Features</a></li>
+  <li><a href="{{ '/faq' | relative_url }}">FAQ</a></li>
+</ul>
+
+<p>If you followed a link from somewhere on this site and it landed you here, please
+<a href="{{ site.github.repository_url }}/issues">let me know</a>.</p>

@@ -20,8 +20,9 @@ upstream_name: Beyond20
 upstream_url: https://github.com/kakaroto/Beyond20
 
 # Build settings
+# No theme: the site's own stylesheet is docs/assets/css/remix.css, loaded by
+# the layout. It is self-contained, so there is no theme gem to keep in step.
 markdown: kramdown
-theme: jekyll-theme-slate
 plugins:
   - jekyll-feed
   - jekyll-seo-tag

@@ -16,3 +16,6 @@ dist/
 audio/
 **opus**
 releases/
+
+# Local design previews (not part of the published site)
+preview/
