@@ -176,6 +176,7 @@ body {
 
 .site-nav a {
   display: block;
+  position: relative;
   padding: .4rem .7rem;
   border-radius: 6px;
   color: var(--header-ink-soft);
@@ -189,9 +190,19 @@ body {
 
 .site-nav a:hover { color: var(--header-ink); background: rgba(255, 255, 255, .06); }
 
-.site-nav a.active {
-  color: var(--header-ink);
-  border-bottom-color: var(--gold-bright);
+.site-nav a.active { color: var(--header-ink); }
+
+/* The active marker is a drawn line rather than a border-bottom, because a
+   border on a rounded box curves up around the corners. Sitting it in the
+   transparent border's space keeps every item the same height. */
+.site-nav a.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: var(--gold-bright);
 }
 
 /* --------------------------------------------------------------------------
@@ -399,7 +410,9 @@ main { padding-block: 2.5rem 4rem; }
   background: var(--code-bg);
   border: 1px solid var(--rule);
   border-left: 3px solid var(--gold);
-  border-radius: 8px;
+  /* Square on the left so the gold edge is a straight line, the way the
+     blockquote's is; rounded corners would bend it. */
+  border-radius: 0 8px 8px 0;
   padding: 1rem 1.1rem;
   overflow-x: auto;
   margin: 0 0 1.3rem;
