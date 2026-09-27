@@ -1,8 +1,8 @@
 ## Beyond20 Custom Remix has just been installed or updated
 
-Congratulations! Beyond20 Custom Remix is now at version 2.21.1. It is based on Beyond20 v2.21.0 and adds the Roll20 quick roll launcher on top of it.
+Beyond20 Custom Remix is now at version 2.21.1. It is based on Beyond20 v2.21.0. It adds the Roll20 quick roll launcher on top.
 
-Have a look at the [Features](features) page to see what it can do, and the [Install](install) page if you are setting it up on another browser.
+Look at the [demo](demo) to see what it can do. See the [Install](install) page if you are setting it up on another browser.
 
 * [New in this fork](#new-in-this-fork)
 * [Known issues](#known-issues)
@@ -13,9 +13,9 @@ Have a look at the [Features](features) page to see what it can do, and the [Ins
 
 ## Roll20 Quick Roll Launcher
 
-Roll a skill, saving throw or ability check from the Roll20 page, without switching tabs. A floating button on the Roll20 page shows your D&D Beyond character's portrait; click it, pick a roll, and it is made on your real D&D Beyond character sheet so every class feature, effect and custom modifier applies. The result appears in the Roll20 chat as usual, and your D&D Beyond tab stays in the background.
+You can roll a skill, saving throw or ability check from the Roll20 page. You do not have to switch tabs. A floating button appears on the Roll20 page. It shows your D&D Beyond character's portrait. Click it and pick a roll. The roll happens on your real D&D Beyond character sheet, so every class feature, effect and custom modifier applies. The result appears in the Roll20 chat as usual. Your D&D Beyond tab stays in the background.
 
-It remembers which character you play in each Roll20 game, supports several open sheets, and has light and dark themes with a choice of text and highlight colour. If you would rather not have it, untick **Show the quick roll launcher in Roll20** in the extension's options under the VTT tab.
+The launcher remembers which character you play in each Roll20 game. It supports several open sheets. It has light and dark themes, and a choice of colour for the text and highlights. If you do not want it, untick **Show the quick roll launcher in Roll20** in the extension's options, under the VTT tab.
 
 # Known issues
 
@@ -26,7 +26,7 @@ It remembers which character you play in each Roll20 game, supports several open
 v2.21.1 — Beyond20 Custom Remix
 ===
 
-The first release of this fork. It is Beyond20 v2.21.0 with the Roll20 quick roll launcher added, and with the fork's own name and version numbering so that it can sit alongside the official Beyond20 without being confused for it.
+This is the first release of this fork. It is Beyond20 v2.21.0 with the Roll20 quick roll launcher added. It uses the fork's own name and version numbers, so it can sit next to the official Beyond20 without being confused with it.
 
 Nothing was removed from Beyond20. Every roll, every supported VTT and every setting works exactly as it does upstream.
 

@@ -47,7 +47,7 @@
         <p>{{ page.hero_text }}</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="{{ '/install' | relative_url }}">Install the extension</a>
-          <a class="btn btn-ghost" href="{{ '/features' | relative_url }}">See what it does</a>
+          <a class="btn btn-ghost" href="{{ '/demo' | relative_url }}">See what it does</a>
         </div>
       </div>
     </section>
@@ -55,7 +55,7 @@
 
     <main id="content">
       <div class="wrap">
-        <article class="prose">
+        <article class="prose{% if page.wide %} prose-wide{% endif %}">
           {{ content }}
         </article>
       </div>
@@ -77,9 +77,7 @@
           <a href="{{ site.github.repository_url }}/issues">Report an issue</a>
         </p>
         <p class="fine">
-          Set in Cinzel and your system's sans-serif. No cookies, no analytics and no tracking — the
-          only script on the page is search-engine metadata, and it never runs. Published with
-          <a href="https://pages.github.com">GitHub Pages</a>.
+          Published with <a href="https://pages.github.com">GitHub Pages</a>.
         </p>
       </div>
     </footer>

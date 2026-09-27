@@ -1,0 +1,874 @@
+<style>
+/* ==========================================================================
+   Interactive demo of the Roll20 quick roll launcher.
+
+   The launcher and panel below are a reproduction of the real one in
+   src/roll20/quick-roll.js: the same element structure, the same geometry
+   (56px from the left, 72px up from the bottom, a 42px round launcher, a
+   272px panel above it), the same palette, the same strings, and the same
+   default dark-and-green appearance. Only the page it sits on is invented.
+
+   Everything is scoped to .demo-stage so none of it leaks into the site.
+   ========================================================================== */
+
+.demo-lede { font-size: 1.05rem; color: var(--ink-soft); }
+
+.demo-stage {
+  position: relative;
+  margin: 1.5rem 0 1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--rule);
+  /* A definite height, so the panel's percentage max-height has something to
+     resolve against. Without it the panel sizes to its content and the
+     stage's overflow would clip the top off. */
+  height: clamp(26rem, 62vh, 34rem);
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- the made-up virtual tabletop ------------------------------------- */
+
+.demo-chrome {
+  background: #15161a;
+  color: #d8dade;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-bar {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .55rem .8rem;
+  background: #101114;
+  border-bottom: 1px solid #2a2c31;
+  font-size: .8rem;
+}
+
+.demo-dots { display: flex; gap: .3rem; }
+.demo-dots i { width: 9px; height: 9px; border-radius: 50%; background: #3a3d42; display: block; }
+.demo-dots i:first-child { background: #c8503f; }
+.demo-dots i:nth-child(2) { background: #c9a227; }
+.demo-dots i:nth-child(3) { background: #6f9e4a; }
+
+.demo-title { color: #9aa0a6; font-size: .78rem; }
+
+.demo-flag {
+  margin-left: auto;
+  font-size: .64rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #e0b45c;
+  border: 1px solid rgba(224, 180, 92, .45);
+  border-radius: 4px;
+  padding: .12rem .4rem;
+  white-space: nowrap;
+}
+
+.demo-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.demo-map {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  background-color: #1b1d21;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .045) 1px, transparent 1px),
+    radial-gradient(circle at 30% 35%, rgba(200, 80, 63, .07), transparent 55%);
+  background-size: 40px 40px, 40px 40px, 100% 100%;
+  border-right: 1px solid #2a2c31;
+}
+
+.demo-token {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: .9rem;
+  color: #12141a;
+  border: 2px solid rgba(255, 255, 255, .5);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .5);
+}
+.demo-token--hero { left: 30%; top: 40%; background: #96bf6b; }
+.demo-token--ally { left: 47%; top: 52%; background: #6fb3e8; }
+.demo-token--foe  { left: 68%; top: 28%; background: #c8503f; border-color: rgba(255, 255, 255, .35); }
+
+.demo-chat {
+  width: 17rem;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #1c1d1f;
+}
+
+.demo-chat-head {
+  padding: .5rem .7rem;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #9aa0a6;
+  border-bottom: 1px solid #2a2c31;
+}
+
+.demo-chat-log {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: .6rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  scroll-behavior: smooth;
+}
+
+.demo-say { font-size: .8rem; color: #b9bec4; }
+.demo-say b { color: #e6e7e8; }
+
+.demo-roll {
+  border: 1px solid #34373c;
+  border-top: 3px solid #96bf6b;
+  border-radius: 6px;
+  background: #232528;
+  overflow: hidden;
+  animation: demo-roll-in .22s ease-out;
+}
+@keyframes demo-roll-in { from { opacity: 0; transform: translateY(6px); } }
+
+.demo-roll-speaker {
+  padding: .35rem .6rem;
+  font-size: .72rem;
+  font-weight: 700;
+  color: #e6e7e8;
+  background: #2c2f34;
+}
+
+.demo-roll-title {
+  padding: .4rem .6rem 0;
+  font-size: .82rem;
+  font-weight: 600;
+  color: #e6e7e8;
+}
+
+.demo-roll-math {
+  display: flex;
+  align-items: baseline;
+  gap: .35rem;
+  padding: .35rem .6rem .6rem;
+  font-size: .82rem;
+  color: #9aa0a6;
+}
+
+.demo-roll-die {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #e6e7e8;
+}
+.demo-roll-die--high { color: #96bf6b; }
+.demo-roll-die--low  { color: #e0736a; }
+
+.demo-roll-total { font-weight: 700; color: #e6e7e8; font-size: 1rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-roll { animation: none; }
+  .demo-chat-log { scroll-behavior: auto; }
+}
+
+/* --- the reproduced launcher and panel -------------------------------- */
+
+.beyond20-qr-launcher,
+.beyond20-qr-panel {
+  /* Dark is the base palette in the real extension. */
+  --b20-qr-bg: #1c1d1f;
+  --b20-qr-border: #3a3d42;
+  --b20-qr-text: #e6e7e8;
+  --b20-qr-dim: #9aa0a6;
+  --b20-qr-raised-1: #2c2f34;
+  --b20-qr-raised-2: #232528;
+  --b20-qr-hover: rgba(255, 255, 255, .08);
+  --b20-qr-overlay: rgba(18, 19, 21, .94);
+  /* Green is the extension's default accent. */
+  --b20-qr-accent: #96bf6b;
+  --b20-qr-accent-soft: rgba(150, 191, 107, .16);
+  --b20-qr-accent-bright: #b3d78e;
+  --b20-qr-label: #e6e7e8;
+  --b20-qr-tabs-h: 30px;
+}
+
+/* The launcher: a 42px round button, 56px in from the left and 72px up,
+   showing the extension icon rather than the portrait. */
+.beyond20-qr-launcher {
+  position: absolute;
+  left: 56px;
+  bottom: 72px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 3;
+  background: var(--b20-qr-raised-1);
+  border: 2px solid var(--b20-qr-accent);
+  transition: transform .16s cubic-bezier(.2, .9, .3, 1.4), box-shadow .16s ease, border-color .16s ease;
+}
+
+.beyond20-qr-launcher img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.beyond20-qr-launcher:hover {
+  transform: scale(1.08);
+  border-color: var(--b20-qr-accent-bright);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .45), 0 0 0 4px var(--b20-qr-accent-soft);
+}
+.beyond20-qr-launcher:active { transform: scale(.94); }
+
+.beyond20-qr-launcher.beyond20-qr-busy img { animation: beyond20-qr-pulse 1s ease-in-out infinite; }
+@keyframes beyond20-qr-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+@media (prefers-reduced-motion: reduce) {
+  .beyond20-qr-launcher.beyond20-qr-busy img { animation: none; opacity: .55; }
+}
+
+/* A one-time nudge towards the button, removed on first open. */
+.beyond20-qr-launcher.beyond20-qr-hint { animation: beyond20-qr-hint 2.4s ease-in-out 3; }
+@keyframes beyond20-qr-hint {
+  0%, 100% { box-shadow: 0 6px 16px rgba(0, 0, 0, .45); }
+  50% { box-shadow: 0 6px 16px rgba(0, 0, 0, .45), 0 0 0 7px var(--b20-qr-accent-soft); }
+}
+@media (prefers-reduced-motion: reduce) { .beyond20-qr-launcher.beyond20-qr-hint { animation: none; } }
+
+/* The panel: 272px wide, sitting 124px up (72 + 42 + 10). */
+.beyond20-qr-panel {
+  position: absolute;
+  left: 56px;
+  bottom: 124px;
+  width: 272px;
+  /* The stage's height less the 124px anchor and a little breathing room. */
+  max-height: calc(100% - 140px);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 4;
+  border-radius: 10px;
+  border: 1px solid var(--b20-qr-border);
+  background: var(--b20-qr-bg);
+  color: var(--b20-qr-text);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .5);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: left;
+  transform-origin: bottom left;
+}
+
+.beyond20-qr-panel.beyond20-qr-open { display: flex; animation: beyond20-qr-in .16s ease-out; }
+@keyframes beyond20-qr-in { from { opacity: 0; transform: scale(.94); } }
+
+.beyond20-qr-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 8px;
+  background: linear-gradient(var(--b20-qr-raised-1), var(--b20-qr-raised-2));
+  border-bottom: 1px solid var(--b20-qr-border);
+}
+
+.beyond20-qr-header > img {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--b20-qr-border);
+  flex: 0 0 auto;
+}
+
+.beyond20-qr-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 700;
+  color: var(--b20-qr-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.beyond20-qr-header > button {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--b20-qr-dim);
+}
+.beyond20-qr-header > button:hover { color: var(--b20-qr-text); background: var(--b20-qr-hover); }
+.beyond20-qr-header > button[hidden] { display: none; }
+
+.beyond20-qr-switch.beyond20-qr-active { color: var(--b20-qr-accent); background: var(--b20-qr-hover); }
+
+.beyond20-qr-char-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px;
+  max-height: 156px;
+  overflow-y: auto;
+  background: var(--b20-qr-raised-1);
+  border-bottom: 1px solid var(--b20-qr-border);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, .35);
+}
+.beyond20-qr-char-menu[hidden] { display: none; }
+
+.beyond20-qr-char {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 7px 3px 3px;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  background: transparent;
+  color: var(--b20-qr-text);
+}
+.beyond20-qr-char:hover { background: var(--b20-qr-hover); }
+.beyond20-qr-char img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+.beyond20-qr-char.beyond20-qr-active {
+  background: var(--b20-qr-accent-soft);
+  color: var(--b20-qr-accent);
+}
+
+.beyond20-qr-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.beyond20-qr-group {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  column-gap: 6px;
+  margin-bottom: 4px;
+}
+
+.beyond20-qr-group-label {
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--b20-qr-dim);
+  padding-top: 4px;
+}
+
+.beyond20-qr-items { display: flex; flex-direction: column; }
+.beyond20-qr-group--flat > .beyond20-qr-items { grid-column: 2; }
+
+.beyond20-qr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  background: transparent;
+  color: var(--b20-qr-label);
+}
+.beyond20-qr-row:hover,
+.beyond20-qr-row:focus-visible {
+  background: var(--b20-qr-accent-soft);
+  box-shadow: inset 2px 0 0 0 var(--b20-qr-accent);
+  outline: none;
+}
+
+.beyond20-qr-mod {
+  min-width: 24px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--b20-qr-accent-soft);
+  color: var(--b20-qr-accent);
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.beyond20-qr-empty { padding: 10px 6px; color: var(--b20-qr-dim); font-size: 12px; }
+
+.beyond20-qr-status {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 4px 9px;
+  background: var(--b20-qr-overlay);
+  border-top: 1px solid var(--b20-qr-border);
+  color: var(--b20-qr-dim);
+  font-size: 11px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+.beyond20-qr-panel.beyond20-qr-has-tabs .beyond20-qr-status { bottom: var(--b20-qr-tabs-h); }
+.beyond20-qr-status:not(:empty) { opacity: 1; }
+
+.beyond20-qr-tabs { display: flex; flex: 0 0 auto; }
+
+.beyond20-qr-tabs > button {
+  flex: 1 1 0;
+  height: var(--b20-qr-tabs-h);
+  border: 0;
+  border-top: 2px solid var(--b20-qr-border);
+  background: transparent;
+  color: var(--b20-qr-dim);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.beyond20-qr-tabs > button:hover { color: var(--b20-qr-text); }
+.beyond20-qr-tabs > button[aria-selected="true"] {
+  color: var(--b20-qr-accent);
+  border-top-color: var(--b20-qr-accent);
+}
+
+@media (max-width: 46rem) {
+  .demo-stage { height: auto; }
+  .demo-body { flex-direction: column; }
+  .demo-map { min-height: 14rem; border-right: 0; border-bottom: 1px solid #2a2c31; }
+  .demo-chat { width: auto; height: 16rem; }
+  .beyond20-qr-launcher { left: 12px; bottom: 12px; }
+  /* The stage has no definite height here, so cap against the viewport. */
+  .beyond20-qr-panel { left: 12px; right: 12px; width: auto; bottom: 64px; max-height: min(65vh, 22rem); }
+}
+</style>
+
+<p class="demo-lede">
+  This page shows the quick roll launcher on a pretend tabletop.
+  Click the d20 button in the bottom-left corner to open the panel.
+  Then click a skill, save or check to roll it. Nothing here touches your real character.
+</p>
+
+<div class="demo-stage" id="demo-stage">
+  <div class="demo-chrome">
+    <div class="demo-bar">
+      <span class="demo-dots"><i></i><i></i><i></i></span>
+      <span class="demo-title">Ye Olde Tabletop</span>
+      <span class="demo-flag">Simulation</span>
+    </div>
+
+    <div class="demo-body">
+      <div class="demo-map">
+        <span class="demo-token demo-token--hero" id="demo-token-hero">A</span>
+        <span class="demo-token demo-token--ally">L</span>
+        <span class="demo-token demo-token--foe">?</span>
+      </div>
+
+      <aside class="demo-chat">
+        <div class="demo-chat-head">Chat</div>
+        <div class="demo-chat-log" id="demo-log"></div>
+      </aside>
+    </div>
+  </div>
+
+  <button type="button" class="beyond20-qr-launcher" id="beyond20-quick-roll-launcher" title="Beyond20 quick rolls" aria-label="Beyond20 quick rolls">
+    <img src="images/icon128.png" alt="">
+  </button>
+
+  <div class="beyond20-qr-panel beyond20-qr-has-tabs" id="beyond20-quick-roll-panel" tabindex="-1" role="dialog" aria-label="Beyond20 quick rolls">
+    <div class="beyond20-qr-header" id="qr-header">
+      <img id="qr-portrait" src="images/icon128.png" alt="">
+      <span class="beyond20-qr-name" id="qr-name">D&amp;D Beyond</span>
+      <button type="button" class="beyond20-qr-switch" id="qr-switch" title="Switch character (3 sheets open)" hidden>&#8646;</button>
+      <button type="button" class="beyond20-qr-refresh" id="qr-refresh" title="Refresh">&#8635;</button>
+      <button type="button" class="beyond20-qr-close" id="qr-close" title="Close">&#10005;</button>
+      <div class="beyond20-qr-char-menu" id="qr-menu" hidden></div>
+    </div>
+    <div class="beyond20-qr-body" id="qr-body"></div>
+    <div class="beyond20-qr-status" id="qr-status"></div>
+    <div class="beyond20-qr-tabs" id="qr-tabs">
+      <button type="button" data-tab="skills" aria-selected="true">Skills</button>
+      <button type="button" data-tab="saves" aria-selected="false">Saves</button>
+      <button type="button" data-tab="checks" aria-selected="false">Checks</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var ABILITY_ORDER = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
+  var ABILITY_NAMES = { STR: "Strength", DEX: "Dexterity", CON: "Constitution", INT: "Intelligence", WIS: "Wisdom", CHA: "Charisma" };
+  var SKILLS = [
+    ["Acrobatics", "DEX"], ["Animal Handling", "WIS"], ["Arcana", "INT"], ["Athletics", "STR"],
+    ["Deception", "CHA"], ["History", "INT"], ["Insight", "WIS"], ["Intimidation", "CHA"],
+    ["Investigation", "INT"], ["Medicine", "WIS"], ["Nature", "INT"], ["Perception", "WIS"],
+    ["Performance", "CHA"], ["Persuasion", "CHA"], ["Religion", "INT"], ["Sleight of Hand", "DEX"],
+    ["Stealth", "DEX"], ["Survival", "WIS"]
+  ];
+  function sign(n) { return (n >= 0 ? "+" : "") + n; }
+
+  // Abilities and saving-throw/skill proficiencies, as a sheet would hold them.
+  var CHARACTERS = [
+    {
+      name: "Alto the Fighter",
+      c1: "#8c5a2b", c2: "#3d2a16",
+      abilities: { STR: 16, DEX: 14, CON: 16, INT: 10, WIS: 12, CHA: 8 },
+      saves: ["STR", "CON"],
+      skills: ["Athletics", "Intimidation", "Perception", "Survival"]
+    },
+    {
+      name: "Lyra Dawnweaver",
+      c1: "#3f5f8c", c2: "#1b2438",
+      abilities: { STR: 8, DEX: 15, CON: 12, INT: 17, WIS: 13, CHA: 10 },
+      saves: ["INT", "WIS"],
+      skills: ["Arcana", "History", "Investigation", "Insight", "Perception"]
+    },
+    {
+      name: "Pip Quickfingers",
+      c1: "#4a7a4a", c2: "#1d2f1d",
+      abilities: { STR: 10, DEX: 18, CON: 14, INT: 12, WIS: 12, CHA: 13 },
+      saves: ["DEX", "INT"],
+      skills: ["Acrobatics", "Deception", "Investigation", "Perception", "Sleight of Hand", "Stealth"]
+    }
+  ];
+
+  var PROFICIENCY = 3;
+
+  CHARACTERS.forEach(function (ch) {
+    ch.avatar = portrait(ch);
+    ch.mod = {};
+    ABILITY_ORDER.forEach(function (a) {
+      var base = Math.floor((ch.abilities[a] - 10) / 2);
+      ch.mod[a] = base;
+      ch["saveMod_" + a] = base + (ch.saves.indexOf(a) >= 0 ? PROFICIENCY : 0);
+    });
+    ch.skillMod = {};
+    SKILLS.forEach(function (s) {
+      var ability = s[1];
+      // Pip is the skill monkey: expertise in the two he is best at.
+      var bonus = PROFICIENCY;
+      if (ch.name === "Pip Quickfingers" && (s[0] === "Stealth" || s[0] === "Sleight of Hand")) bonus = PROFICIENCY * 2;
+      ch.skillMod[s[0]] = ch.mod[ability] + (ch.skills.indexOf(s[0]) >= 0 ? bonus : 0);
+    });
+  });
+
+  function portrait(ch) {
+    var svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>"
+      + "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>"
+      + "<stop offset='0' stop-color='" + ch.c1 + "'/><stop offset='1' stop-color='" + ch.c2 + "'/>"
+      + "</linearGradient></defs>"
+      + "<rect width='64' height='64' fill='url(#g)'/>"
+      + "<circle cx='32' cy='25' r='11' fill='rgba(255,255,255,.82)'/>"
+      + "<path d='M9 62c0-13 10-20 23-20s23 7 23 20z' fill='rgba(255,255,255,.82)'/>"
+      + "</svg>";
+    return "data:image/svg+xml," + encodeURIComponent(svg);
+  }
+
+  var launcher = document.getElementById("beyond20-quick-roll-launcher");
+  var panel = document.getElementById("beyond20-quick-roll-panel");
+  var body = document.getElementById("qr-body");
+  var statusEl = document.getElementById("qr-status");
+  var nameEl = document.getElementById("qr-name");
+  var portraitEl = document.getElementById("qr-portrait");
+  var menuEl = document.getElementById("qr-menu");
+  var switchEl = document.getElementById("qr-switch");
+  var tabsEl = document.getElementById("qr-tabs");
+  var logEl = document.getElementById("demo-log");
+  var tokenEl = document.getElementById("demo-token-hero");
+
+  var current = 0;
+  var tab = "skills";
+  var open = false;
+  var busy = false;
+  var hintShown = true;
+
+  function character() { return CHARACTERS[current]; }
+
+  /* ---- the tabletop's chat ------------------------------------------- */
+
+  function say(who, text) {
+    var el = document.createElement("div");
+    el.className = "demo-say";
+    var b = document.createElement("b");
+    b.textContent = who + ": ";
+    el.appendChild(b);
+    el.appendChild(document.createTextNode(text));
+    logEl.appendChild(el);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function chatRoll(ch, label, modifier) {
+    var die = 1 + Math.floor(Math.random() * 20);
+    var total = die + modifier;
+
+    var wrap = document.createElement("div");
+    wrap.className = "demo-roll";
+
+    var speaker = document.createElement("div");
+    speaker.className = "demo-roll-speaker";
+    speaker.textContent = ch.name;
+
+    var title = document.createElement("div");
+    title.className = "demo-roll-title";
+    title.textContent = label;
+
+    var math = document.createElement("div");
+    math.className = "demo-roll-math";
+
+    var dieEl = document.createElement("span");
+    dieEl.className = "demo-roll-die" + (die === 20 ? " demo-roll-die--high" : die === 1 ? " demo-roll-die--low" : "");
+    dieEl.textContent = String(die);
+
+    math.appendChild(dieEl);
+    math.appendChild(document.createTextNode(" " + sign(modifier) + " = "));
+
+    var totalEl = document.createElement("span");
+    totalEl.className = "demo-roll-total";
+    totalEl.textContent = String(total);
+    math.appendChild(totalEl);
+
+    wrap.appendChild(speaker);
+    wrap.appendChild(title);
+    wrap.appendChild(math);
+    logEl.appendChild(wrap);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  /* ---- panel rendering ------------------------------------------------ */
+
+  function rowsFor() {
+    var ch = character();
+    if (tab === "skills") {
+      var byAbility = {};
+      SKILLS.forEach(function (s) { (byAbility[s[1]] = byAbility[s[1]] || []).push(s[0]); });
+      return ABILITY_ORDER
+        .filter(function (a) { return byAbility[a] && byAbility[a].length; })
+        .map(function (a) {
+          return { group: a, rows: byAbility[a].map(function (name) {
+            return { label: name, name: name, rollType: "skill", modifier: ch.skillMod[name] };
+          }) };
+        });
+    }
+    if (tab === "saves") {
+      return [{ group: null, rows: ABILITY_ORDER.map(function (a) {
+        return { label: ABILITY_NAMES[a], name: a, rollType: "saving-throw", modifier: ch["saveMod_" + a] };
+      }) }];
+    }
+    return [{ group: null, rows: ABILITY_ORDER.map(function (a) {
+      return { label: ABILITY_NAMES[a], name: a, rollType: "ability", modifier: ch.mod[a] };
+    }) }];
+  }
+
+  function renderBody() {
+    body.textContent = "";
+    var blocks = rowsFor();
+    var any = false;
+
+    blocks.forEach(function (block) {
+      if (!block.rows.length) return;
+      any = true;
+      var group = document.createElement("div");
+      group.className = "beyond20-qr-group" + (block.group ? "" : " beyond20-qr-group--flat");
+
+      if (block.group) {
+        var gl = document.createElement("div");
+        gl.className = "beyond20-qr-group-label";
+        gl.textContent = block.group;
+        group.appendChild(gl);
+      }
+
+      var items = document.createElement("div");
+      items.className = "beyond20-qr-items";
+
+      block.rows.forEach(function (row) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "beyond20-qr-row";
+        button.title = "Roll " + row.label;
+
+        var label = document.createElement("span");
+        label.textContent = row.label;
+
+        var mod = document.createElement("span");
+        mod.className = "beyond20-qr-mod";
+        mod.textContent = sign(row.modifier);
+
+        button.appendChild(label);
+        button.appendChild(mod);
+        button.addEventListener("click", function () {
+          doRoll(character(), row.label, row.modifier);
+        });
+        items.appendChild(button);
+      });
+
+      group.appendChild(items);
+      body.appendChild(group);
+    });
+
+    if (!any) {
+      var empty = document.createElement("div");
+      empty.className = "beyond20-qr-empty";
+      empty.textContent = "Nothing to roll in this section.";
+      body.appendChild(empty);
+    }
+  }
+
+  function renderHeader() {
+    var ch = character();
+    nameEl.textContent = ch.name;
+    portraitEl.src = ch.avatar;
+    tokenEl.textContent = ch.name.charAt(0);
+    switchEl.hidden = CHARACTERS.length < 2;
+    switchEl.title = "Switch character (" + CHARACTERS.length + " sheets open)";
+  }
+
+  function renderMenu() {
+    menuEl.textContent = "";
+    CHARACTERS.forEach(function (ch, i) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "beyond20-qr-char" + (i === current ? " beyond20-qr-active" : "");
+
+      var img = document.createElement("img");
+      img.src = ch.avatar;
+      img.alt = "";
+
+      var span = document.createElement("span");
+      span.textContent = ch.name || "unnamed";
+
+      button.appendChild(img);
+      button.appendChild(span);
+      button.addEventListener("click", function () {
+        current = i;
+        menuEl.hidden = true;
+        switchEl.classList.remove("beyond20-qr-active");
+        renderHeader();
+        renderBody();
+      });
+      menuEl.appendChild(button);
+    });
+  }
+
+  function setStatus(text) { statusEl.textContent = text || ""; }
+
+  /* ---- rolling -------------------------------------------------------- */
+
+  function doRoll(ch, label, modifier) {
+    if (busy) { setStatus("Another roll is still in progress."); return; }
+    busy = true;
+    launcher.classList.add("beyond20-qr-busy");
+    setStatus("Rolling…");
+
+    window.setTimeout(function () {
+      chatRoll(ch, label, modifier);
+      busy = false;
+      launcher.classList.remove("beyond20-qr-busy");
+      setStatus("");
+    }, 650);
+  }
+
+  /* ---- open and close ------------------------------------------------- */
+
+  function openPanel() {
+    open = true;
+    panel.classList.add("beyond20-qr-open");
+    if (hintShown) { hintShown = false; launcher.classList.remove("beyond20-qr-hint"); }
+    setStatus("Reading your D&D Beyond character…");
+    renderHeader();
+    renderBody();
+    window.setTimeout(function () { if (open) setStatus(""); }, 500);
+  }
+
+  function closePanel() {
+    open = false;
+    panel.classList.remove("beyond20-qr-open");
+    menuEl.hidden = true;
+    switchEl.classList.remove("beyond20-qr-active");
+    setStatus("");
+  }
+
+  launcher.addEventListener("click", function () { if (open) { closePanel(); } else { openPanel(); } });
+  document.getElementById("qr-close").addEventListener("click", closePanel);
+  document.getElementById("qr-refresh").addEventListener("click", function () {
+    setStatus("Reading your D&D Beyond character…");
+    window.setTimeout(function () { if (open) setStatus(""); }, 500);
+  });
+
+  switchEl.addEventListener("click", function () {
+    var showing = !menuEl.hidden;
+    if (showing) {
+      menuEl.hidden = true;
+      switchEl.classList.remove("beyond20-qr-active");
+    } else {
+      renderMenu();
+      menuEl.hidden = false;
+      switchEl.classList.add("beyond20-qr-active");
+    }
+  });
+
+  tabsEl.addEventListener("click", function (ev) {
+    var button = ev.target.closest("button[data-tab]");
+    if (!button) return;
+    tab = button.getAttribute("data-tab");
+    Array.prototype.forEach.call(tabsEl.querySelectorAll("button"), function (b) {
+      b.setAttribute("aria-selected", b === button ? "true" : "false");
+    });
+    renderBody();
+  });
+
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key !== "Escape" || !open) return;
+    if (!menuEl.hidden) {
+      menuEl.hidden = true;
+      switchEl.classList.remove("beyond20-qr-active");
+    } else {
+      closePanel();
+    }
+    ev.preventDefault();
+    ev.stopPropagation();
+  });
+
+  document.addEventListener("mousedown", function (ev) {
+    if (!open) return;
+    if (panel.contains(ev.target) || launcher.contains(ev.target)) return;
+    closePanel();
+  });
+
+  /* ---- the tabletop's own chatter ------------------------------------- */
+
+  say("Dungeon Master", "The crypt door groans open. Roll me a Perception check… or use the d20 button on the left.");
+  say("Lyra Dawnweaver", "There is something moving behind the altar.");
+  launcher.classList.add("beyond20-qr-hint");
+})();
+</script>

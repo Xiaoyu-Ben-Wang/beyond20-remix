@@ -1,5 +1,5 @@
-Some issues are already known and are being worked on.
+Some problems are already known, and people are working on them.
 
-To check the latest list of known issues or feature suggestions, head to the [issue tracker](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/issues).
+The [issue tracker](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/issues) has the newest list of known problems and feature ideas.
 
-If you find an issue that isn't in the list (check the closed ones too), please let me know by [creating one](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/issues/new).
+If your problem is not in the list, check the closed issues too. Then report it by [creating a new issue](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/issues/new).
