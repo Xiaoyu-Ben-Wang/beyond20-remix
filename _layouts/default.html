@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "en-US" }}">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ '/assets/css/remix.css' | relative_url }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ '/favicon/apple-touch-icon.png' | relative_url }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ '/favicon/favicon-32x32.png' | relative_url }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ '/favicon/favicon-16x16.png' | relative_url }}">
+    <link rel="manifest" href="{{ '/favicon/site.webmanifest' | relative_url }}">
+    <link rel="mask-icon" href="{{ '/favicon/safari-pinned-tab.svg' | relative_url }}" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#1d1611">
+{% seo %}
+  </head>
+
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a class="brand" href="{{ '/' | relative_url }}">
+          <img class="brand-mark" src="{{ site.logo | relative_url }}" alt="">
+          <span class="brand-text">
+            <span class="brand-title">Beyond20</span>
+            <span class="brand-sub">Custom Remix</span>
+          </span>
+        </a>
+
+        <nav class="site-nav" aria-label="Main">
+          {% for item in site.data.navigation %}
+            {% assign html_path = item[1] | append: ".html" %}
+            <a href="{{ item[1] | relative_url }}" {% if page.url == item[1] or page.url == html_path %}class="active" aria-current="page"{% endif %}>{{ item[0] }}</a>
+          {% endfor %}
+        </nav>
+
+        <a class="btn btn-ghost" href="{{ site.github.repository_url }}">GitHub</a>
+      </div>
+    </header>
+
+    {% if page.hero %}
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <p class="eyebrow">{{ page.hero_eyebrow | default: site.description }}</p>
+        <h1>{{ page.hero_title | default: site.title }}</h1>
+        <p>{{ page.hero_text }}</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="{{ '/install' | relative_url }}">Install the extension</a>
+          <a class="btn btn-ghost" href="{{ '/demo' | relative_url }}">See what it does</a>
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    <main id="content">
+      <div class="wrap">
+        <article class="prose{% if page.wide %} prose-wide{% endif %}">
+          {{ content }}
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>
+          Beyond20 Custom Remix is an unofficial fork of
+          <a href="{{ site.upstream_url }}">{{ site.upstream_name }}</a> by kakaroto, released under
+          the GPL v3 license. It is not affiliated with or endorsed by the Beyond20 project,
+          D&amp;D Beyond, Roll20 or Foundry VTT.
+        </p>
+        <p>
+          <a href="{{ '/install' | relative_url }}">Install</a> &middot;
+          <a href="{{ '/faq' | relative_url }}">FAQ</a> &middot;
+          <a href="{{ '/privacy' | relative_url }}">Privacy</a> &middot;
+          <a href="{{ site.github.repository_url }}">Source code</a> &middot;
+          <a href="{{ site.github.repository_url }}/issues">Report an issue</a>
+        </p>
+        <p class="fine">
+          Published with <a href="https://pages.github.com">GitHub Pages</a>.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

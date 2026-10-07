@@ -1,0 +1,28 @@
+# Jekyll configuration for the Beyond20 Custom Remix documentation site.
+#
+# This site is published by GitHub Pages straight from the docs/ folder of the
+# repository, so there is no build step and no workflow to run: whatever is
+# committed here is what goes live.
+
+# Site settings
+title: Beyond20 Custom Remix
+description: A personal fork of Beyond20 with a Roll20 quick roll launcher, integrating the D&D Beyond Character Sheet with Roll20 and Foundry VTT
+# The site is a GitHub Pages *project* page, so every URL is served under the
+# repository name. Anything linking to an absolute path must go through the
+# `relative_url` filter in the templates, or it will escape the baseurl and 404.
+baseurl: "/beyond20-remix"
+url: "https://xiaoyu-ben-wang.github.io"
+github_username: Xiaoyu-Ben-Wang
+logo: /images/icon128.png
+
+# Where the extension itself lives, used by the layout's credit line.
+upstream_name: Beyond20
+upstream_url: https://github.com/kakaroto/Beyond20
+
+# Build settings
+# No theme: the site's own stylesheet is docs/assets/css/remix.css, loaded by
+# the layout. It is self-contained, so there is no theme gem to keep in step.
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
