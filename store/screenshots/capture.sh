@@ -20,16 +20,28 @@ else
     base="file://$here/harness.html"
 fi
 
-n=1
-for scene in skills advantage favorites initiative themes; do
-    out="$here/$n-$scene.png"
+# scene, output file, CSS width, CSS height, device scale factor. The CSS size times the
+# scale is the store's size: 1280x800 screenshots, a 440x280 small promo tile and a
+# 1400x560 marquee.
+shots="
+skills 1-skills.png 853 533 1.5
+advantage 2-advantage.png 853 533 1.5
+favorites 3-favorites.png 853 533 1.5
+initiative 4-initiative.png 853 533 1.5
+themes 5-themes.png 853 533 1.5
+promo-small promo-small-440x280.png 440 280 1
+promo-marquee promo-marquee-1400x560.png 700 280 2
+"
+
+echo "$shots" | while read -r scene file width height scale; do
+    [ -n "$scene" ] || continue
+    out="$here/$file"
     out_native="$out"
     command -v cygpath >/dev/null && out_native="$(cygpath -w "$out")"
-    # 853x533 CSS pixels at 1.5x is 1280x800 (the height rounds up a pixel and is trimmed
-    # by the window size). The virtual time budget lets the launcher's timers settle.
+    # (853x533 at 1.5x rounds up to 1280x800.) The virtual time budget lets the
+    # launcher's timers settle.
     "$browser" --headless=new --disable-gpu --hide-scrollbars --allow-file-access-from-files \
-        --force-device-scale-factor=1.5 --window-size=853,533 \
+        --force-device-scale-factor="$scale" --window-size="$width,$height" \
         --virtual-time-budget=4000 --screenshot="$out_native" "$base?scene=$scene" >/dev/null 2>&1
     echo "wrote $out"
-    n=$((n + 1))
 done

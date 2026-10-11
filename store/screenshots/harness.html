@@ -10,10 +10,13 @@
   This page runs the real launcher (src/roll20/quick-roll.js) against stubbed extension
   APIs and an invented character, over a drawn tabletop, so the shots show the shipping
   UI rather than a mock of it. Pick a scene with ?scene=skills|advantage|favorites|
-  initiative|themes. capture.sh renders every scene to a 1280x800 PNG.
+  initiative|themes|promo-small|promo-marquee. capture.sh renders each scene at the
+  store's size for it: 1280x800 screenshots, a 440x280 small promo tile and a 1400x560
+  marquee.
 
-  The page is laid out at 853x533 CSS pixels and captured at a device scale factor of
-  1.5, so the launcher's real pixel sizes read clearly at the store's resolution.
+  Screenshots are laid out at 853x533 CSS pixels and captured at a device scale factor
+  of 1.5, so the launcher's real pixel sizes read clearly at the store's resolution.
+  The tiles set their own size (440x280 at 1x; 700x280 at 2x).
 -->
 <style>
 :root {
@@ -140,6 +143,23 @@ body {
 /* Mirrors the star in src/extension/beyond20.css: inline, after the name. */
 .star { display: inline-block; margin-left: 5px; font-size: 13px; line-height: 14px; color: #9a9a9a; }
 .star.on { color: #e0a526; }
+/* Promo tiles: the name and a line, at sizes the store shrinks into its listings. */
+.promo { position: absolute; color: var(--ink); }
+.promo .brand { display: flex; align-items: center; gap: 12px; }
+.promo .brand img { display: block; filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.45)); }
+.promo .name { font: 600 25px/1.05 Georgia, "Times New Roman", serif; letter-spacing: -0.01em; }
+.promo .name small { display: block; font: 700 10px/1.4 "Segoe UI", sans-serif; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+.promo .line { margin: 14px 0 0; font-size: 14px; line-height: 1.45; color: var(--ink-dim); }
+.promo .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.promo .chips span {
+    padding: 3px 9px;
+    border: 1px solid rgba(224, 165, 38, 0.45);
+    border-radius: 999px;
+    background: rgba(224, 165, 38, 0.10);
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 600;
+}
 .cursor {
     position: absolute;
     width: 14px; height: 20px;
@@ -353,8 +373,9 @@ function whenPanelReady(fn) {
 
 function openLauncher(section) {
     injectQuickRollLauncher();
-    // Shown without the opening animation, which a still capture could catch half way.
-    const style = el(`<style>#beyond20-quick-roll-panel, #beyond20-quick-roll-launcher { transition: none !important; }</style>`);
+    // No transitions anywhere: a still capture can catch one half way, like the tab
+    // underline still sliding from the default tab to the one picked.
+    const style = el(`<style>*, *::before, *::after { transition: none !important; animation: none !important; }</style>`);
     document.head.appendChild(style);
     openQuickRollPanel();
     // Opening the panel re-reads the sheet, which re-renders the rows; anything placed
@@ -454,6 +475,38 @@ const scenes = {
                 clearInterval(quick_roll_initiative_poll);
                 cursorAt(document.querySelectorAll(".token")[0], 6, 8);
             }, 50);
+        }
+    },
+    "promo-small": {
+        run() {
+            document.body.style.width = "440px";
+            document.body.style.height = "280px";
+            document.body.appendChild(el(`<div class="promo" style="left:34px;top:52px;right:30px">
+                <div class="brand"><img src="../../images/icons/icon128.png" width="64" height="64" alt="">
+                    <div class="name"><small>Beyond20</small>Custom Remix</div></div>
+                <p class="line">Roll your D&amp;D Beyond character from Roll20, without switching tabs.</p>
+                <div class="chips"><span>Quick rolls</span><span>Favourites</span><span>Hit points</span><span>Initiative</span></div>
+            </div>`));
+            document.body.dataset.ready = "1";
+        }
+    },
+    "promo-marquee": {
+        run() {
+            document.body.style.width = "700px";
+            document.body.style.height = "280px";
+            // Three favourites, so the panel fits the tile's height without scrolling.
+            CHARACTER.favorites = CHARACTER.favorites.slice(0, 3);
+            document.body.appendChild(el(`<div class="promo" style="left:34px;top:46px;width:330px">
+                <div class="brand"><img src="../../images/icons/icon128.png" width="48" height="48" alt="">
+                    <div class="name" style="font-size:21px"><small>Beyond20</small>Custom Remix</div></div>
+                <p class="line" style="font-size:15px;color:var(--ink)">Your D&amp;D Beyond character, one click away in Roll20.</p>
+                <p class="line" style="margin-top:6px;font-size:12px">Skills, saves, favourite attacks and spells, initiative and hit points, rolled on your real sheet.</p>
+            </div>`));
+            document.head.appendChild(el(`<style>
+                #beyond20-quick-roll-panel { left: 398px !important; bottom: 22px !important; max-height: 250px !important; }
+                #beyond20-quick-roll-launcher { left: 344px !important; bottom: 22px !important; }
+            </style>`));
+            openLauncher("favorites");
         }
     },
     themes: {
