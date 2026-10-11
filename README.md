@@ -1,108 +1,73 @@
-Beyond20 Custom Remix: D&D Beyond & Roll20/Foundry VTT Integration
-==
+# Beyond20 Custom Remix
 
-A personal fork of [Beyond20](https://beyond20.here-for-more.info/), the browser extension that
-integrates the Character Sheet from D&D Beyond into Roll20, Foundry VTT & Discord.
+![Beyond20 Custom Remix](store/screenshots/promo-marquee-1400x560.png)
 
-**Documentation: <https://xiaoyu-ben-wang.github.io/beyond20-remix/>** — install instructions,
-feature list, FAQ and the privacy policy.
+A fork of [Beyond20](https://beyond20.here-for-more.info/), the extension that sends rolls from
+your D&D Beyond character sheet to Roll20, Foundry VTT and Discord. Everything Beyond20 does still
+works. This fork adds a **quick roll launcher** to Roll20, so you can play from your D&D Beyond
+sheet without leaving the Roll20 tab.
 
-This fork is **not** the official Beyond20 and is not affiliated with or endorsed by the Beyond20
-project. It takes upstream's code as its base and adds the changes listed below. Everything
-Beyond20 normally does still works; the additions are on top.
+Not the official Beyond20, and not affiliated with or endorsed by the Beyond20 project.
+**Docs:** <https://xiaoyu-ben-wang.github.io/beyond20-remix/>
 
-It is based on Beyond20 v2.21.0. Its own releases use plain numeric versions (`2.21.1`, `2.21.2`, …)
-rather than a `remix` label, because Chrome and Firefox both require the extension version to be
-dot-separated integers. The `remix` label lives in the release tag (`v2.21-remix.2`) and the zip
-filenames instead.
+## The quick roll launcher
 
-# Custom features
+Click the portrait button on the Roll20 page to open it. Every roll happens on your real D&D
+Beyond sheet, in the background, so class features, effects and custom modifiers all apply. The
+result appears in Roll20 chat as usual.
 
-## Roll20 Quick Roll Launcher
+| | |
+|:---:|:---:|
+| ![Skills, saves and checks](store/screenshots/1-skills.png) | ![Advantage and disadvantage](store/screenshots/2-advantage.png) |
+| **Skills, saves, checks and initiative**, one click away | **Advantage or disadvantage** with the A and D buttons on every row |
+| ![Favourite attacks and spells](store/screenshots/3-favorites.png) | ![Initiative to the turn tracker](store/screenshots/4-initiative.png) |
+| **Favourite attacks and spells**: star them on your sheet, roll them from the ★ tab | **Initiative into the turn tracker**, asking you to select your token first |
 
-Roll a skill, saving throw, ability check or initiative from the Roll20 page, without switching
-tabs.
+- **Hit points** sit next to your name. Type an amount and click Heal, Damage or Temp HP to change
+  them on your sheet.
+- **Several characters?** It remembers which one you play in each game, and asks rather than
+  guesses.
+- **Light or dark, in six colours.** It can be turned off in the options.
 
-* A floating button on the Roll20 page shows your D&D Beyond character's portrait. Click it to
-  open a panel of skills, saving throws, ability checks and initiative.
-* Each row has small **A** and **D** buttons to roll it with advantage or disadvantage.
-* Favourite your go-to attacks and spells: on your D&D Beyond sheet, click the ☆ that appears
-  after an attack or spell's name when you hover its row, or **Favorite** under "Display in VTT"
-  in its side panel. They appear in the panel's ★ tab and roll from there, even while the sheet
-  is showing another tab. Favourites are kept per character, in your browser.
-* Your hit points sit next to your name in the panel's header. Type an amount under it and
-  click **Heal**, **Damage** (temporary hit points go first) or **Temp HP**, and the change is
-  made on your D&D Beyond sheet.
-* Initiative goes to the Roll20 turn tracker when "Add initiative roll to the Turn Tracker" is
-  on. That needs your token selected, so if none is, the panel asks you to select it first.
-* Click a roll and it is performed on your real D&D Beyond character sheet, so class features,
-  effects and custom modifiers all apply exactly as if you had clicked the sheet yourself. The
-  result appears in the Roll20 chat as usual.
-* Your D&D Beyond tab stays in the background and is never brought to the front.
-* Remembers which character you play in each Roll20 game, and asks rather than guessing when it
-  cannot tell. Several sheets open at once can be switched between from the panel header.
-* Light and dark themes, and a choice of colour for the panel's text and highlights.
-* Can be turned off in the settings, under the Roll20 tab's options.
+![Themes](store/screenshots/5-themes.png)
 
-See [docs/features.md](docs/features.md) for the full feature list, and
-[docs/api.md](docs/api.md) for the messages this adds to Beyond20's internal API
-(`quick-roll-data`, `quick-roll` and `quick-hp`).
+## Install
 
-# Use
+1. If you have the official Beyond20 installed, disable it, or both will answer every roll.
+2. Download the zip for [Chrome](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest/download/beyond_20-2.21-remix.2-chrome.zip)
+   or [Firefox](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest/download/beyond_20-2.21-remix.2-firefox.zip)
+   and extract it.
+3. Load it:
+   - **Chrome:** open `chrome://extensions`, turn on Developer mode, click *Load unpacked* and pick
+     the folder.
+   - **Firefox:** open `about:debugging#/runtime/this-firefox`, click *Load Temporary Add-on* and
+     pick `manifest.json` in the folder.
 
-Open Roll20 or Foundry VTT in a tab of Chrome or Firefox then your character sheet in D&D Beyond in another tab. If you are using Chrome with Foundry VTT, then you need to click on the Beyond20 icon in the Chrome window's toolbar to activate Beyond20 for your FVTT installation.
+Then open your game in one tab and your D&D Beyond character sheet in another.
 
-Click on the item you want to roll, whether it's initiative, a skill, ability or saving throw check, a weapon or spell attack, a class/racial feat or trait or hit dice, death saving throw, etc... When the D&D Beyond character sheet shows the information about the item you selected in its side panel, there should be a Beyond20 button or B20 icon that appear in the side panel to make the roll. It will automatically pick up on what was selected, and send the roll to all Roll20 or Foundry VTT tabs open.
+## Develop
 
-If a spell/item/action/feat description contains a dice formula (`2d10 + 3` for example) or a modifier formula (`+ 3` for example), that text will be underlined and a B20 dice icon will appear next to it. Click on the formula or the dice to make the roll in the Roll20 tab.
+```bash
+npm install
+npm run build     # build/chrome and build/firefox
+npm test
+npm run package   # release zips in build/artifacts
+```
 
-If you click on the Beyond20 button in the toolbar, it will pop open the quick settings menu. Note that the quick settings menu will be different whether you are on the VTT tab or D&D Beyond tab, and it will contain the per-character configuration.
+The extension's version is numeric (`2.21.2`), as browsers require; the `remix` label lives in the
+release tag (`v2.21-remix.2`). The launcher's messages are documented in [docs/api.md](docs/api.md).
+`store/screenshots/capture.sh` regenerates the screenshots above.
 
-# Build
+## License
 
-You need to install the build dependencies by running in the source directory:
-`npm install`
+GPL v3; see [LICENSE](LICENSE). The options page is partly from
+[D&D Beyond Toolbox](https://github.com/mouse0270/Beyonds-Toolbox/) under the MIT license
+([LICENSE.MIT](LICENSE.MIT)).
 
-You can then build the files using the command `npm run build`
-
-Run the tests with `npm test`. Producing the packaged zips for a release is `npm run package`,
-which writes them to `build/artifacts/`.
-
-# Developer Mode Installation
-
-This fork is not published to the Chrome Web Store or Firefox Add-ons, so it is installed from
-source. All you need is to load the extension from the source :
-
-0. If you have the official Beyond20 installed from the Chrome or Firefox stores, disable it.
-   Both extensions do the same job and will otherwise both answer the same rolls.
-1. Download the extension for either [Chrome](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest/download/beyond_20-2.21-remix.2-chrome.zip) or [Firefox](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest/download/beyond_20-2.21-remix.2-firefox.zip), or build it yourself with `npm run package`
-2. Extract the zip file in a directory of your choice
-
-## Chrome
-
-3. Go to Chrome Extensions page (Menu->More Tools->Extensions)
-4. Enable Developer Mode (Top-right corner)
-5. Click on the 'Load Unpacked' button
-6. Select the Directory where you extracted this extension
-
-## Firefox
-
-3. Open "[about:debugging#/runtime/this-firefox](about:debugging#/runtime/this-firefox)" in Firefox
-4. Click "Load Temporary Add-on"
-5. Select the `manifest.json` file from the extension's directory
-
-# License
-
-This extension is released under the GPL v3 license. Read the LICENSE file for more details.
-
-The icon image is based on a public domain image from openclipart. I downloaded it from [wikimedia](https://commons.wikimedia.org/wiki/File:Twenty_sided_dice.svg) and subsequently modified it.
-
-The roll badge icons were designed and created by [Jerry Escandon](https://github.com/Jerryescandon) 
-
-The donation icon is a public domain contribution by Fission Strategy, US, downloaded from [thenounproject](https://thenounproject.com/term/donation/15047/)
-
-The 'up' arrow (docs/images/up-arrow.png) used in the screenshots page is a public domain image shared by OCAL on [clker.com](http://www.clker.com/clipart-16838.html)
-
-The options page was copied in part from the `D&D Beyond Toolbox` extension available [here](https://github.com/mouse0270/Beyonds-Toolbox/). The html and css files are licensed under the MIT license which is provided in the LICENSE.MIT file
-
-The condition icons (FVTT-module/beyond20/conditions) are for the most part taken from https://game-icons.net/ and licensed under a Creative Common CC-BY 3.0 License. You can find each icon's source and respective license in the FVTT-module/beyond20/conditions/LICENSE file
+Credits: the icon is based on a public domain
+[openclipart image](https://commons.wikimedia.org/wiki/File:Twenty_sided_dice.svg); roll badge icons
+by [Jerry Escandon](https://github.com/Jerryescandon); the donation icon by Fission Strategy
+([thenounproject](https://thenounproject.com/term/donation/15047/)); the up arrow in the docs by OCAL
+([clker.com](http://www.clker.com/clipart-16838.html)); condition icons mostly from
+[game-icons.net](https://game-icons.net/) under CC-BY 3.0, sources in
+`FVTT-module/beyond20/conditions/LICENSE`.
