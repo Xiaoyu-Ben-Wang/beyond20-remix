@@ -957,6 +957,7 @@ function handleMessage(request, sender, sendResponse) {
     } else if (request.action == "open-options") {
         alertFullSettings();
     } else if (request.action == "hp-update") {
+        quickRollHpUpdated(request.character);
         if (settings["update-hp"])
             sendCustomEvent("UpdateHP", [request.character.name, request.character.hp, request.character["max-hp"], request.character["temp-hp"]]);
     } else if (request.action == "conditions-update") {

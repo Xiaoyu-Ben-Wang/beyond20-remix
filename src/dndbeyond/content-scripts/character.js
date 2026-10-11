@@ -3344,6 +3344,19 @@ function handleMessage(request, sender, sendResponse) {
                 });
             return true; // async response
         }
+    } else if (request.action == "quick-hp") {
+        // Hit point changes from the launcher, addressed like quick rolls.
+        if (!request.characterId || String(character._id) !== String(request.characterId)) {
+            sendResponse({ ok: false, reason: "not-my-character" });
+        } else {
+            performRemoteHpChange(request.mode, request.amount)
+                .then(sendResponse)
+                .catch((err) => {
+                    console.error("Beyond20: remote hit point change failed", err);
+                    sendResponse({ ok: false, reason: "error" });
+                });
+            return true; // async response
+        }
     } else if (request.action == "open-options") {
         alertFullSettings();
     }

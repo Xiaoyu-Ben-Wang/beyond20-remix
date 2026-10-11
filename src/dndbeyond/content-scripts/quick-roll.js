@@ -7,8 +7,8 @@
 
 // Remote quick rolls: rolls driven from the Roll20 side (see src/roll20/quick-roll.js),
 // so a player can roll a skill, save, ability check, initiative or a favourite attack or
-// spell without leaving the Roll20 tab. It also owns the favourite stars and the
-// side pane's Favorite button.
+// spell without leaving the Roll20 tab, and change the character's hit points. It also
+// owns the favourite stars and the side pane's Favorite button.
 // The roll always happens here, on the real sheet, so all of Beyond20's scraping and
 // class-feature handling applies as if the player had clicked the sheet.
 //
@@ -86,6 +86,7 @@ function getQuickRollData() {
         saves: getQuickRollSaves(),
         skills: getQuickRollSkills(),
         initiative: getQuickRollInitiative(),
+        hp: getQuickRollHp(),
         favorites: loadQuickRollFavorites(character._id)
     };
 }
@@ -637,5 +638,130 @@ async function performRemoteQuickRoll(rollType, name, advantage, level) {
     } catch (err) {
         release();
         throw err;
+    }
+}
+
+// --- Hit points ------------------------------------------------------------ *
+// Damage, healing and temporary hit points sent from the launcher's header. The sheet
+// works out the new values and writes them into D&D Beyond's own HP Management pane,
+// the same inputs Beyond20 reads hit points from, so D&D Beyond saves them as if the
+// player had typed them.
+
+const QUICK_ROLL_HP_PANE = ".b20-health-manage-pane";
+let quick_roll_hp_busy = false;
+
+function getQuickRollHp() {
+    if (!character._max_hp) return null;
+    return { current: character._hp || 0, max: character._max_hp, temp: character._temp_hp || 0 };
+}
+
+// Temporary hit points soak damage first, healing stops at the maximum, and new
+// temporary hit points replace the old rather than adding to them.
+function computeQuickRollHp(hp, mode, amount) {
+    const { current, max, temp } = hp;
+    if (mode === "temp")
+        return { current, max, temp: amount };
+    if (mode === "heal")
+        return { current: Math.min(max, current + amount), max, temp };
+    const absorbed = Math.min(temp, amount);
+    return { current: Math.max(0, current - (amount - absorbed)), max, temp: temp - absorbed };
+}
+
+// The pane's Current and Temp inputs, read with the selectors Character.updateHP uses.
+function quickRollHpInputs() {
+    const pane = $(QUICK_ROLL_HP_PANE);
+    let current = null;
+    pane.find("div[class*='styles_container'] div[class*='styles_innerContainer'] div[class*='styles_item']").each((_, item) => {
+        const label = $(item).find("label[class*='styles_label'], span[class*='styles_label']").text().trim();
+        if (label === "Current" && !current)
+            current = $(item).find("input[class*='styles_input']")[0] || null;
+    });
+    const temp = pane.find("div[class*='styles_container'] div[class*='styles_temp'] input[class*='styles_input']")[0] || null;
+    return { current, temp };
+}
+
+// The hit point box on the sheet opens the HP Management pane. Its heading is clicked
+// rather than its numbers, which edit in place.
+function clickQuickRollHpBox() {
+    const box = $(".ct-quick-info__health, .ct-health-summary, .ct-status-summary-mobile__hp").first();
+    const heading = box.find("*").filter((_, el) =>
+        el.children.length === 0 && /^hit points$/i.test(el.textContent.trim())).first();
+    (heading.length ? heading : box).trigger("click");
+}
+
+// Type into a React-controlled input: set the value through the native setter, so React
+// sees a change, and blur it, which is when D&D Beyond saves the field.
+function setQuickRollInput(input, value) {
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set;
+    input.focus();
+    setter.call(input, String(value));
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+    input.blur();
+}
+
+// Hit points as the sheet's own HP box shows them, which only changes once D&D Beyond
+// has saved a change. (Character.updateHP prefers the pane's inputs while the pane is
+// open, and those show whatever was typed.) Null where there is no such box, as in the
+// mobile layout.
+function readQuickRollHpSummary() {
+    const box = $(".ct-health-summary__hp-group--primary, .ct-quick-info__health").first();
+    if (box.length === 0) return null;
+    let current = null;
+    box.find(".ct-health-summary__hp-item, div[class*='styles_container'] div[class*='styles_innerContainer'] div[class*='styles_item']").each((_, item) => {
+        const label = $(item).find("label[class*='styles_label'], span[class*='styles_label']").text().trim();
+        if (label === "Current" && current === null) {
+            const number = $(item).find("button[class*='styles_valueButton']");
+            const value = parseInt(number.val() || number.text());
+            if (!Number.isNaN(value)) current = value;
+        }
+    });
+    if (current === null) return null;
+    const tempItem = $(".ct-health-summary__hp-group--temp .ct-health-summary__hp-item--temp .ct-health-summary__hp-item-content, .ct-quick-info__health div[class*='styles_temp']").first();
+    const tempValue = tempItem.find(".ct-health-summary__hp-number, button[class*='styles_valueButton'], input[class*='styles_input']");
+    const temp = parseInt(tempValue.val() || tempValue.text()) || 0;
+    return { current, temp };
+}
+
+function sameQuickRollHp(a, b) {
+    return !!a && !!b && a.current === b.current && a.temp === b.temp;
+}
+
+async function performRemoteHpChange(mode, amount) {
+    if (quick_roll_hp_busy)
+        return { ok: false, reason: "busy" };
+    quick_roll_hp_busy = true;
+    try {
+        character.updateInfo();
+        const before = getQuickRollHp();
+        if (!before)
+            return { ok: false, reason: "not-found" };
+        const target = computeQuickRollHp(before, mode, amount);
+        if (sameQuickRollHp(before, target))
+            return { ok: true, hp: before };
+
+        const opened = await waitForSheet(() => quickRollHpInputs().current ? true : null, clickQuickRollHpBox);
+        const inputs = quickRollHpInputs();
+        if (!opened || !inputs.current)
+            return { ok: false, reason: "not-found" };
+
+        if (target.temp !== before.temp) {
+            if (!inputs.temp) return { ok: false, reason: "not-found" };
+            setQuickRollInput(inputs.temp, target.temp);
+        }
+        if (target.current !== before.current)
+            setQuickRollInput(inputs.current, target.current);
+
+        // Answer with what the sheet shows once it settles, not what was asked for: if
+        // D&D Beyond did not take the change, the player should hear so.
+        const saved = () => readQuickRollHpSummary() || getQuickRollHp();
+        const applied = await waitForSheet(() => {
+            character.updateInfo();
+            return sameQuickRollHp(saved(), target) ? true : null;
+        });
+        const now = { ...saved(), max: before.max };
+        return applied ? { ok: true, hp: now } : { ok: false, reason: "hp-not-applied", hp: now };
+    } finally {
+        quick_roll_hp_busy = false;
     }
 }

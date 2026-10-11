@@ -26,6 +26,7 @@ There are 3 types of APIs that Beyond20 includes.
     - [get-character](#get-character)
     - [quick-roll-data](#quick-roll-data)
     - [quick-roll](#quick-roll)
+    - [quick-hp](#quick-hp)
     - [settings](#settings)
     - **[roll](#roll)**
     - **[rendered-roll](#rendered-roll)**
@@ -259,6 +260,8 @@ Each entry has the following fields:
     skills,     // <Array> of { name, ability, modifier }; `ability` is the abbreviation
                 //   of the ability the skill belongs to, or "" for a custom skill
     initiative, // <Object> { modifier }, or null when the sheet shows no initiative
+    hp,         // <Object> { current, max, temp } hit points, or null before the sheet
+                //   has read them
     favorites,  // <Array> of { rollType, name, level, label, detail } the player starred
                 //   on the sheet, in the order they were starred. rollType is "action"
                 //   (a row among the attacks) or "spell"; level is the spell's level
@@ -311,6 +314,38 @@ Returns a response of the form:
              //   "custom-skill", "interactive-setting" (the roll would need a
              //   prompt nobody can see), "busy" (another roll is in flight),
              //   "disconnected" (the extension was reloaded) or "bad-request"
+}
+```
+
+#### quick-hp
+Ask the background script to change a D&D Beyond character's hit points. Used by the
+hit point controls in the Roll20 quick roll launcher's header.
+
+Like [quick-roll](#quick-roll), the request goes to every open D&D Beyond character sheet
+and the one whose character id matches acts. It works out the new values itself
+(temporary hit points take damage first, healing stops at the maximum, and new temporary
+hit points replace the old ones), writes them into D&D Beyond's HP Management pane, and
+answers once the sheet shows them saved.
+
+Message Format:
+```js
+{
+    action,       // <String> Must be "quick-hp"
+    characterId,  // <String> The id of the character whose hit points change
+    mode,         // <String> "damage", "heal", or "temp" to set temporary hit points
+    amount        // <Number> A whole number of hit points: 1 to 9999, or 0 to 9999 for
+                  //   "temp", where 0 clears them
+}
+```
+Returns a response of the form:
+```js
+{
+    ok,      // <Boolean> Whether the sheet now shows the new hit points
+    hp,      // <Object> { current, max, temp } as the sheet shows them afterwards,
+             //   when the sheet could read them
+    reason   // <String> Why it failed, when ok is false: "no-tab", "busy",
+             //   "not-found" (no HP pane could be opened), "hp-not-applied" (D&D
+             //   Beyond did not save the change), "disconnected" or "bad-request"
 }
 ```
 

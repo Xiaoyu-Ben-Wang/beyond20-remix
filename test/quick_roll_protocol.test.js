@@ -71,6 +71,10 @@ const quickRollDetail = load(DDB_QUICK_ROLL, 'quickRollDetail');
 const quickRollSpellLabel = load(DDB_QUICK_ROLL, 'quickRollSpellLabel');
 
 const isValidQuickRollRequest = load('src/extension/background.js', 'isValidQuickRollRequest');
+const isValidQuickHpRequest = load('src/extension/background.js', 'isValidQuickHpRequest');
+const computeQuickRollHp = load('src/dndbeyond/content-scripts/quick-roll.js', 'computeQuickRollHp');
+const quickRollHpLevel = load('src/roll20/quick-roll.js', 'quickRollHpLevel');
+const parseQuickRollHpAmount = load('src/roll20/quick-roll.js', 'parseQuickRollHpAmount');
 
 // The panel's stylesheet with the ${...} interpolations performed: the bundle is a plain
 // concatenation, so the template literal reaches the page verbatim and only the browser
@@ -382,6 +386,59 @@ check("a disadvantage request is accepted",
 
 check("an unknown advantage value is refused",
     () => isValidQuickRollRequest({ characterId: "100", rollType: "skill", name: "Stealth", advantage: "super" }),
+    false);
+
+// --- Hit points ----------------------------------------------------------- *
+// The sheet works the new values out itself, so these rules are what the player gets.
+
+const hurt = { current: 20, max: 31, temp: 5 };
+
+check("damage comes off temporary hit points first",
+    () => computeQuickRollHp(hurt, "damage", 3),
+    { current: 20, max: 31, temp: 2 });
+
+check("damage beyond temporary hit points comes off current",
+    () => computeQuickRollHp(hurt, "damage", 8),
+    { current: 17, max: 31, temp: 0 });
+
+check("damage stops at 0",
+    () => computeQuickRollHp(hurt, "damage", 100).current,
+    0);
+
+check("healing stops at the maximum and leaves temporary hit points alone",
+    () => computeQuickRollHp(hurt, "heal", 50),
+    { current: 31, max: 31, temp: 5 });
+
+check("temporary hit points are replaced, not added to",
+    () => computeQuickRollHp(hurt, "temp", 3).temp,
+    3);
+
+check("the hit point colour follows how hurt the character is",
+    () => [31, 15, 7, 0].map((current) => quickRollHpLevel({ current, max: 31, temp: 0 })),
+    ["ok", "hurt", "low", "down"]);
+
+check("the amount box takes whole numbers only",
+    () => ["7", " 12 ", "", "-3", "2.5", "1e3", "12345"].map(parseQuickRollHpAmount),
+    [7, 12, null, null, null, null, null]);
+
+check("a damage request is accepted",
+    () => isValidQuickHpRequest({ characterId: "100", mode: "damage", amount: 7 }),
+    true);
+
+check("clearing temporary hit points (0) is accepted",
+    () => isValidQuickHpRequest({ characterId: "100", mode: "temp", amount: 0 }),
+    true);
+
+check("damage of nothing is refused",
+    () => isValidQuickHpRequest({ characterId: "100", mode: "damage", amount: 0 }),
+    false);
+
+check("a fractional or string amount is refused",
+    () => [2.5, "7"].map((amount) => isValidQuickHpRequest({ characterId: "100", mode: "heal", amount })),
+    [false, false]);
+
+check("an unknown hit point mode is refused",
+    () => isValidQuickHpRequest({ characterId: "100", mode: "set", amount: 10 }),
     false);
 
 // --- QUICK_ROLL_CSS scoping ----------------------------------------------- *

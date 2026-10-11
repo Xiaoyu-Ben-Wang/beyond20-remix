@@ -135,6 +135,26 @@ function sendQuickRoll(rollType, name, advantage, level, callback) {
     }
 }
 
+// Damage, healing ("heal") or temporary hit points ("temp") for the character shown.
+function sendQuickHp(mode, amount, callback) {
+    try {
+        const characterId = quick_roll_data && quick_roll_data.id;
+        chrome.runtime.sendMessage(
+            { action: "quick-hp", characterId: String(characterId), mode: mode, amount: amount },
+            (response) => {
+                if (chrome.runtime.lastError) {
+                    console.log("Beyond20: hit point change failed:", chrome.runtime.lastError.message);
+                    return callback({ ok: false, reason: "no-tab" });
+                }
+                callback(response || { ok: false, reason: "no-tab" });
+            }
+        );
+    } catch (err) {
+        console.log("Beyond20: hit point change unavailable, reload the page:", err);
+        callback({ ok: false, reason: "disconnected" });
+    }
+}
+
 // dist/beyond20.css never reaches a Roll20 editor tab, so the panel carries its own
 // styles. Roll20 styles bare elements globally, hence the resets on roots and buttons.
 const QUICK_ROLL_CSS = `
@@ -286,7 +306,70 @@ const QUICK_ROLL_CSS = `
     flex: 0 0 auto;
     border: 1px solid var(--b20-qr-border);
 }
-.beyond20-qr-name { flex: 1 1 auto; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.beyond20-qr-name { flex: 1 1 auto; min-width: 0; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Hit points beside the name, coloured by how hurt the character is. */
+.beyond20-qr-header > .beyond20-qr-hp {
+    flex: 0 0 auto;
+    padding: 1px 6px;
+    border-radius: 8px;
+    background: var(--b20-qr-hp-soft);
+    color: var(--b20-qr-hp);
+    font-size: 11px;
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    --b20-qr-hp: var(--b20-qr-adv);
+    --b20-qr-hp-soft: var(--b20-qr-adv-soft);
+}
+.beyond20-qr-header > .beyond20-qr-hp[data-b20-qr-hp="hurt"] { --b20-qr-hp: #d9a03a; --b20-qr-hp-soft: rgba(217, 160, 58, 0.18); }
+.beyond20-qr-header > .beyond20-qr-hp[data-b20-qr-hp="low"],
+.beyond20-qr-header > .beyond20-qr-hp[data-b20-qr-hp="down"] { --b20-qr-hp: var(--b20-qr-dis); --b20-qr-hp-soft: var(--b20-qr-dis-soft); }
+.beyond20-qr-hp-temp { color: var(--b20-qr-text); opacity: 0.75; font-weight: normal; }
+/* The edit row under the header: an amount, then what to do with it. */
+.beyond20-qr-hpbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 8px;
+    border-bottom: 1px solid var(--b20-qr-border);
+    background: var(--b20-qr-raised-2);
+}
+.beyond20-qr-hpbar[hidden] { display: none; }
+.beyond20-qr-hpbar input {
+    width: 52px;
+    height: 22px;
+    margin: 0;
+    padding: 0 6px;
+    border: 1px solid var(--b20-qr-border);
+    border-radius: 4px;
+    background: var(--b20-qr-bg);
+    color: var(--b20-qr-text);
+    font: inherit;
+    font-size: 12px;
+    box-shadow: none;
+    box-sizing: border-box;
+    -moz-appearance: textfield;
+}
+.beyond20-qr-hpbar input::-webkit-inner-spin-button,
+.beyond20-qr-hpbar input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.beyond20-qr-hpbar input:focus { outline: none; border-color: var(--b20-qr-accent); }
+.beyond20-qr-hpbar button {
+    flex: 1 1 0;
+    height: 22px;
+    padding: 0 4px;
+    border: 1px solid var(--b20-qr-border);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    transition: background 0.1s ease, border-color 0.1s ease;
+}
+.beyond20-qr-hpbar button:disabled { opacity: 0.5; cursor: default; }
+.beyond20-qr-hpbar .beyond20-qr-heal { color: var(--b20-qr-adv); }
+.beyond20-qr-hpbar .beyond20-qr-damage { color: var(--b20-qr-dis); }
+.beyond20-qr-hpbar .beyond20-qr-temp { color: var(--b20-qr-label); }
+.beyond20-qr-hpbar .beyond20-qr-heal:hover:not(:disabled) { background: var(--b20-qr-adv-soft); border-color: var(--b20-qr-adv); }
+.beyond20-qr-hpbar .beyond20-qr-damage:hover:not(:disabled) { background: var(--b20-qr-dis-soft); border-color: var(--b20-qr-dis); }
+.beyond20-qr-hpbar .beyond20-qr-temp:hover:not(:disabled) { background: var(--b20-qr-accent-soft); border-color: var(--b20-qr-accent); }
 .beyond20-qr-header > button {
     flex: 0 0 auto;
     width: 20px;
@@ -553,7 +636,7 @@ const QUICK_ROLL_CSS = `
 
 @media (prefers-reduced-motion: reduce) {
     #${QUICK_ROLL_LAUNCHER_ID}, #${QUICK_ROLL_PANEL_ID}, .beyond20-qr-status,
-    .beyond20-qr-row, .beyond20-qr-adv, .beyond20-qr-dis, .beyond20-qr-tabs button, .beyond20-qr-picker button,
+    .beyond20-qr-row, .beyond20-qr-adv, .beyond20-qr-dis, .beyond20-qr-hpbar button, .beyond20-qr-tabs button, .beyond20-qr-picker button,
     .beyond20-qr-picker img, .beyond20-qr-notice button, .beyond20-qr-header > button,
     .beyond20-qr-char-menu button {
         transition: none;
@@ -798,17 +881,21 @@ function buildQuickRollPanel() {
     const header = E.div({ class: "beyond20-qr-header" });
     const portrait = makeAvatar(null, "beyond20-qr-portrait");
     const name = E.span({ class: "beyond20-qr-name" });
+    const hp = E.span({ class: "beyond20-qr-hp", title: "Hit points" });
+    hp.hidden = true;
     const switchCharacter = makeButton("⇄", () => toggleQuickRollCharacterMenu(), "beyond20-qr-switch");
     switchCharacter.hidden = true;
     const refresh = makeButton("↻", () => loadQuickRollData(), "beyond20-qr-refresh", "Refresh");
     const close = makeButton("✕", () => closeQuickRollPanel(), "beyond20-qr-close", "Close");
-    header.append(portrait, name, switchCharacter, refresh, close);
+    header.append(portrait, name, hp, switchCharacter, refresh, close);
 
     // Inside the header, so it hangs off the bottom edge without anything knowing how
     // tall the header is.
     const characterMenu = E.div({ class: "beyond20-qr-char-menu" });
     characterMenu.hidden = true;
     header.appendChild(characterMenu);
+
+    const hpbar = buildQuickRollHpBar();
 
     const body = E.div({ class: "beyond20-qr-body" });
     body.dataset.beyond20Section = "skills";
@@ -825,7 +912,7 @@ function buildQuickRollPanel() {
 
     // Tabs go last on purpose: the panel is bottom-anchored, so whatever is last stays
     // put while the content above changes height.
-    panel.append(header, body, status, tabs);
+    panel.append(header, hpbar, body, status, tabs);
     return panel;
 }
 
@@ -865,6 +952,7 @@ function renderQuickRollHeader() {
 
     const name = panel.querySelector(".beyond20-qr-name");
     if (name) name.textContent = quick_roll_data.name || "D&D Beyond";
+    renderQuickRollHp();
 }
 
 function quickRollActiveCharacterId() {
@@ -937,6 +1025,7 @@ function renderQuickRollState(result) {
     quick_roll_data = result.state === "ready" ? result.character : null;
     quick_roll_picker_open = result.state === "picker";
     setQuickRollTabsVisible(result.state === "ready");
+    renderQuickRollHp();
     updateQuickRollSwitchButton();
     renderQuickRollStatus("");
 
@@ -1092,6 +1181,115 @@ function sendQuickRollFromPanel(rollType, name, advantage, level) {
     sendQuickRoll(rollType, name, advantage, level, (response) => {
         if (launcher) launcher.classList.remove("beyond20-qr-busy");
         renderQuickRollStatus(quickRollResultMessage(response));
+    });
+}
+
+// --- Hit points ----------------------------------------------------------- *
+// The header shows the character's hit points and the row under it changes them. The
+// change is made on the D&D Beyond sheet, which answers with what it then shows.
+
+// "ok" above half, "hurt" above a quarter, "low" above nothing, "down" at 0.
+function quickRollHpLevel(hp) {
+    if (!hp || !hp.max) return "ok";
+    if (hp.current <= 0) return "down";
+    const ratio = hp.current / hp.max;
+    return ratio > 0.5 ? "ok" : ratio > 0.25 ? "hurt" : "low";
+}
+
+// The amount box's value as a whole number of hit points, or null if it is not one.
+function parseQuickRollHpAmount(text) {
+    const value = String(text || "").trim();
+    if (!/^\d{1,4}$/.test(value)) return null;
+    return parseInt(value, 10);
+}
+
+function buildQuickRollHpBar() {
+    const amount = E.input({ type: "number", min: "0", max: "9999", inputmode: "numeric",
+        placeholder: "HP", "aria-label": "Hit points to apply", class: "beyond20-qr-hp-amount" });
+    // Keys typed here belong to the box, not to Roll20's shortcuts. Enter does nothing:
+    // whether it meant damage or healing is the player's call.
+    amount.addEventListener("keydown", (ev) => {
+        ev.stopPropagation();
+        if (ev.key === "Enter") ev.preventDefault();
+        if (ev.key === "Escape") amount.blur();
+    });
+    const action = (label, mode, className, title) =>
+        makeButton(label, () => applyQuickRollHp(mode), className, title);
+    const bar = E.div({ class: "beyond20-qr-hpbar" }, amount,
+        action("Heal", "heal", "beyond20-qr-heal", "Heal by this many hit points"),
+        action("Damage", "damage", "beyond20-qr-damage", "Take this much damage (temporary hit points go first)"),
+        action("Temp HP", "temp", "beyond20-qr-temp", "Set temporary hit points to this"));
+    bar.hidden = true;
+    return bar;
+}
+
+function renderQuickRollHp() {
+    const panel = document.getElementById(QUICK_ROLL_PANEL_ID);
+    if (!panel) return;
+    const chip = panel.querySelector(".beyond20-qr-hp");
+    const bar = panel.querySelector(".beyond20-qr-hpbar");
+    const hp = quick_roll_data && !quick_roll_picker_open ? quick_roll_data.hp : null;
+    if (chip) chip.hidden = !hp;
+    if (bar) bar.hidden = !hp;
+    if (!hp || !chip) return;
+
+    chip.dataset.b20QrHp = quickRollHpLevel(hp);
+    chip.replaceChildren("♥ " + hp.current + "/" + hp.max);
+    if (hp.temp > 0)
+        chip.append(" ", E.span({ class: "beyond20-qr-hp-temp" }, "+" + hp.temp));
+    chip.title = "Hit points: " + hp.current + " of " + hp.max + (hp.temp > 0 ? ", " + hp.temp + " temporary" : "");
+}
+
+function setQuickRollHp(id, hp) {
+    if (!hp) return;
+    for (const c of quick_roll_characters)
+        if (String(c.id) === String(id)) c.hp = hp;
+    if (quick_roll_data && String(quick_roll_data.id) === String(id)) {
+        quick_roll_data.hp = hp;
+        renderQuickRollHp();
+    }
+}
+
+// Beyond20's own hit point updates, sent whenever the sheet's hit points change, keep
+// the header current however they were changed.
+function quickRollHpUpdated(character) {
+    if (!character || character.id === undefined || !character["max-hp"]) return;
+    setQuickRollHp(character.id, { current: character.hp || 0, max: character["max-hp"], temp: character["temp-hp"] || 0 });
+}
+
+function quickRollHpMessage(mode, amount, response) {
+    if (response && response.ok) {
+        if (mode === "heal") return "Healed " + amount + ".";
+        if (mode === "damage") return "Took " + amount + " damage.";
+        return "Temporary hit points set to " + amount + ".";
+    }
+    const reason = (response && response.reason) || "no-tab";
+    if (reason === "disconnected") return "Beyond20 was reloaded. Reload this page to continue.";
+    if (reason === "busy") return "Another hit point change is still in progress.";
+    if (reason === "not-found" || reason === "hp-not-applied")
+        return "Couldn't change hit points on your D&D Beyond sheet. Change them there instead.";
+    return "No D&D Beyond character sheet is open.";
+}
+
+function applyQuickRollHp(mode) {
+    const panel = document.getElementById(QUICK_ROLL_PANEL_ID);
+    const input = panel && panel.querySelector(".beyond20-qr-hp-amount");
+    const amount = input ? parseQuickRollHpAmount(input.value) : null;
+    if (amount === null || (amount === 0 && mode !== "temp")) {
+        renderQuickRollStatus("Type a number of hit points first.");
+        if (input) input.focus();
+        return;
+    }
+
+    const buttons = panel.querySelectorAll(".beyond20-qr-hpbar button");
+    buttons.forEach((b) => b.disabled = true);
+    renderQuickRollStatus("Updating hit points…");
+    const id = quick_roll_data && quick_roll_data.id;
+    sendQuickHp(mode, amount, (response) => {
+        buttons.forEach((b) => b.disabled = false);
+        if (response && response.hp) setQuickRollHp(id, response.hp);
+        if (response && response.ok && input) input.value = "";
+        renderQuickRollStatus(quickRollHpMessage(mode, amount, response));
     });
 }
 

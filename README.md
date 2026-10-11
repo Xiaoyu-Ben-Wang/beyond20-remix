@@ -30,6 +30,9 @@ tabs.
   after an attack or spell's name when you hover its row, or **Favorite** under "Display in VTT"
   in its side panel. They appear in the panel's ★ tab and roll from there, even while the sheet
   is showing another tab. Favourites are kept per character, in your browser.
+* Your hit points sit next to your name in the panel's header. Type an amount under it and
+  click **Heal**, **Damage** (temporary hit points go first) or **Temp HP**, and the change is
+  made on your D&D Beyond sheet.
 * Initiative goes to the Roll20 turn tracker when "Add initiative roll to the Turn Tracker" is
   on. That needs your token selected, so if none is, the panel asks you to select it first.
 * Click a roll and it is performed on your real D&D Beyond character sheet, so class features,
@@ -42,8 +45,8 @@ tabs.
 * Can be turned off in the settings, under the Roll20 tab's options.
 
 See [docs/features.md](docs/features.md) for the full feature list, and
-[docs/api.md](docs/api.md) for the two messages this adds to Beyond20's internal API
-(`quick-roll-data` and `quick-roll`).
+[docs/api.md](docs/api.md) for the messages this adds to Beyond20's internal API
+(`quick-roll-data`, `quick-roll` and `quick-hp`).
 
 # Use
 

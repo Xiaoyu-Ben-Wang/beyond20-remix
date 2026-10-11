@@ -175,6 +175,26 @@ function queryMessageToBeyond(request, callback, timeout_ms = 3000) {
     setTimeout(finish, timeout_ms);
 }
 
+// Hit points are whole numbers, and damage or healing of nothing is a mistake.
+function isValidQuickHpRequest(request) {
+    const amount = request.amount;
+    return !!request.characterId &&
+        ["damage", "heal", "temp"].includes(request.mode) &&
+        Number.isInteger(amount) && amount >= (request.mode === "temp" ? 0 : 1) && amount <= 9999;
+}
+
+// Send a launcher request to every sheet and answer with the owning sheet's reply. A
+// refusal from the owner ("this needs a choice") explains far more than "nobody is open".
+function queryOwningSheet(request, sendResponse, timeout_ms) {
+    queryMessageToBeyond(request, (responses) => {
+        const handled = responses.find((r) => r && r.ok);
+        if (handled)
+            return sendResponse(handled);
+        const refusal = responses.find((r) => r && r.reason && r.reason !== "not-my-character");
+        sendResponse(refusal || { ok: false, reason: "no-tab" });
+    }, timeout_ms);
+}
+
 function isValidQuickRollRequest(request) {
     const rollTypes = ["ability", "saving-throw", "skill", "initiative", "action", "spell"];
     // A spell is named together with the level heading it was starred under.
@@ -370,15 +390,21 @@ function onMessage(request, sender, sendResponse) {
         }
         // A skill roll may have to open its pane first, so this waits longer than a
         // data request. It still only waits for the roll to be accepted.
-        queryMessageToBeyond(quickRollRequest, (responses) => {
-            const handled = responses.find((r) => r && r.ok)
-            if (handled)
-                return sendResponse(handled)
-            // A refusal from the owning sheet ("this needs a choice") explains far more
-            // than the generic "nobody is open".
-            const refusal = responses.find((r) => r && r.reason && r.reason !== "not-my-character")
-            sendResponse(refusal || { ok: false, reason: "no-tab" })
-        }, 10000);
+        queryOwningSheet(quickRollRequest, sendResponse, 10000);
+        return true
+    } else if (request.action == "quick-hp") {
+        // Damage, healing or temporary hit points from the launcher's header. The sheet
+        // may have to open its HP pane and wait for the change to save.
+        if (!isValidQuickHpRequest(request)) {
+            sendResponse({ ok: false, reason: "bad-request" })
+            return true
+        }
+        queryOwningSheet({
+            action: "quick-hp",
+            characterId: String(request.characterId),
+            mode: request.mode,
+            amount: request.amount
+        }, sendResponse, 12000);
         return true
     } else if (request.action == "activate-icon") {
         // popup doesn't have sender.tab so we grab it from the request.
