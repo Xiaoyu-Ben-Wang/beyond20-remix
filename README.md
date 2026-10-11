@@ -13,7 +13,7 @@ Beyond20 normally does still works; the additions are on top.
 
 It is based on Beyond20 v2.21.0. Its own releases use plain numeric versions (`2.21.1`, `2.21.2`, …)
 rather than a `remix` label, because Chrome and Firefox both require the extension version to be
-dot-separated integers. The `remix` label lives in the release tag (`v2.21-remix.1`) and the zip
+dot-separated integers. The `remix` label lives in the release tag (`v2.21-remix.2`) and the zip
 filenames instead.
 
 # Custom features
@@ -75,7 +75,7 @@ source. All you need is to load the extension from the source :
 
 0. If you have the official Beyond20 installed from the Chrome or Firefox stores, disable it.
    Both extensions do the same job and will otherwise both answer the same rolls.
-1. Download the extension for either [Chrome](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest/download/beyond_20-2.21-remix.1-chrome.zip) or [Firefox](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest/download/beyond_20-2.21-remix.1-firefox.zip), or build it yourself with `npm run package`
+1. Download the extension for either [Chrome](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest/download/beyond_20-2.21-remix.2-chrome.zip) or [Firefox](https://github.com/Xiaoyu-Ben-Wang/beyond20-remix/releases/latest/download/beyond_20-2.21-remix.2-firefox.zip), or build it yourself with `npm run package`
 2. Extract the zip file in a directory of your choice
 
 ## Chrome
