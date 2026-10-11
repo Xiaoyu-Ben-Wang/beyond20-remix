@@ -66,8 +66,7 @@ GPL v3; see [LICENSE](LICENSE). The options page is partly from
 
 Credits: the icon is based on a public domain
 [openclipart image](https://commons.wikimedia.org/wiki/File:Twenty_sided_dice.svg); roll badge icons
-by [Jerry Escandon](https://github.com/Jerryescandon); the donation icon by Fission Strategy
-([thenounproject](https://thenounproject.com/term/donation/15047/)); the up arrow in the docs by OCAL
+by [Jerry Escandon](https://github.com/Jerryescandon); the up arrow in the docs by OCAL
 ([clker.com](http://www.clker.com/clipart-16838.html)); condition icons mostly from
 [game-icons.net](https://game-icons.net/) under CC-BY 3.0, sources in
 `FVTT-module/beyond20/conditions/LICENSE`.
