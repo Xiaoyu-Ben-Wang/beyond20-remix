@@ -68,6 +68,7 @@ const isValidQuickRollFavorite = load(DDB_QUICK_ROLL, 'isValidQuickRollFavorite'
 const quickRollFavoriteKey = load(DDB_QUICK_ROLL, 'quickRollFavoriteKey');
 const normalizeQuickRollName = load(DDB_QUICK_ROLL, 'normalizeQuickRollName');
 const quickRollDetail = load(DDB_QUICK_ROLL, 'quickRollDetail');
+const quickRollDamage = load(DDB_QUICK_ROLL, 'quickRollDamage');
 const quickRollSpellLabel = load(DDB_QUICK_ROLL, 'quickRollSpellLabel');
 
 const isValidQuickRollRequest = load('src/extension/background.js', 'isValidQuickRollRequest');
@@ -270,6 +271,13 @@ check("an attack favourite rolls by name, its to-hit in the pill",
     }),
     { rollType: "action", name: "Handaxe", label: "Handaxe", modifier: "+10" });
 
+check("an attack favourite with damage shows it too",
+    () => withSheet(SHEET_SKILLS, () => {
+        quick_roll_data.favorites = [{ ...handaxe, damage: "1d6+5" }];
+        return quickRollSectionBlocks("favorites")[0].rows[0];
+    }),
+    { rollType: "action", name: "Handaxe", label: "Handaxe", modifier: "+10", damage: "1d6+5" });
+
 check("a spell favourite carries its level to the roll",
     () => withSheet(SHEET_SKILLS, () => {
         quick_roll_data.favorites = [cureWounds];
@@ -315,6 +323,10 @@ check("a customised item's trailing * is dropped, to match its pane",
 check("to-hit text is compacted for the pill",
     () => [quickRollDetail(" + 10 "), quickRollDetail("DC  15"), quickRollDetail("--")],
     ["+10", "DC 15", ""]);
+
+check("damage text loses the line breaks the sheet wraps it onto",
+    () => [quickRollDamage(" 1d10+\n 5 "), quickRollDamage("6"), quickRollDamage("--"), quickRollDamage("")],
+    ["1d10+5", "6", "", ""]);
 
 check("cantrips are labelled by name alone, levelled spells with their level",
     () => [quickRollSpellLabel("Fire Bolt", "Cantrip"), quickRollSpellLabel("Shield", "1st Level")],

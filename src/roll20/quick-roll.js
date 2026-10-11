@@ -473,6 +473,14 @@ const QUICK_ROLL_CSS = `
     white-space: nowrap;
     color: var(--b20-qr-label);
 }
+.beyond20-qr-row .beyond20-qr-dmg {
+    flex: 0 0 auto;
+    margin-left: auto;
+    color: var(--b20-qr-dim);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
 .beyond20-qr-row .beyond20-qr-mod {
     flex: 0 0 auto;
     min-width: 24px;
@@ -728,8 +736,22 @@ function quickRollInitiativeRow(data) {
 function quickRollFavoriteRow(favorite) {
     if (!favorite || !["action", "spell"].includes(favorite.rollType) || !favorite.name)
         return null;
-    return quickRollRow(favorite.rollType, favorite.name, favorite.label, favorite.detail,
+    const row = quickRollRow(favorite.rollType, favorite.name, favorite.label, favorite.detail,
         favorite.rollType === "spell" ? favorite.level : undefined);
+    if (favorite.damage) row.damage = favorite.damage;
+    return row;
+}
+
+// The sheet's favourites changed while this launcher was showing them.
+function quickRollFavoritesUpdated(characterId, favorites) {
+    if (!Array.isArray(favorites)) return;
+    for (const c of quick_roll_characters)
+        if (String(c.id) === String(characterId)) c.favorites = favorites;
+    if (!quick_roll_data || String(quick_roll_data.id) !== String(characterId)) return;
+    quick_roll_data.favorites = favorites;
+    // Redrawn in place, unless the panel is busy with something else in that space.
+    if (!quick_roll_picker_open && !quick_roll_initiative_pending)
+        renderQuickRollBody();
 }
 
 // The rolls for a section, as blocks of rows. Skills keep their parent ability as a
@@ -781,7 +803,9 @@ function quickRollDataReady() {
 function makeQuickRollRow(row) {
     const label = E.span({}, row.label);
     const mod = E.span({ class: "beyond20-qr-mod" }, row.modifier);
-    const roll = makeButton([label, mod],
+    // A favourite attack or spell also shows its damage, before the to-hit.
+    const parts = row.damage ? [label, E.span({ class: "beyond20-qr-dmg" }, row.damage), mod] : [label, mod];
+    const roll = makeButton(parts,
         () => performQuickRollFromPanel(row.rollType, row.name, undefined, row.level),
         "beyond20-qr-row", "Roll " + row.label);
     const adv = makeButton("A",

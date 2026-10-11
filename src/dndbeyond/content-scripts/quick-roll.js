@@ -108,6 +108,8 @@ const QUICK_ROLL_ATTACK_TOHIT_SELECTOR = ".ct-combat-attack__tohit, .ddbc-combat
 const QUICK_ROLL_SPELL_ROW_SELECTOR = ".ct-spells-spell, .ddbc-spells-spell";
 const QUICK_ROLL_SPELL_NAME_SELECTOR = ".ct-spell-name, .ddbc-spell-name, span[class*='styles_spellName']";
 const QUICK_ROLL_SPELL_TOHIT_SELECTOR = ".ct-spells-spell__tohit, .ddbc-spells-spell__tohit";
+const QUICK_ROLL_ATTACK_DAMAGE_SELECTOR = ".ct-combat-attack__damage, .ddbc-combat-attack__damage";
+const QUICK_ROLL_SPELL_DAMAGE_SELECTOR = ".ct-spells-spell__damage, .ddbc-spells-spell__damage";
 const QUICK_ROLL_ITEM_NAME_SELECTOR = ".ct-item-name, .ddbc-item-name, span[class*='styles_itemName']";
 // Every pane an attack row can open: a spell listed among the attacks opens the spell's.
 const QUICK_ROLL_ACTION_PANES = ["b20-item-pane", "b20-action-pane", "ct-custom-action-pane", "b20-custom-action-pane", "ct-spell-pane"];
@@ -129,6 +131,13 @@ function quickRollSpellName(element) {
 function quickRollDetail(text) {
     const detail = String(text || "").replace(/\s+/g, " ").replace(/([+-]) /g, "$1").trim();
     return detail === "--" ? "" : detail.slice(0, 12);
+}
+
+// "1d10+5": the damage column's dice, without the line breaks it wraps onto and the
+// damage-type icon beside it (which has no text).
+function quickRollDamage(text) {
+    const damage = String(text || "").replace(/\s+/g, "");
+    return damage === "--" ? "" : damage.slice(0, 20);
 }
 
 // The heading a spell row sits under ("Cantrip", "1st Level"), which the spell pane's
@@ -186,6 +195,19 @@ function saveQuickRollFavorites(characterId, favorites) {
     } catch (err) {
         console.warn("Beyond20: couldn't save quick roll favourites", err);
     }
+    announceQuickRollFavorites(characterId, favorites);
+}
+
+// Tell open Roll20 tabs, so a launcher already showing this character updates without
+// the player refreshing it.
+function announceQuickRollFavorites(characterId, favorites) {
+    try {
+        chrome.runtime.sendMessage({ action: "quick-roll-favorites", characterId: String(characterId), favorites },
+            () => chrome.runtime.lastError); // read, so an unanswered message is not reported as an error
+    } catch (err) {
+        // The extension was reloaded under this page; the launcher will read the sheet
+        // afresh when it next opens.
+    }
 }
 
 // Adds the favourite if missing, removes it if present.
@@ -203,7 +225,11 @@ function toggleQuickRollFavorite(characterId, fav) {
 function quickRollAttackRowFavorite(row) {
     const name = normalizeQuickRollName($(row).find(QUICK_ROLL_ATTACK_LABEL_SELECTOR).first().text());
     if (!name) return null;
-    return { rollType: "action", name, label: name, detail: quickRollDetail($(row).find(QUICK_ROLL_ATTACK_TOHIT_SELECTOR).first().text()) };
+    return {
+        rollType: "action", name, label: name,
+        detail: quickRollDetail($(row).find(QUICK_ROLL_ATTACK_TOHIT_SELECTOR).first().text()),
+        damage: quickRollDamage($(row).find(QUICK_ROLL_ATTACK_DAMAGE_SELECTOR).first().text())
+    };
 }
 
 function quickRollSpellRowFavorite(row) {
@@ -213,7 +239,8 @@ function quickRollSpellRowFavorite(row) {
     return {
         rollType: "spell", name, level,
         label: quickRollSpellLabel(name, level),
-        detail: quickRollDetail($(row).find(QUICK_ROLL_SPELL_TOHIT_SELECTOR).first().text())
+        detail: quickRollDetail($(row).find(QUICK_ROLL_SPELL_TOHIT_SELECTOR).first().text()),
+        damage: quickRollDamage($(row).find(QUICK_ROLL_SPELL_DAMAGE_SELECTOR).first().text())
     };
 }
 
@@ -373,8 +400,8 @@ function updateQuickRollFavorites() {
             }
             const stored = byKey.get(quickRollFavoriteKey(fav));
             setQuickRollFavoriteStarState(star, !!stored);
-            if (stored && (stored.label !== fav.label || stored.detail !== fav.detail)) {
-                Object.assign(stored, { label: fav.label, detail: fav.detail });
+            if (stored && (stored.label !== fav.label || stored.detail !== fav.detail || stored.damage !== fav.damage)) {
+                Object.assign(stored, { label: fav.label, detail: fav.detail, damage: fav.damage });
                 stale = true;
             }
         });

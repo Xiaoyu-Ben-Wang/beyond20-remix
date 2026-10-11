@@ -956,6 +956,8 @@ function handleMessage(request, sender, sendResponse) {
             updateSettings(request.settings);
     } else if (request.action == "open-options") {
         alertFullSettings();
+    } else if (request.action == "quick-roll-favorites") {
+        quickRollFavoritesUpdated(request.characterId, request.favorites);
     } else if (request.action == "hp-update") {
         quickRollHpUpdated(request.character);
         if (settings["update-hp"])

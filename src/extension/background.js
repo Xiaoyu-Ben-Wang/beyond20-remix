@@ -392,6 +392,12 @@ function onMessage(request, sender, sendResponse) {
         // data request. It still only waits for the roll to be accepted.
         queryOwningSheet(quickRollRequest, sendResponse, 10000);
         return true
+    } else if (request.action == "quick-roll-favorites") {
+        // A sheet's favourites changed: let any launcher showing that character redraw.
+        if (request.characterId && Array.isArray(request.favorites) && request.favorites.length <= 200)
+            sendMessageToRoll20({ action: "quick-roll-favorites", characterId: String(request.characterId), favorites: request.favorites });
+        sendResponse({ ok: true })
+        return true
     } else if (request.action == "quick-hp") {
         // Damage, healing or temporary hit points from the launcher's header. The sheet
         // may have to open its HP pane and wait for the change to save.

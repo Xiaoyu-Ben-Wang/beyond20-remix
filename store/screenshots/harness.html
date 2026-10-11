@@ -271,12 +271,12 @@ const CHARACTER = {
     initiative: { modifier: "+4" },
     hp: { current: 23, max: 38, temp: 5 },
     favorites: [
-        { rollType: "action", name: "Rapier", label: "Rapier", detail: "+7" },
-        { rollType: "action", name: "Hand Crossbow", label: "Hand Crossbow", detail: "+7" },
-        { rollType: "spell", name: "Vicious Mockery", level: "Cantrip", label: "Vicious Mockery", detail: "DC 14" },
-        { rollType: "spell", name: "Healing Word", level: "1st Level", label: "Healing Word (1st)", detail: "" },
-        { rollType: "spell", name: "Shatter", level: "2nd Level", label: "Shatter (2nd)", detail: "DC 14" },
-        { rollType: "action", name: "Dagger", label: "Dagger", detail: "+7" }
+        { rollType: "action", name: "Rapier", label: "Rapier", detail: "+7", damage: "1d8+4" },
+        { rollType: "action", name: "Hand Crossbow", label: "Hand Crossbow", detail: "+7", damage: "1d6+4" },
+        { rollType: "spell", name: "Vicious Mockery", level: "Cantrip", label: "Vicious Mockery", detail: "DC 14", damage: "2d4" },
+        { rollType: "spell", name: "Healing Word", level: "1st Level", label: "Healing Word (1st)", detail: "", damage: "1d4+3" },
+        { rollType: "spell", name: "Shatter", level: "2nd Level", label: "Shatter (2nd)", detail: "DC 14", damage: "3d8" },
+        { rollType: "action", name: "Dagger", label: "Dagger", detail: "+7", damage: "1d4+4" }
     ]
 };
 
