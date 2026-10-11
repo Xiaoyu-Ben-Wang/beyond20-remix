@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Store Screenshots</title>
+<!--
+  Chrome Web Store screenshots of the Roll20 quick roll launcher.
+
+  This page runs the real launcher (src/roll20/quick-roll.js) against stubbed extension
+  APIs and an invented character, over a drawn tabletop, so the shots show the shipping
+  UI rather than a mock of it. Pick a scene with ?scene=skills|advantage|favorites|
+  initiative|themes. capture.sh renders every scene to a 1280x800 PNG.
+
+  The page is laid out at 853x533 CSS pixels and captured at a device scale factor of
+  1.5, so the launcher's real pixel sizes read clearly at the store's resolution.
+-->
+<style>
+:root {
+    --ink: #f4ead8;
+    --ink-dim: #c9bba1;
+    --accent: #e0a526;
+    --felt: #2c3a33;
+    --felt-line: rgba(255, 255, 255, 0.055);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+    width: 853px;
+    height: 533px;
+    overflow: hidden;
+    position: relative;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    font-size: 13px;
+    background:
+        radial-gradient(ellipse at 70% 40%, rgba(255, 220, 160, 0.10), transparent 60%),
+        repeating-linear-gradient(0deg, var(--felt-line) 0 1px, transparent 1px 35px),
+        repeating-linear-gradient(90deg, var(--felt-line) 0 1px, transparent 1px 35px),
+        var(--felt);
+}
+/* Scenery: a stone floor, a few tokens. Purely decorative. */
+.room {
+    position: absolute;
+    left: 385px; top: 250px;
+    width: 420px; height: 245px;
+    border: 2px solid rgba(214, 196, 160, 0.25);
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 3px;
+}
+.token {
+    position: absolute;
+    width: 33px; height: 33px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font: bold 12px/1 Georgia, serif;
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+.token.selected { box-shadow: 0 0 0 3px #4aa3ff, 0 0 18px 4px rgba(74, 163, 255, 0.55); }
+.token.hint::after {
+    content: "";
+    position: absolute;
+    inset: -9px;
+    border: 2px dashed rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    animation: none;
+}
+.caption {
+    position: absolute;
+    right: 40px;
+    top: 44px;
+    width: 400px;
+    color: var(--ink);
+}
+.caption h1 {
+    margin: 0 0 10px;
+    font: 600 31px/1.12 Georgia, "Times New Roman", serif;
+    letter-spacing: -0.01em;
+}
+.caption p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-dim);
+}
+.caption .kicker {
+    display: inline-block;
+    margin-bottom: 12px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+/* A character sheet card standing in for the D&D Beyond side of the favourites story. */
+.sheet {
+    position: absolute;
+    left: 425px; top: 205px;
+    width: 300px;
+    padding: 12px 14px 10px;
+    border-radius: 8px;
+    background: #fbf8f2;
+    color: #2b2420;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+.sheet h2 {
+    margin: 0 0 6px;
+    font: 700 11px/1 "Segoe UI", sans-serif;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7f74;
+}
+.sheet-row {
+    display: grid;
+    grid-template-columns: 14px 36px 1fr 38px;
+    align-items: center;
+    height: 25px;
+    border-bottom: 1px solid #ece4d8;
+    font-size: 12.5px;
+}
+.sheet-row:last-child { border-bottom: 0; }
+.sheet-row.hovered { background: #f3ecdf; }
+.sheet-row .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #8a7f74; }
+.sheet-row .dot.on { background: #2b2420; border-color: #2b2420; }
+.sheet-row .abbr { font-size: 10px; color: #8a7f74; font-weight: 600; }
+.sheet-row .mod {
+    justify-self: end;
+    padding: 1px 6px;
+    border: 1px solid #c9bba8;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 12px;
+}
+/* Mirrors the star in src/extension/beyond20.css, which is what the sheet shows. */
+.sheet-row .name { position: relative; padding-right: 22px; }
+.star { position: absolute; right: 4px; top: 50%; margin-top: -8px; font-size: 13px; line-height: 16px; color: #9a9a9a; }
+.star.on { color: #e0a526; }
+.cursor {
+    position: absolute;
+    width: 14px; height: 20px;
+    background: no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 20'%3E%3Cpath d='M1 1v15l4-4 3 7 2.5-1-3-7h5.5z' fill='%23fff' stroke='%23000' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E");
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+    z-index: 2147483647;
+    pointer-events: none;
+}
+.chat {
+    position: absolute;
+    right: 40px; bottom: 34px;
+    width: 230px;
+    padding: 9px 11px;
+    border-radius: 7px;
+    background: #fbf8f2;
+    color: #2b2420;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+    font-size: 12px;
+}
+.chat .who { font-weight: 700; margin-bottom: 4px; }
+.chat .roll-title { color: #7a2a1d; font: 700 13px/1.2 Georgia, serif; }
+.chat .result { display: flex; gap: 8px; margin-top: 6px; }
+.chat .die {
+    flex: 1;
+    padding: 4px 0;
+    text-align: center;
+    border-radius: 4px;
+    background: #efe7da;
+    font-weight: 700;
+    font-size: 16px;
+}
+.chat .die.dropped { color: #b3a898; text-decoration: line-through; font-weight: 400; }
+.chat .note { margin-top: 5px; font-size: 10.5px; color: #8a7f74; }
+.tracker {
+    position: absolute;
+    right: 40px; bottom: 34px;
+    width: 190px;
+    border-radius: 7px;
+    overflow: hidden;
+    background: #fbf8f2;
+    color: #2b2420;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+    font-size: 12px;
+}
+.tracker .bar { padding: 6px 10px; background: #e8dfd0; font-weight: 700; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6d6156; }
+.tracker .entry { display: flex; justify-content: space-between; padding: 5px 10px; border-top: 1px solid #ece4d8; }
+.tracker .entry.new { background: #fff4d6; }
+.tracker .entry b { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<script>
+// --- Stubs for the extension APIs the launcher touches ------------------------------
+const params = new URLSearchParams(location.search);
+const SCENE = params.get("scene") || "skills";
+
+const memoryStorage = {};
+var chrome = {
+    runtime: {
+        lastError: null,
+        getURL: (path) => "../../" + path,
+        sendMessage(message, cb) {
+            setTimeout(() => {
+                if (message.action === "quick-roll-data") cb({ characters: [CHARACTER] });
+                else if (message.action === "quick-roll") cb({ ok: true });
+                else cb && cb();
+            }, 0);
+        },
+        onMessage: { addListener() {} }
+    },
+    storage: {
+        local: {
+            get(keys, cb) {
+                const out = {};
+                for (const k in keys) out[k] = k in memoryStorage ? memoryStorage[k] : keys[k];
+                setTimeout(() => cb(out), 0);
+            },
+            set(items, cb) { Object.assign(memoryStorage, items); cb && setTimeout(cb, 0); }
+        }
+    }
+};
+chrome.storage.sync = chrome.storage.local;
+
+// An invented character. The portrait is drawn here rather than borrowed.
+const PORTRAIT = "data:image/svg+xml," + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+        <defs>
+            <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b3f8f"/><stop offset="1" stop-color="#2a1d4a"/></linearGradient>
+            <linearGradient id="hair" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9c46a"/><stop offset="1" stop-color="#b9852b"/></linearGradient>
+        </defs>
+        <rect width="64" height="64" fill="url(#bg)"/>
+        <path d="M14 64c2-13 9-19 18-19s16 6 18 19z" fill="#2f5d50"/>
+        <path d="M27 40h10v7a5 5 0 0 1-10 0z" fill="#d9a77c"/>
+        <ellipse cx="32" cy="29" rx="10.5" ry="12.5" fill="#e8b98f"/>
+        <path d="M20 31c-2-12 4-19 12-19s15 6 12 20c-2-6-5-10-7-12-4 3-10 5-17 11z" fill="url(#hair)"/>
+        <path d="M20 31c-1 8-3 14-6 17 6 0 9-5 9-9zM44 31c1 8 3 14 6 17-6 0-9-5-9-9z" fill="url(#hair)"/>
+        <circle cx="28" cy="30" r="1.2" fill="#2b1d14"/><circle cx="36" cy="30" r="1.2" fill="#2b1d14"/>
+        <path d="M29 36q3 2 6 0" stroke="#a5634a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    </svg>`);
+
+const CHARACTER = {
+    id: "123456789",
+    name: "Seraphine Vale",
+    avatar: PORTRAIT,
+    abilities: [
+        { name: "Strength", abbr: "STR", modifier: "-1" },
+        { name: "Dexterity", abbr: "DEX", modifier: "+4" },
+        { name: "Constitution", abbr: "CON", modifier: "+2" },
+        { name: "Intelligence", abbr: "INT", modifier: "+1" },
+        { name: "Wisdom", abbr: "WIS", modifier: "+1" },
+        { name: "Charisma", abbr: "CHA", modifier: "+3" }
+    ],
+    saves: [
+        { name: "Strength", abbr: "STR", modifier: "-1" },
+        { name: "Dexterity", abbr: "DEX", modifier: "+7" },
+        { name: "Constitution", abbr: "CON", modifier: "+2" },
+        { name: "Intelligence", abbr: "INT", modifier: "+4" },
+        { name: "Wisdom", abbr: "WIS", modifier: "+1" },
+        { name: "Charisma", abbr: "CHA", modifier: "+3" }
+    ],
+    skills: [
+        ["Athletics", "STR", "-1"], ["Acrobatics", "DEX", "+7"], ["Sleight of Hand", "DEX", "+7"],
+        ["Stealth", "DEX", "+10"], ["Arcana", "INT", "+4"], ["History", "INT", "+1"],
+        ["Investigation", "INT", "+7"], ["Nature", "INT", "+1"], ["Religion", "INT", "+1"],
+        ["Animal Handling", "WIS", "+1"], ["Insight", "WIS", "+4"], ["Medicine", "WIS", "+1"],
+        ["Perception", "WIS", "+7"], ["Survival", "WIS", "+1"], ["Deception", "CHA", "+6"],
+        ["Intimidation", "CHA", "+3"], ["Performance", "CHA", "+3"], ["Persuasion", "CHA", "+6"]
+    ].map(([name, ability, modifier]) => ({ name, ability, modifier })),
+    initiative: { modifier: "+4" },
+    favorites: [
+        { rollType: "skill", name: "Perception" },
+        { rollType: "skill", name: "Stealth" },
+        { rollType: "initiative", name: "Initiative" },
+        { rollType: "saving-throw", name: "DEX" },
+        { rollType: "skill", name: "Investigation" },
+        { rollType: "saving-throw", name: "CON" }
+    ]
+};
+
+// Stands in for Roll20's page script: no token is selected yet.
+document.addEventListener("Beyond20_QuickRollTokenSelection", () => {
+    document.dispatchEvent(new CustomEvent("Beyond20_QuickRollTokenSelectionResult", { detail: "none" }));
+});
+</script>
+<script src="../../libs/jquery-3.4.1.min.js"></script>
+<script src="../../src/common/utils.js"></script>
+<script src="../../src/common/settings.js"></script>
+<script src="../../src/roll20/quick-roll.js"></script>
+<script>
+var settings = {
+    "roll20-quick-roll-panel": true,
+    "roll20-quick-roll-theme": params.get("theme") || "dark",
+    "roll20-quick-roll-color": params.get("color") || "default",
+    "initiative-tracker": true
+};
+
+function el(html) {
+    const t = document.createElement("template");
+    t.innerHTML = html.trim();
+    return t.content.firstChild;
+}
+
+function caption(kicker, title, text) {
+    document.body.appendChild(el(`<div class="caption"><span class="kicker">${kicker}</span><h1>${title}</h1><p>${text}</p></div>`));
+}
+
+function token(x, y, color, label, extra = "") {
+    document.body.appendChild(el(`<div class="token ${extra}" style="left:${x}px;top:${y}px;background:${color}">${label}</div>`));
+}
+
+function scenery() {
+    document.body.appendChild(el(`<div class="room"></div>`));
+    token(455, 320, "#7a4a9e", "SV");
+    token(525, 390, "#2f6f8f", "BR");
+    token(595, 300, "#8f5a2f", "TH");
+    token(700, 420, "#9e2f2f", "OG");
+    token(735, 345, "#9e2f2f", "OG");
+}
+
+function cursorAt(target, dx = 0, dy = 0) {
+    const r = target.getBoundingClientRect();
+    const c = el(`<div class="cursor"></div>`);
+    c.style.left = (r.left + r.width / 2 + dx) + "px";
+    c.style.top = (r.top + r.height / 2 + dy) + "px";
+    document.body.appendChild(c);
+}
+
+// Shows a hover state in a still image, by copying the computed style the real :hover
+// rule gives a sibling the page can actually hover... which a headless capture cannot.
+// The rule's values are read from the launcher's own stylesheet instead.
+function forceHover(target, selector) {
+    const sheet = document.getElementById("beyond20-quick-roll-style").sheet;
+    for (const rule of sheet.cssRules) {
+        if (rule.selectorText && rule.selectorText.split(",").map((s) => s.trim()).includes(selector)) {
+            for (const prop of rule.style) target.style.setProperty(prop, rule.style.getPropertyValue(prop));
+        }
+    }
+}
+
+function rowNamed(label) {
+    return [...document.querySelectorAll(".beyond20-qr-line")]
+        .find((line) => line.querySelector(".beyond20-qr-row span").textContent === label);
+}
+
+function whenPanelReady(fn) {
+    const wait = () => document.querySelector("#beyond20-quick-roll-panel .beyond20-qr-line, #beyond20-quick-roll-panel .beyond20-qr-notice")
+        ? fn() : setTimeout(wait, 20);
+    wait();
+}
+
+function openLauncher(section) {
+    injectQuickRollLauncher();
+    // Shown without the opening animation, which a still capture could catch half way.
+    const style = el(`<style>#beyond20-quick-roll-panel, #beyond20-quick-roll-launcher { transition: none !important; }</style>`);
+    document.head.appendChild(style);
+    openQuickRollPanel();
+    // Opening the panel re-reads the sheet, which re-renders the rows; anything placed
+    // against a row has to wait for that.
+    whenPanelReady(() => setTimeout(() => {
+        if (section) selectQuickRollSection(section, true);
+        if (scenes[SCENE].after) scenes[SCENE].after();
+        document.body.dataset.ready = "1";
+    }, 200));
+}
+
+const scenes = {
+    skills: {
+        run() {
+            scenery();
+            caption("Roll20 quick rolls", "Roll from Roll20 without switching tabs",
+                "Every skill, save, ability check and initiative from your D&amp;D Beyond sheet, one click away. " +
+                "The roll happens on your real sheet, so every feature and modifier applies.");
+            document.body.appendChild(el(`<div class="chat">
+                <div class="who">Seraphine Vale</div>
+                <div class="roll-title">Stealth (DEX)</div>
+                <div class="result"><div class="die">23</div></div>
+                <div class="note">Rolled on D&amp;D Beyond · 13 + 10</div>
+            </div>`));
+            openLauncher("skills");
+        },
+        after() {
+            const row = rowNamed("Stealth").querySelector(".beyond20-qr-row");
+            forceHover(row, ".beyond20-qr-row:hover");
+            cursorAt(row, 10, 2);
+        }
+    },
+    advantage: {
+        run() {
+            scenery();
+            caption("Advantage, one click", "Roll with advantage or disadvantage",
+                "Small <b style=\"color:#57c27f\">A</b> and <b style=\"color:#e0675f\">D</b> buttons on every row. " +
+                "No hotkeys to hold, no settings to flip back afterwards.");
+            document.body.appendChild(el(`<div class="chat">
+                <div class="who">Seraphine Vale</div>
+                <div class="roll-title">Perception (WIS) · Advantage</div>
+                <div class="result"><div class="die">21</div><div class="die dropped">9</div></div>
+                <div class="note">Rolled on D&amp;D Beyond · 14 + 7</div>
+            </div>`));
+            openLauncher("skills");
+        },
+        after() {
+            const adv = rowNamed("Perception").querySelector(".beyond20-qr-adv");
+            forceHover(adv, ".beyond20-qr-adv:hover");
+            cursorAt(adv, 3, 3);
+        }
+    },
+    favorites: {
+        run() {
+            caption("Favourites", "Pin the rolls you make every session",
+                "Star a skill, save, check or initiative on your D&amp;D Beyond sheet and it joins the launcher's ★ tab, " +
+                "in the order you starred it.");
+            const rows = [
+                ["", "DEX", "Acrobatics", "+7", false],
+                ["on", "WIS", "Insight", "+4", false, "hovered"],
+                ["on", "INT", "Investigation", "+7", true],
+                ["", "WIS", "Medicine", "+1", false],
+                ["on", "WIS", "Perception", "+7", true],
+                ["on", "DEX", "Stealth", "+10", true]
+            ];
+            const sheet = el(`<div class="sheet"><h2>Skills</h2></div>`);
+            for (const [dot, abbr, name, mod, fav, hovered] of rows) {
+                sheet.appendChild(el(`<div class="sheet-row ${hovered || ""}">
+                    <span class="dot ${dot}"></span><span class="abbr">${abbr}</span>
+                    <span class="name">${name}<span class="star ${fav ? "on" : ""}">${fav ? "★" : (hovered ? "☆" : "")}</span></span>
+                    <span class="mod">${mod}</span></div>`));
+            }
+            document.body.appendChild(sheet);
+            openLauncher("favorites");
+        },
+        after() {
+            const star = [...document.querySelectorAll(".sheet-row.hovered .star")][0];
+            cursorAt(star, 3, 4);
+        }
+    },
+    initiative: {
+        run() {
+            scenery();
+            document.querySelectorAll(".token")[0].classList.add("hint");
+            caption("Initiative", "Straight into the turn tracker",
+                "Roll initiative from the launcher and it lands in Roll20's turn order. " +
+                "Forgot to select your token? The launcher asks first, then rolls the moment you do.");
+            document.body.appendChild(el(`<div class="tracker">
+                <div class="bar">Turn order</div>
+                <div class="entry"><span>Brannoc</span><b>19</b></div>
+                <div class="entry"><span>Ogre</span><b>11</b></div>
+                <div class="entry"><span>Thessaly</span><b>8</b></div>
+            </div>`));
+            openLauncher("checks");
+        },
+        after() {
+            performQuickRollFromPanel("initiative", "Initiative");
+            setTimeout(() => {
+                // Stop watching for a selection, so the capture holds the prompt.
+                clearInterval(quick_roll_initiative_poll);
+                cursorAt(document.querySelectorAll(".token")[0], 6, 8);
+            }, 50);
+        }
+    },
+    themes: {
+        run() {
+            caption("Make it yours", "Light or dark, in six colours",
+                "Pick the panel's theme and accent colour in Beyond20's options, to sit comfortably on any table.");
+            document.querySelector(".caption").style.cssText += "left:40px;right:auto;top:36px;width:560px";
+            document.head.appendChild(el(`<style>
+                #beyond20-quick-roll-panel { bottom: 72px !important; max-height: 290px !important; }
+                #beyond20-quick-roll-launcher { bottom: 20px !important; }
+            </style>`));
+            openLauncher("favorites");
+        },
+        // The launcher's styles hang off its element ids, so a document holds one
+        // launcher. Copies of it, restyled through the same data attributes the settings
+        // drive, show the variants side by side in a still image.
+        after() {
+            const panel = document.getElementById("beyond20-quick-roll-panel");
+            const launcher = document.getElementById("beyond20-quick-roll-launcher");
+            [["dark", "default", 10], ["light", "amber", 290], ["dark", "purple", 570]].forEach(([theme, color, left], i) => {
+                for (const original of [panel, launcher]) {
+                    const node = i === 0 ? original : original.cloneNode(true);
+                    node.dataset.b20QrTheme = theme;
+                    node.dataset.b20QrColor = color;
+                    node.style.setProperty("left", left + "px", "important");
+                    if (i > 0) document.body.appendChild(node);
+                }
+            });
+        }
+    }
+};
+
+scenes[SCENE].run();
+</script>
+</body>
+</html>
