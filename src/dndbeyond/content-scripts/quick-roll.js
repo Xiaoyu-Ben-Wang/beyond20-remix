@@ -642,11 +642,17 @@ async function performRemoteQuickRoll(rollType, name, advantage, level) {
 }
 
 // --- Hit points ------------------------------------------------------------ *
-// Damage, healing and temporary hit points sent from the launcher's header. The sheet
-// works out the new values and writes them into D&D Beyond's own HP Management pane,
-// the same inputs Beyond20 reads hit points from, so D&D Beyond saves them as if the
-// player had typed them.
+// Damage, healing and temporary hit points sent from the launcher's header, made with
+// D&D Beyond's own controls: the amount box and Heal and Damage buttons in the sheet's
+// hit point box (or in its HP Management pane, in layouts without them), and the Temp
+// value, which edits in place.
+//
+// This tab is in the background, where the browser fires no focus or blur events, and
+// D&D Beyond saves an edited field when it loses focus. So nothing here relies on real
+// focus: buttons are clicked, and an in-place edit is confirmed with a synthetic Enter
+// and focus-out.
 
+const QUICK_ROLL_HP_BOX = ".ct-quick-info__health";
 const QUICK_ROLL_HP_PANE = ".b20-health-manage-pane";
 let quick_roll_hp_busy = false;
 
@@ -655,8 +661,9 @@ function getQuickRollHp() {
     return { current: character._hp || 0, max: character._max_hp, temp: character._temp_hp || 0 };
 }
 
-// Temporary hit points soak damage first, healing stops at the maximum, and new
-// temporary hit points replace the old rather than adding to them.
+// What D&D Beyond does, worked out here to check its answer against: temporary hit
+// points soak damage first, healing stops at the maximum, and new temporary hit points
+// replace the old rather than adding to them.
 function computeQuickRollHp(hp, mode, amount) {
     const { current, max, temp } = hp;
     if (mode === "temp")
@@ -667,37 +674,43 @@ function computeQuickRollHp(hp, mode, amount) {
     return { current: Math.max(0, current - (amount - absorbed)), max, temp: temp - absorbed };
 }
 
-// The pane's Current and Temp inputs, read with the selectors Character.updateHP uses.
-function quickRollHpInputs() {
-    const pane = $(QUICK_ROLL_HP_PANE);
-    let current = null;
-    pane.find("div[class*='styles_container'] div[class*='styles_innerContainer'] div[class*='styles_item']").each((_, item) => {
-        const label = $(item).find("label[class*='styles_label'], span[class*='styles_label']").text().trim();
-        if (label === "Current" && !current)
-            current = $(item).find("input[class*='styles_input']")[0] || null;
-    });
-    const temp = pane.find("div[class*='styles_container'] div[class*='styles_temp'] input[class*='styles_input']")[0] || null;
-    return { current, temp };
+function quickRollButtonNamed(scope, classPart, text) {
+    const byClass = scope.find(`button[class*='${classPart}']`).first();
+    if (byClass.length) return byClass[0];
+    return scope.find("button").filter((_, b) => b.textContent.trim().toLowerCase() === text).first()[0] || null;
 }
 
-// The hit point box on the sheet opens the HP Management pane. Its heading is clicked
-// rather than its numbers, which edit in place.
+// The amount box and its Heal and Damage buttons within `scope`, or null.
+function quickRollHpControls(scope) {
+    const input = scope.find("input[data-testid='hp-adjust-input'], input[aria-label='Hit Points Adjustment']").first()[0];
+    const heal = quickRollButtonNamed(scope, "styles_heal", "heal");
+    const damage = quickRollButtonNamed(scope, "styles_damage", "damage");
+    return input && heal && damage ? { input, heal, damage } : null;
+}
+
+// The hit point box opens the HP Management pane from its heading; its numbers are
+// buttons that edit in place.
 function clickQuickRollHpBox() {
-    const box = $(".ct-quick-info__health, .ct-health-summary, .ct-status-summary-mobile__hp").first();
+    const box = $(`${QUICK_ROLL_HP_BOX}, .ct-health-summary, .ct-status-summary-mobile__hp`).first();
     const heading = box.find("*").filter((_, el) =>
         el.children.length === 0 && /^hit points$/i.test(el.textContent.trim())).first();
     (heading.length ? heading : box).trigger("click");
 }
 
-// Type into a React-controlled input: set the value through the native setter, so React
-// sees a change, and blur it, which is when D&D Beyond saves the field.
-function setQuickRollInput(input, value) {
+// Type into a React-controlled input: the native setter, so React sees a change, then
+// the input event React listens for. With `commit`, also press Enter and leave the
+// field, by synthetic events, since a background tab gets no real focus changes.
+function setQuickRollInput(input, value, commit = false) {
     const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set;
-    input.focus();
     setter.call(input, String(value));
     input.dispatchEvent(new Event("input", { bubbles: true }));
     input.dispatchEvent(new Event("change", { bubbles: true }));
-    input.blur();
+    if (!commit) return;
+    const enter = { key: "Enter", code: "Enter", keyCode: 13, which: 13, bubbles: true, cancelable: true };
+    input.dispatchEvent(new KeyboardEvent("keydown", enter));
+    input.dispatchEvent(new KeyboardEvent("keyup", enter));
+    input.dispatchEvent(new FocusEvent("blur"));
+    input.dispatchEvent(new FocusEvent("focusout", { bubbles: true }));
 }
 
 // Hit points as the sheet's own HP box shows them, which only changes once D&D Beyond
@@ -705,7 +718,7 @@ function setQuickRollInput(input, value) {
 // open, and those show whatever was typed.) Null where there is no such box, as in the
 // mobile layout.
 function readQuickRollHpSummary() {
-    const box = $(".ct-health-summary__hp-group--primary, .ct-quick-info__health").first();
+    const box = $(`.ct-health-summary__hp-group--primary, ${QUICK_ROLL_HP_BOX}`).first();
     if (box.length === 0) return null;
     let current = null;
     box.find(".ct-health-summary__hp-item, div[class*='styles_container'] div[class*='styles_innerContainer'] div[class*='styles_item']").each((_, item) => {
@@ -717,7 +730,7 @@ function readQuickRollHpSummary() {
         }
     });
     if (current === null) return null;
-    const tempItem = $(".ct-health-summary__hp-group--temp .ct-health-summary__hp-item--temp .ct-health-summary__hp-item-content, .ct-quick-info__health div[class*='styles_temp']").first();
+    const tempItem = $(`.ct-health-summary__hp-group--temp .ct-health-summary__hp-item--temp .ct-health-summary__hp-item-content, ${QUICK_ROLL_HP_BOX} div[class*='styles_temp']`).first();
     const tempValue = tempItem.find(".ct-health-summary__hp-number, button[class*='styles_valueButton'], input[class*='styles_input']");
     const temp = parseInt(tempValue.val() || tempValue.text()) || 0;
     return { current, temp };
@@ -734,36 +747,56 @@ function quickRollHpFailure(reason, details) {
     return { ok: false, reason };
 }
 
+// Heal or Damage, with the box's controls if the sheet shows them, else the pane's.
+async function applyQuickRollHpAdjustment(mode, amount) {
+    let controls = quickRollHpControls($(QUICK_ROLL_HP_BOX));
+    if (!controls) {
+        await waitForSheet(() => quickRollHpControls($(QUICK_ROLL_HP_PANE)), clickQuickRollHpBox);
+        controls = quickRollHpControls($(QUICK_ROLL_HP_PANE));
+    }
+    if (!controls)
+        return quickRollHpFailure("hp-controls-not-found", { box: $(QUICK_ROLL_HP_BOX).first().prop("outerHTML") });
+    setQuickRollInput(controls.input, amount);
+    (mode === "heal" ? controls.heal : controls.damage).click();
+    return null;
+}
+
+// The temporary hit point field: the box's Temp value turns into one when clicked; the
+// pane has one already.
+function quickRollTempInput() {
+    return $(`${QUICK_ROLL_HP_BOX} div[class*='styles_temp'] input, ${QUICK_ROLL_HP_PANE} div[class*='styles_temp'] input`).first()[0] || null;
+}
+
+async function applyQuickRollTempHp(amount) {
+    let input = quickRollTempInput();
+    if (!input) {
+        const value = $(`${QUICK_ROLL_HP_BOX} div[class*='styles_temp'] button`).first()[0];
+        input = await waitForSheet(quickRollTempInput, () => value ? value.click() : clickQuickRollHpBox());
+    }
+    if (!input)
+        return quickRollHpFailure("hp-temp-not-found", { box: $(QUICK_ROLL_HP_BOX).first().prop("outerHTML") });
+    setQuickRollInput(input, amount, true);
+    return null;
+}
+
 async function performRemoteHpChange(mode, amount) {
     if (quick_roll_hp_busy)
         return { ok: false, reason: "busy" };
     quick_roll_hp_busy = true;
     try {
         character.updateInfo();
-        const before = getQuickRollHp();
-        if (!before)
+        const before = readQuickRollHpSummary() ? { ...getQuickRollHp(), ...readQuickRollHpSummary() } : getQuickRollHp();
+        if (!before || !before.max)
             return quickRollHpFailure("hp-unknown", { hp: character._hp, max: character._max_hp, temp: character._temp_hp });
         const target = computeQuickRollHp(before, mode, amount);
         if (sameQuickRollHp(before, target))
             return { ok: true, hp: before };
 
-        const paneOpen = () => $(QUICK_ROLL_HP_PANE).length > 0;
-        if (!paneOpen() && $(".ct-quick-info__health, .ct-health-summary, .ct-status-summary-mobile__hp").length === 0)
-            return quickRollHpFailure("hp-box-not-found");
-        const opened = await waitForSheet(() => paneOpen() && quickRollHpInputs().current ? true : null, clickQuickRollHpBox);
-        const inputs = quickRollHpInputs();
-        if (!paneOpen())
-            return quickRollHpFailure("hp-pane-not-opened", { sidebar: $(".ct-sidebar__inner").first().prop("outerHTML") });
-        if (!opened || !inputs.current || (target.temp !== before.temp && !inputs.temp))
-            return quickRollHpFailure("hp-inputs-not-found", {
-                current: !!inputs.current, temp: !!inputs.temp,
-                pane: $(QUICK_ROLL_HP_PANE).first().prop("outerHTML")
-            });
-
-        if (target.temp !== before.temp)
-            setQuickRollInput(inputs.temp, target.temp);
-        if (target.current !== before.current)
-            setQuickRollInput(inputs.current, target.current);
+        const failed = mode === "temp"
+            ? await applyQuickRollTempHp(amount)
+            : await applyQuickRollHpAdjustment(mode, amount);
+        if (failed)
+            return failed;
 
         // Answer with what the sheet shows once it settles, not what was asked for: if
         // D&D Beyond did not take the change, the player should hear so.
@@ -775,7 +808,7 @@ async function performRemoteHpChange(mode, amount) {
         const now = { ...saved(), max: before.max };
         if (applied)
             return { ok: true, hp: now };
-        return { ...quickRollHpFailure("hp-not-applied", { target, now, box: $(".ct-quick-info__health, .ct-health-summary").first().prop("outerHTML") }), hp: now };
+        return { ...quickRollHpFailure("hp-not-applied", { target, now, box: $(QUICK_ROLL_HP_BOX).first().prop("outerHTML") }), hp: now };
     } finally {
         quick_roll_hp_busy = false;
     }

@@ -3694,8 +3694,6 @@ function installDDBRollHijack() {
         swallowRollEvent(event);
         routeTarget(target);
     }, true);
-
-    console.log("Beyond20: DDB roll hijack installed.");
 }
 
 var settings = getDefaultSettings();

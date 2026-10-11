@@ -322,10 +322,10 @@ Ask the background script to change a D&D Beyond character's hit points. Used by
 hit point controls in the Roll20 quick roll launcher's header.
 
 Like [quick-roll](#quick-roll), the request goes to every open D&D Beyond character sheet
-and the one whose character id matches acts. It works out the new values itself
-(temporary hit points take damage first, healing stops at the maximum, and new temporary
-hit points replace the old ones), writes them into D&D Beyond's HP Management pane, and
-answers once the sheet shows them saved.
+and the one whose character id matches acts. It uses D&D Beyond's own controls (the hit
+point box's amount field with its Heal and Damage buttons, or its Temp field), and
+answers once the sheet shows the result it expects (temporary hit points take damage
+first, healing stops at the maximum, and new temporary hit points replace the old).
 
 Message Format:
 ```js
@@ -345,7 +345,8 @@ Returns a response of the form:
              //   when the sheet could read them
     reason   // <String> Why it failed, when ok is false: "no-tab", "busy",
              //   "hp-unknown" (the sheet has not read its hit points),
-             //   "hp-box-not-found", "hp-pane-not-opened", "hp-inputs-not-found",
+             //   "hp-controls-not-found" (no Heal/Damage controls),
+             //   "hp-temp-not-found" (no temporary hit point field),
              //   "hp-not-applied" (D&D Beyond did not save the change),
              //   "disconnected" or "bad-request"
 }

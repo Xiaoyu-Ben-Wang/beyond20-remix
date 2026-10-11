@@ -1270,9 +1270,8 @@ function quickRollHpMessage(mode, amount, response) {
     // Which step failed, so a report of it says where to look.
     const steps = {
         "hp-unknown": "it hasn't read your hit points yet",
-        "hp-box-not-found": "its hit point box wasn't found",
-        "hp-pane-not-opened": "its HP Management panel didn't open",
-        "hp-inputs-not-found": "the HP Management panel's fields weren't found",
+        "hp-controls-not-found": "its Heal and Damage controls weren't found",
+        "hp-temp-not-found": "its Temp field wasn't found",
         "hp-not-applied": "D&D Beyond didn't save the change"
     };
     if (steps[reason])
