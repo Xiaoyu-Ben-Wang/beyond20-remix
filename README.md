@@ -20,10 +20,17 @@ filenames instead.
 
 ## Roll20 Quick Roll Launcher
 
-Roll a skill, saving throw or ability check from the Roll20 page, without switching tabs.
+Roll a skill, saving throw, ability check or initiative from the Roll20 page, without switching
+tabs.
 
 * A floating button on the Roll20 page shows your D&D Beyond character's portrait. Click it to
-  open a panel of skills, saving throws and ability checks.
+  open a panel of skills, saving throws, ability checks and initiative.
+* Each row has small **A** and **D** buttons to roll it with advantage or disadvantage.
+* Star the rolls you use most on your D&D Beyond sheet (hover a skill, save, ability or
+  initiative and click its ☆) and they appear in the panel's ★ tab. Favourites are kept per
+  character, in your browser.
+* Initiative goes to the Roll20 turn tracker when "Add initiative roll to the Turn Tracker" is
+  on. That needs your token selected, so if none is, the panel asks you to select it first.
 * Click a roll and it is performed on your real D&D Beyond character sheet, so class features,
   effects and custom modifiers all apply exactly as if you had clicked the sheet yourself. The
   result appears in the Roll20 chat as usual.

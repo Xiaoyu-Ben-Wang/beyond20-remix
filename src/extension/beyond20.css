@@ -437,3 +437,58 @@ span.dice-roll.beyond20-tooltip-content {
 .ct-character-header-info .ddbc-character-tidbits {
     min-width:auto;
 }
+
+/* Quick roll favourites: a star on each roll the Roll20 launcher can make. It sits in
+   the corner of its cell, out of the layout, and shows on hover until it is set. The
+   glyph is CSS content so scrapers reading the cell's text never see it. */
+.beyond20-qr-fav-host {
+    position: relative;
+}
+.beyond20-qr-fav {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    z-index: 2;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #9a9a9a;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.1s ease, color 0.1s ease, transform 0.1s ease;
+}
+.beyond20-qr-fav::before {
+    content: "\2606";
+}
+.beyond20-qr-fav.beyond20-qr-fav-on::before {
+    content: "\2605";
+}
+/* The initiative box is the host itself, so its star takes the top corner instead. */
+.ct-combat__summary-group--initiative > .beyond20-qr-fav,
+.ct-combat-tablet__extra--initiative > .beyond20-qr-fav {
+    top: 2px;
+    right: 2px;
+    margin: 0;
+}
+.beyond20-qr-fav-row:hover .beyond20-qr-fav,
+.beyond20-qr-fav:focus-visible,
+.beyond20-qr-fav.beyond20-qr-fav-on {
+    opacity: 1;
+}
+.beyond20-qr-fav:hover {
+    color: #e0a526;
+    transform: scale(1.2);
+}
+.beyond20-qr-fav.beyond20-qr-fav-on {
+    color: #e0a526;
+}
+@media (prefers-reduced-motion: reduce) {
+    .beyond20-qr-fav { transition: none; }
+    .beyond20-qr-fav:hover { transform: none; }
+}

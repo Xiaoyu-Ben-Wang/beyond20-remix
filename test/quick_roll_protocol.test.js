@@ -58,7 +58,14 @@ const selectQuickRollCharacter = load('src/roll20/quick-roll.js', 'selectQuickRo
 const QUICK_ROLL_ABILITY_ORDER = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
 let quick_roll_data = null;
 const quickRollRow = load('src/roll20/quick-roll.js', 'quickRollRow');
+const quickRollInitiativeRow = load('src/roll20/quick-roll.js', 'quickRollInitiativeRow');
+const quickRollFavoriteRow = load('src/roll20/quick-roll.js', 'quickRollFavoriteRow');
 const quickRollSectionBlocks = load('src/roll20/quick-roll.js', 'quickRollSectionBlocks');
+
+// The sheet side's favourite keys. parseQuickRollFavoriteKey reads the allowed types from
+// its module scope, declared here as above.
+const QUICK_ROLL_FAVORITE_TYPES = ["ability", "saving-throw", "skill", "initiative"];
+const parseQuickRollFavoriteKey = load('src/dndbeyond/content-scripts/quick-roll.js', 'parseQuickRollFavoriteKey');
 
 const isValidQuickRollRequest = load('src/extension/background.js', 'isValidQuickRollRequest');
 
@@ -227,6 +234,61 @@ check("an ability check rolls by its abbreviation",
     }),
     { rollType: "ability", name: "STR", label: "Strength", modifier: "+4" });
 
+check("initiative heads the checks when the sheet reports it",
+    () => withSheet(SHEET_SKILLS, () => {
+        quick_roll_data.abilities = [{ name: "Strength", abbr: "STR", modifier: "+4" }];
+        quick_roll_data.initiative = { modifier: "+3" };
+        return quickRollSectionBlocks("checks")[0].rows.map((r) => r.rollType);
+    }),
+    ["initiative", "ability"]);
+
+// --- Favourites ----------------------------------------------------------- *
+// Favourites are stored as keys on the sheet side and resolved against the sheet's
+// current lists here, so a renamed or removed roll drops out instead of failing.
+
+check("favourites keep the order they were starred in",
+    () => withSheet(SHEET_SKILLS, () => {
+        quick_roll_data.saves = [{ name: "Dexterity", abbr: "DEX", modifier: "+2" }];
+        quick_roll_data.initiative = { modifier: "+3" };
+        quick_roll_data.favorites = [
+            { rollType: "saving-throw", name: "DEX" },
+            { rollType: "skill", name: "Stealth" },
+            { rollType: "initiative", name: "Initiative" }
+        ];
+        return quickRollSectionBlocks("favorites")[0].rows.map((r) => r.label);
+    }),
+    ["Dexterity save", "Stealth", "Initiative"]);
+
+check("a favourite missing from the sheet is dropped",
+    () => withSheet(SHEET_SKILLS, () => {
+        quick_roll_data.favorites = [{ rollType: "skill", name: "Basket Weaving" }, { rollType: "skill", name: "Stealth" }];
+        return quickRollSectionBlocks("favorites")[0].rows.map((r) => r.name);
+    }),
+    ["Stealth"]);
+
+check("no favourites means no blocks, so the panel can explain the stars",
+    () => withSheet(SHEET_SKILLS, () => quickRollSectionBlocks("favorites")),
+    []);
+
+check("a null favourite (an unreadable stored key) is skipped",
+    () => withSheet(SHEET_SKILLS, () => {
+        quick_roll_data.favorites = [null, { rollType: "skill", name: "Stealth" }];
+        return quickRollSectionBlocks("favorites")[0].rows.length;
+    }),
+    1);
+
+check("a favourite key splits on its first colon only",
+    () => parseQuickRollFavoriteKey("skill:Lore: Arcana"),
+    { rollType: "skill", name: "Lore: Arcana" });
+
+check("a favourite key of an unknown kind is refused",
+    () => parseQuickRollFavoriteKey("attack:Longsword"),
+    null);
+
+check("a non-string favourite key is refused",
+    () => parseQuickRollFavoriteKey({ rollType: "skill" }),
+    null);
+
 // --- isValidQuickRollRequest ---------------------------------------------- *
 // The background is the only place that sees requests from a page, so it is where a
 // malformed one has to be turned away.
@@ -241,6 +303,10 @@ check("a saving throw request is accepted",
 
 check("an ability check request is accepted",
     () => isValidQuickRollRequest({ characterId: "100", rollType: "ability", name: "STR" }),
+    true);
+
+check("an initiative request is accepted",
+    () => isValidQuickRollRequest({ characterId: "100", rollType: "initiative", name: "Initiative" }),
     true);
 
 check("an unknown roll type is refused",

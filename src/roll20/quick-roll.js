@@ -27,6 +27,16 @@ let quick_roll_picker_open = false;
 let quick_roll_panel_open = false;
 // Bumped per request, so a slow answer cannot overwrite a newer one.
 let quick_roll_request_id = 0;
+// Set once the player picks a tab, after which the panel stops choosing one for them.
+let quick_roll_section_chosen = false;
+// An initiative roll waiting for the player to select their token: { advantage, state }.
+let quick_roll_initiative_pending = null;
+let quick_roll_initiative_poll = 0;
+
+// How long to wait for the page script to say whether a token is selected, and how often
+// to look again while the player is picking one.
+const QUICK_ROLL_SELECTION_TIMEOUT_MS = 300;
+const QUICK_ROLL_SELECTION_POLL_MS = 250;
 
 // Decide which responding D&D Beyond tab the player is playing. Never falls back to
 // "most recently used": a wrong character's roll looks exactly like a successful one, so
@@ -139,6 +149,9 @@ const QUICK_ROLL_CSS = `
     --b20-qr-border: #3a3d42;
     --b20-qr-text: #e6e7e8;
     --b20-qr-dim: #9aa0a6;
+    /* Advantage and disadvantage keep their usual green and red whatever the accent. */
+    --b20-qr-adv: #5cc483; --b20-qr-adv-soft: rgba(92, 196, 131, 0.18);
+    --b20-qr-dis: #e8716a; --b20-qr-dis-soft: rgba(232, 113, 106, 0.18);
     /* Header/tab-row gradient ends, and the wash behind non-accent hovered controls. */
     --b20-qr-raised-1: #2c2f34;
     --b20-qr-raised-2: #232528;
@@ -220,7 +233,9 @@ const QUICK_ROLL_CSS = `
     left: ${QUICK_ROLL_EDGE_OFFSET}px;
     bottom: ${QUICK_ROLL_LAUNCHER_BOTTOM + QUICK_ROLL_LAUNCHER_SIZE + QUICK_ROLL_PANEL_GAP}px;
     width: 272px;
-    max-height: min(88vh, 640px);
+    /* What is left above the launcher, less a margin, so a short window cannot push the
+       header off the top of the screen. */
+    max-height: min(calc(100vh - ${QUICK_ROLL_LAUNCHER_BOTTOM + QUICK_ROLL_LAUNCHER_SIZE + QUICK_ROLL_PANEL_GAP + 16}px), 640px);
     display: flex;
     flex-direction: column;
     background: var(--b20-qr-bg);
@@ -384,22 +399,25 @@ const QUICK_ROLL_CSS = `
     font-weight: bold;
     text-align: center;
 }
-/* Kept quiet until pointed at, so the roll names stay the thing the eye lands on. */
+/* Coloured but light, so they read at a glance without outweighing the roll names; a
+   tint behind them on hover. */
 .beyond20-qr-adv, .beyond20-qr-dis {
     flex: 0 0 auto;
     width: 18px;
     height: 18px;
     padding: 0;
     border-radius: 4px;
-    color: var(--b20-qr-dim);
     font-size: 10px;
     font-weight: bold;
     line-height: 18px;
+    opacity: 0.8;
     text-align: center;
-    transition: background 0.1s ease, color 0.1s ease;
+    transition: background 0.1s ease, opacity 0.1s ease;
 }
-.beyond20-qr-adv:hover, .beyond20-qr-adv:focus-visible { color: #2e9d57; background: rgba(46, 157, 87, 0.16); }
-.beyond20-qr-dis:hover, .beyond20-qr-dis:focus-visible { color: #c8433b; background: rgba(200, 67, 59, 0.16); }
+.beyond20-qr-adv { color: var(--b20-qr-adv); }
+.beyond20-qr-dis { color: var(--b20-qr-dis); }
+.beyond20-qr-adv:hover, .beyond20-qr-adv:focus-visible { opacity: 1; background: var(--b20-qr-adv-soft); }
+.beyond20-qr-dis:hover, .beyond20-qr-dis:focus-visible { opacity: 1; background: var(--b20-qr-dis-soft); }
 .beyond20-qr-picker { display: flex; flex-wrap: wrap; gap: 6px; padding: 9px; }
 .beyond20-qr-picker button {
     display: flex;
@@ -436,6 +454,7 @@ const QUICK_ROLL_CSS = `
     transition: border-color 0.12s ease, background 0.12s ease;
 }
 .beyond20-qr-notice button:hover { border-color: var(--b20-qr-accent); background: var(--b20-qr-accent-soft); }
+.beyond20-qr-notice-actions { display: flex; flex-wrap: wrap; gap: 6px; }
 .beyond20-qr-tabs {
     display: flex;
     flex: 0 0 auto;
@@ -443,6 +462,7 @@ const QUICK_ROLL_CSS = `
 }
 .beyond20-qr-tabs button {
     flex: 1 1 0;
+    min-width: 0;
     height: var(--b20-qr-tabs-h);
     color: var(--b20-qr-dim);
     /* Adjacent buttons form one rule across the tab row's top, with the active one's
@@ -479,6 +499,8 @@ const QUICK_ROLL_CSS = `
     --b20-qr-border: #c9ced5;
     --b20-qr-text: #24262a;
     --b20-qr-dim: #6a707a;
+    --b20-qr-adv: #23824a; --b20-qr-adv-soft: rgba(35, 130, 74, 0.14);
+    --b20-qr-dis: #b73a32; --b20-qr-dis-soft: rgba(183, 58, 50, 0.13);
     --b20-qr-raised-1: #ffffff;
     --b20-qr-raised-2: #e9ecf0;
     --b20-qr-hover: rgba(0, 0, 0, 0.07);
@@ -610,18 +632,51 @@ function quickRollRow(rollType, name, label, modifier) {
     return { rollType, name, label: label || name, modifier: modifier || "" };
 }
 
+function quickRollInitiativeRow(data) {
+    return data.initiative ? quickRollRow("initiative", "Initiative", "Initiative", data.initiative.modifier) : null;
+}
+
+// A favourite as a row, looked up in the sheet's current lists so its label and modifier
+// are fresh. One that no longer exists on the sheet is dropped.
+function quickRollFavoriteRow(data, favorite) {
+    if (!favorite) return null;
+    const { rollType, name } = favorite;
+    if (rollType === "initiative")
+        return quickRollInitiativeRow(data);
+    if (rollType === "skill") {
+        const s = (data.skills || []).find((s) => s.name === name && QUICK_ROLL_ABILITY_ORDER.includes(s.ability));
+        return s ? quickRollRow("skill", s.name, s.name, s.modifier) : null;
+    }
+    if (rollType === "saving-throw") {
+        const s = (data.saves || []).find((s) => s.abbr === name);
+        return s ? quickRollRow("saving-throw", s.abbr, s.name + " save", s.modifier) : null;
+    }
+    if (rollType === "ability") {
+        const a = (data.abilities || []).find((a) => a.abbr === name);
+        return a ? quickRollRow("ability", a.abbr, a.name + " check", a.modifier) : null;
+    }
+    return null;
+}
+
 // The rolls for a section, as blocks of rows. Skills keep their parent ability as a
-// block label; saves and checks are one unlabelled block, since there the ability *is*
-// the row.
+// block label; the other sections are one unlabelled block, since there the ability *is*
+// the row (and favourites mix kinds, so they carry it in the label instead).
 function quickRollSectionBlocks(section) {
     const data = quick_roll_data;
     if (!data) return [];
 
-    if (section !== "skills") {
-        const rows = section === "saves"
-            ? (data.saves || []).map((s) => quickRollRow("saving-throw", s.abbr, s.name, s.modifier))
-            : (data.abilities || []).map((a) => quickRollRow("ability", a.abbr, a.name, a.modifier));
-        return [{ rows: rows }];
+    if (section === "favorites") {
+        const rows = (data.favorites || []).map((f) => quickRollFavoriteRow(data, f)).filter(Boolean);
+        return rows.length > 0 ? [{ rows: rows }] : [];
+    }
+
+    if (section === "saves")
+        return [{ rows: (data.saves || []).map((s) => quickRollRow("saving-throw", s.abbr, s.name, s.modifier)) }];
+
+    if (section === "checks") {
+        const initiative = quickRollInitiativeRow(data);
+        const abilities = (data.abilities || []).map((a) => quickRollRow("ability", a.abbr, a.name, a.modifier));
+        return [{ rows: initiative ? [initiative, ...abilities] : abilities }];
     }
 
     // A custom skill has no parent ability, and rolling one would ask which to use — a
@@ -667,7 +722,12 @@ function makeQuickRollRow(row) {
 // The rolls: one column of rows for saves and checks, and for skills a group per
 // ability, named down the left.
 function renderQuickRollRows(body) {
-    const blocks = quickRollSectionBlocks(body.dataset.beyond20Section || "skills");
+    const section = body.dataset.beyond20Section || "skills";
+    const blocks = quickRollSectionBlocks(section);
+    if (blocks.length === 0 && section === "favorites")
+        return body.appendChild(makeNotice(
+            "No favourites yet. Hover a skill, save, ability or initiative on your D&D Beyond sheet " +
+            "and click its ☆ to pin it here."));
     if (blocks.length === 0)
         return body.appendChild(makeNotice("Nothing to roll in this section."));
 
@@ -722,6 +782,9 @@ function renderQuickRollBody() {
             "Your D&D Beyond character sheet is still loading. Open its tab and wait a moment, then retry.",
             quickRollRetryButton()));
 
+    if (quick_roll_initiative_pending)
+        return renderQuickRollInitiativePrompt(body);
+
     renderQuickRollRows(body);
 }
 
@@ -763,8 +826,9 @@ function buildQuickRollPanel() {
     const status = E.div({ class: "beyond20-qr-status" });
 
     const tabs = E.div({ class: "beyond20-qr-tabs" });
-    for (const [key, label] of [["skills", "Skills"], ["saves", "Saves"], ["checks", "Checks"]]) {
-        const button = makeButton(label, () => selectQuickRollSection(key));
+    const sections = [["favorites", "★", "Favourites"], ["skills", "Skills"], ["saves", "Saves"], ["checks", "Checks"]];
+    for (const [key, label, title] of sections) {
+        const button = makeButton(label, () => selectQuickRollSection(key, true), null, title);
         button.dataset.beyond20Section = key;
         tabs.appendChild(button);
     }
@@ -775,9 +839,16 @@ function buildQuickRollPanel() {
     return panel;
 }
 
-function selectQuickRollSection(section) {
+// `chosen` marks a pick by the player rather than by the panel, which then keeps it, and
+// which also backs out of a waiting initiative roll.
+function selectQuickRollSection(section, chosen = false) {
     const panel = document.getElementById(QUICK_ROLL_PANEL_ID);
     if (!panel) return;
+
+    if (chosen) {
+        quick_roll_section_chosen = true;
+        cancelQuickRollInitiative();
+    }
 
     const body = panel.querySelector(".beyond20-qr-body");
     if (body) body.dataset.beyond20Section = section;
@@ -826,6 +897,7 @@ function useQuickRollCharacter(character) {
     if (!character) return;
     rememberQuickRollCharacter(character.id, character.name);
     closeQuickRollCharacterMenu();
+    cancelQuickRollInitiative();
     quick_roll_picker_open = false;
     renderQuickRollState({ state: "ready", character: character });
 }
@@ -880,6 +952,9 @@ function renderQuickRollState(result) {
 
     if (result.state === "ready") {
         renderQuickRollHeader();
+        // Until the player picks a tab, open on their favourites when they have some.
+        if (!quick_roll_section_chosen)
+            return selectQuickRollSection((result.character.favorites || []).length > 0 ? "favorites" : "skills");
         return renderQuickRollBody();
     }
 
@@ -915,6 +990,7 @@ function closeQuickRollPanel() {
     const panel = document.getElementById(QUICK_ROLL_PANEL_ID);
     if (panel) panel.classList.remove("beyond20-qr-open");
     closeQuickRollCharacterMenu();
+    cancelQuickRollInitiative();
     quick_roll_panel_open = false;
     window.removeEventListener("keydown", onQuickRollKeyDown, true);
     document.removeEventListener("mousedown", onQuickRollClickOutside, true);
@@ -928,10 +1004,13 @@ function onQuickRollKeyDown(event) {
     event.preventDefault();
     event.stopPropagation();
 
-    // Esc backs out one step at a time: the menu, then the panel.
+    // Esc backs out one step at a time: the menu, a waiting initiative roll, then the
+    // panel.
     const menu = quickRollCharacterMenu();
     if (menu && !menu.hidden)
         return closeQuickRollCharacterMenu();
+    if (quick_roll_initiative_pending)
+        return cancelQuickRollInitiative(true);
 
     closeQuickRollPanel();
 }
@@ -941,6 +1020,9 @@ function onQuickRollClickOutside(event) {
     const launcher = document.getElementById(QUICK_ROLL_LAUNCHER_ID);
     if (panel && panel.contains(event.target)) return;
     if (launcher && launcher.contains(event.target)) return;
+    // Picking a token for a waiting initiative roll means clicking the map, which must
+    // not close the panel that is waiting for it.
+    if (quick_roll_initiative_pending) return;
     closeQuickRollPanel();
 }
 
@@ -955,10 +1037,10 @@ function openQuickRollPanel() {
 
     selectQuickRollSection(panel.querySelector(".beyond20-qr-body")?.dataset.beyond20Section || "skills");
 
-    // Reading the sheet is cheap, so a panel with nothing to show asks again rather than
-    // sending the player to the refresh button. Data in hand is left alone.
-    if (!quickRollDataReady())
-        loadQuickRollData();
+    // Reading the sheet is cheap, so every opening asks again: the player may have
+    // starred a favourite or changed the sheet since, and should not need the refresh
+    // button to see it.
+    loadQuickRollData();
 
     // Registered only while open, and without focusing anything: players keep typing in
     // Roll20's chat while using the panel.
@@ -1004,6 +1086,14 @@ function loadQuickRollData() {
 }
 
 function performQuickRollFromPanel(rollType, name, advantage) {
+    // Initiative only reaches the turn tracker with a token selected, so make sure there
+    // is one first.
+    if (rollType === "initiative" && settings["initiative-tracker"])
+        return rollQuickRollInitiative(advantage);
+    sendQuickRollFromPanel(rollType, name, advantage);
+}
+
+function sendQuickRollFromPanel(rollType, name, advantage) {
     closeQuickRollCharacterMenu();
     const launcher = document.getElementById(QUICK_ROLL_LAUNCHER_ID);
     if (launcher) launcher.classList.add("beyond20-qr-busy");
@@ -1013,6 +1103,79 @@ function performQuickRollFromPanel(rollType, name, advantage) {
         if (launcher) launcher.classList.remove("beyond20-qr-busy");
         renderQuickRollStatus(quickRollResultMessage(response));
     });
+}
+
+// --- Initiative and the turn tracker -------------------------------------- *
+// Beyond20 adds initiative to the turn tracker through Roll20's &{tracker}, which only
+// works with a token selected when the result is posted. A forgotten selection loses
+// the roll from the tracker without a word, so the launcher checks first and, if needed,
+// asks the player to pick their token before rolling.
+
+// Ask the page script whether a token is selected: "selected", "none", or "unknown" when
+// Roll20 does not let it see, in which case the player is asked rather than guessed for.
+function queryRoll20TokenSelection(callback) {
+    let done = false;
+    const listener = (event) => finish(typeof event.detail === "string" ? event.detail : "unknown");
+    const finish = (state) => {
+        if (done) return;
+        done = true;
+        document.removeEventListener("Beyond20_QuickRollTokenSelectionResult", listener);
+        callback(state);
+    };
+    document.addEventListener("Beyond20_QuickRollTokenSelectionResult", listener);
+    sendCustomEvent("QuickRollTokenSelection");
+    setTimeout(() => finish("unknown"), QUICK_ROLL_SELECTION_TIMEOUT_MS);
+}
+
+function rollQuickRollInitiative(advantage) {
+    cancelQuickRollInitiative();
+    queryRoll20TokenSelection((state) => {
+        if (state === "selected")
+            return sendQuickRollFromPanel("initiative", "Initiative", advantage);
+
+        quick_roll_initiative_pending = { advantage, state };
+        renderQuickRollStatus("");
+        renderQuickRollBody();
+
+        // Where the selection can be seen, the roll goes ahead the moment the player
+        // picks a token; otherwise they say when they have.
+        if (state === "none") {
+            quick_roll_initiative_poll = setInterval(() => {
+                queryRoll20TokenSelection((now) => {
+                    if (now === "selected" && quick_roll_initiative_pending)
+                        confirmQuickRollInitiative();
+                });
+            }, QUICK_ROLL_SELECTION_POLL_MS);
+        }
+    });
+}
+
+function confirmQuickRollInitiative() {
+    const pending = quick_roll_initiative_pending;
+    if (!pending) return;
+    cancelQuickRollInitiative(true);
+    sendQuickRollFromPanel("initiative", "Initiative", pending.advantage);
+}
+
+function cancelQuickRollInitiative(render = false) {
+    if (quick_roll_initiative_poll) clearInterval(quick_roll_initiative_poll);
+    quick_roll_initiative_poll = 0;
+    if (!quick_roll_initiative_pending) return;
+    quick_roll_initiative_pending = null;
+    if (render) renderQuickRollBody();
+}
+
+function renderQuickRollInitiativePrompt(body) {
+    const watching = quick_roll_initiative_pending.state === "none";
+    const which = { advantage: " with advantage", disadvantage: " with disadvantage" }[quick_roll_initiative_pending.advantage] || "";
+    const message = watching
+        ? "Select your token on the map to add your initiative to the turn order. It rolls" + which + " as soon as you do."
+        : "Select your token on the map to add your initiative to the turn order, then roll" + which + ".";
+    body.appendChild(makeNotice(
+        message,
+        E.div({ class: "beyond20-qr-notice-actions" },
+            makeButton(watching ? "Roll without a token" : "Roll initiative", () => confirmQuickRollInitiative()),
+            makeButton("Cancel", () => cancelQuickRollInitiative(true)))));
 }
 
 // The roll reports into the Roll20 chat, so success needs no message here; only the

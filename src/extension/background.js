@@ -176,7 +176,7 @@ function queryMessageToBeyond(request, callback, timeout_ms = 3000) {
 }
 
 function isValidQuickRollRequest(request) {
-    const rollTypes = ["ability", "saving-throw", "skill"];
+    const rollTypes = ["ability", "saving-throw", "skill", "initiative"];
     return !!request.characterId &&
         rollTypes.includes(request.rollType) &&
         typeof request.name === "string" && request.name.length > 0 && request.name.length < 100 &&

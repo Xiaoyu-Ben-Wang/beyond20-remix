@@ -263,6 +263,27 @@ function updateCombatTracker(combat, settings) {
 }
 
 
+// Whether a token is selected, for the quick roll launcher's initiative roll: its result
+// joins the turn tracker through &{tracker}, which needs one. Roll20 keeps its engine out
+// of the global scope on most builds; where it cannot be reached the answer is "unknown"
+// and the launcher asks the player instead of guessing.
+function getTokenSelectionState() {
+    try {
+        const engine = window.d20 && window.d20.engine;
+        if (engine && typeof engine.selected === "function")
+            return engine.selected().length > 0 ? "selected" : "none";
+    } catch (err) {
+        console.log("Beyond20: couldn't read the token selection", err);
+    }
+    return "unknown";
+}
+
+function reportTokenSelection() {
+    // A plain string, dispatched directly: sendCustomEvent's Firefox path needs
+    // cloneInto, which only exists in content scripts.
+    document.dispatchEvent(new CustomEvent("Beyond20_QuickRollTokenSelectionResult", { detail: getTokenSelectionState() }));
+}
+
 function checkForOGL() {
     // Make sure at least one of these variables is set
     if (typeof(customcharsheet_data) === "undefined" &&
@@ -292,6 +313,7 @@ function disconnectAllEvents() {
 var registered_events = [];
 registered_events.push(addCustomEventListener("UpdateHP", updateHP));
 registered_events.push(addCustomEventListener("CombatTracker", updateCombatTracker));
+registered_events.push(addCustomEventListener("QuickRollTokenSelection", reportTokenSelection));
 registered_events.push(addCustomEventListener("disconnect", disconnectAllEvents));
 
 // Hack for VTT ES making every script load before Roll20 loads

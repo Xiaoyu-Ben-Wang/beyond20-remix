@@ -228,7 +228,7 @@ Returns a [Beyond20Character](#beyond20-character-format) object as response.
 
 #### quick-roll-data
 Ask the background script which D&D Beyond characters are currently open, along with the
-skills, saving throws and ability checks each of them can roll. Used by the Roll20 quick
+skills, saving throws, ability checks and initiative each of them can roll. Used by the Roll20 quick
 roll launcher, which has no character of its own to read those from.
 
 Unlike most messages, this one runs in the VTT->D&D Beyond direction. The background
@@ -257,12 +257,15 @@ Each entry has the following fields:
     saves,      // <Array> of { name, abbr, modifier } for the six saving throws
     skills,     // <Array> of { name, ability, modifier }; `ability` is the abbreviation
                 //   of the ability the skill belongs to, or "" for a custom skill
+    initiative, // <Object> { modifier }, or null when the sheet shows no initiative
+    favorites,  // <Array> of { rollType, name } the player starred on the sheet, in the
+                //   order they were starred; null entries are unreadable stored keys
 }
 ```
 
 #### quick-roll
 Ask the background script to have a D&D Beyond character roll one of its skills, saving
-throws or ability checks. Used by the Roll20 quick roll launcher so that a player can roll
+throws, ability checks or its initiative. Used by the Roll20 quick roll launcher so that a player can roll
 without leaving the Roll20 tab.
 
 The request is broadcast to every open D&D Beyond character sheet, and the one whose
@@ -273,16 +276,19 @@ normal [roll](#roll) pipeline.
 
 The D&D Beyond tab is never brought to the front, so it may be hidden while this happens.
 A roll that would need to ask the player something — because the whisper or roll type is
-set to "Ask every time", or because a custom skill has no ability assigned to it — is
-refused instead of being left waiting on a prompt nobody can see.
+set to "Ask every time" (an explicit `advantage` answers the roll type question), or
+because a custom skill has no ability assigned to it — is refused instead of being left waiting on a prompt nobody can see.
 
 Message Format:
 ```js
 {
     action,       // <String> Must be "quick-roll"
     characterId,  // <String> The id of the character that should make the roll
-    rollType,     // <String> One of "ability", "saving-throw" or "skill"
-    name          // <String> The ability abbreviation (e.g. "STR"), or the skill's name
+    rollType,     // <String> One of "ability", "saving-throw", "skill" or "initiative"
+    name,         // <String> The ability abbreviation (e.g. "STR"), the skill's name, or
+                  //   "Initiative"
+    advantage     // <String> Optional: "advantage" or "disadvantage" to force either, as
+                  //   the advantage hotkeys would; omitted to use the sheet's roll type
 }
 ```
 Returns a response of the form:
