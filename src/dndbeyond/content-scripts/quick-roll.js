@@ -727,6 +727,13 @@ function sameQuickRollHp(a, b) {
     return !!a && !!b && a.current === b.current && a.temp === b.temp;
 }
 
+// Each way this can fail has its own reason, and logs what the sheet looked like, since
+// D&D Beyond's markup is the usual cause and the log is what it takes to fix it.
+function quickRollHpFailure(reason, details) {
+    console.warn("Beyond20: hit point change failed (" + reason + ")", details || "");
+    return { ok: false, reason };
+}
+
 async function performRemoteHpChange(mode, amount) {
     if (quick_roll_hp_busy)
         return { ok: false, reason: "busy" };
@@ -735,20 +742,26 @@ async function performRemoteHpChange(mode, amount) {
         character.updateInfo();
         const before = getQuickRollHp();
         if (!before)
-            return { ok: false, reason: "not-found" };
+            return quickRollHpFailure("hp-unknown", { hp: character._hp, max: character._max_hp, temp: character._temp_hp });
         const target = computeQuickRollHp(before, mode, amount);
         if (sameQuickRollHp(before, target))
             return { ok: true, hp: before };
 
-        const opened = await waitForSheet(() => quickRollHpInputs().current ? true : null, clickQuickRollHpBox);
+        const paneOpen = () => $(QUICK_ROLL_HP_PANE).length > 0;
+        if (!paneOpen() && $(".ct-quick-info__health, .ct-health-summary, .ct-status-summary-mobile__hp").length === 0)
+            return quickRollHpFailure("hp-box-not-found");
+        const opened = await waitForSheet(() => paneOpen() && quickRollHpInputs().current ? true : null, clickQuickRollHpBox);
         const inputs = quickRollHpInputs();
-        if (!opened || !inputs.current)
-            return { ok: false, reason: "not-found" };
+        if (!paneOpen())
+            return quickRollHpFailure("hp-pane-not-opened", { sidebar: $(".ct-sidebar__inner").first().prop("outerHTML") });
+        if (!opened || !inputs.current || (target.temp !== before.temp && !inputs.temp))
+            return quickRollHpFailure("hp-inputs-not-found", {
+                current: !!inputs.current, temp: !!inputs.temp,
+                pane: $(QUICK_ROLL_HP_PANE).first().prop("outerHTML")
+            });
 
-        if (target.temp !== before.temp) {
-            if (!inputs.temp) return { ok: false, reason: "not-found" };
+        if (target.temp !== before.temp)
             setQuickRollInput(inputs.temp, target.temp);
-        }
         if (target.current !== before.current)
             setQuickRollInput(inputs.current, target.current);
 
@@ -760,7 +773,9 @@ async function performRemoteHpChange(mode, amount) {
             return sameQuickRollHp(saved(), target) ? true : null;
         });
         const now = { ...saved(), max: before.max };
-        return applied ? { ok: true, hp: now } : { ok: false, reason: "hp-not-applied", hp: now };
+        if (applied)
+            return { ok: true, hp: now };
+        return { ...quickRollHpFailure("hp-not-applied", { target, now, box: $(".ct-quick-info__health, .ct-health-summary").first().prop("outerHTML") }), hp: now };
     } finally {
         quick_roll_hp_busy = false;
     }

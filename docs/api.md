@@ -344,8 +344,10 @@ Returns a response of the form:
     hp,      // <Object> { current, max, temp } as the sheet shows them afterwards,
              //   when the sheet could read them
     reason   // <String> Why it failed, when ok is false: "no-tab", "busy",
-             //   "not-found" (no HP pane could be opened), "hp-not-applied" (D&D
-             //   Beyond did not save the change), "disconnected" or "bad-request"
+             //   "hp-unknown" (the sheet has not read its hit points),
+             //   "hp-box-not-found", "hp-pane-not-opened", "hp-inputs-not-found",
+             //   "hp-not-applied" (D&D Beyond did not save the change),
+             //   "disconnected" or "bad-request"
 }
 ```
 

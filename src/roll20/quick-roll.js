@@ -336,10 +336,10 @@ const QUICK_ROLL_CSS = `
 }
 .beyond20-qr-hpbar[hidden] { display: none; }
 .beyond20-qr-hpbar input {
-    width: 52px;
+    width: 60px;
     height: 22px;
     margin: 0;
-    padding: 0 6px;
+    padding: 0 2px 0 6px;
     border: 1px solid var(--b20-qr-border);
     border-radius: 4px;
     background: var(--b20-qr-bg);
@@ -348,10 +348,11 @@ const QUICK_ROLL_CSS = `
     font-size: 12px;
     box-shadow: none;
     box-sizing: border-box;
-    -moz-appearance: textfield;
+    /* The up/down arrows are the browser's own, drawn dark unless told the input is on a
+       dark background; the light theme switches this back. */
+    color-scheme: dark;
 }
-.beyond20-qr-hpbar input::-webkit-inner-spin-button,
-.beyond20-qr-hpbar input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+#${QUICK_ROLL_PANEL_ID}[data-b20-qr-theme="light"] .beyond20-qr-hpbar input { color-scheme: light; }
 .beyond20-qr-hpbar input:focus { outline: none; border-color: var(--b20-qr-accent); }
 .beyond20-qr-hpbar button {
     flex: 1 1 0;
@@ -1266,8 +1267,16 @@ function quickRollHpMessage(mode, amount, response) {
     const reason = (response && response.reason) || "no-tab";
     if (reason === "disconnected") return "Beyond20 was reloaded. Reload this page to continue.";
     if (reason === "busy") return "Another hit point change is still in progress.";
-    if (reason === "not-found" || reason === "hp-not-applied")
-        return "Couldn't change hit points on your D&D Beyond sheet. Change them there instead.";
+    // Which step failed, so a report of it says where to look.
+    const steps = {
+        "hp-unknown": "it hasn't read your hit points yet",
+        "hp-box-not-found": "its hit point box wasn't found",
+        "hp-pane-not-opened": "its HP Management panel didn't open",
+        "hp-inputs-not-found": "the HP Management panel's fields weren't found",
+        "hp-not-applied": "D&D Beyond didn't save the change"
+    };
+    if (steps[reason])
+        return "Couldn't change hit points on your D&D Beyond sheet: " + steps[reason] + ". Change them there instead.";
     return "No D&D Beyond character sheet is open.";
 }
 
