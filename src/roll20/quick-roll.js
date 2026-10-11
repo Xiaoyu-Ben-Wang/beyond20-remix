@@ -104,11 +104,12 @@ function requestQuickRollData(callback) {
     }
 }
 
-function sendQuickRoll(rollType, name, callback) {
+// `advantage` is "advantage", "disadvantage", or undefined to use the sheet's roll type.
+function sendQuickRoll(rollType, name, advantage, callback) {
     try {
         const characterId = quick_roll_data && quick_roll_data.id;
         chrome.runtime.sendMessage(
-            { action: "quick-roll", characterId: String(characterId), rollType: rollType, name: name },
+            { action: "quick-roll", characterId: String(characterId), rollType: rollType, name: name, advantage: advantage },
             (response) => {
                 if (chrome.runtime.lastError) {
                     console.log("Beyond20: quick roll failed:", chrome.runtime.lastError.message);
@@ -346,7 +347,9 @@ const QUICK_ROLL_CSS = `
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
+.beyond20-qr-line { display: flex; align-items: center; gap: 2px; }
 .beyond20-qr-row {
+    flex: 1 1 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -381,6 +384,22 @@ const QUICK_ROLL_CSS = `
     font-weight: bold;
     text-align: center;
 }
+/* Kept quiet until pointed at, so the roll names stay the thing the eye lands on. */
+.beyond20-qr-adv, .beyond20-qr-dis {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border-radius: 4px;
+    color: var(--b20-qr-dim);
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 18px;
+    text-align: center;
+    transition: background 0.1s ease, color 0.1s ease;
+}
+.beyond20-qr-adv:hover, .beyond20-qr-adv:focus-visible { color: #2e9d57; background: rgba(46, 157, 87, 0.16); }
+.beyond20-qr-dis:hover, .beyond20-qr-dis:focus-visible { color: #c8433b; background: rgba(200, 67, 59, 0.16); }
 .beyond20-qr-picker { display: flex; flex-wrap: wrap; gap: 6px; padding: 9px; }
 .beyond20-qr-picker button {
     display: flex;
@@ -511,7 +530,7 @@ const QUICK_ROLL_CSS = `
 
 @media (prefers-reduced-motion: reduce) {
     #${QUICK_ROLL_LAUNCHER_ID}, #${QUICK_ROLL_PANEL_ID}, .beyond20-qr-status,
-    .beyond20-qr-row, .beyond20-qr-tabs button, .beyond20-qr-picker button,
+    .beyond20-qr-row, .beyond20-qr-adv, .beyond20-qr-dis, .beyond20-qr-tabs button, .beyond20-qr-picker button,
     .beyond20-qr-picker img, .beyond20-qr-notice button, .beyond20-qr-header > button,
     .beyond20-qr-char-menu button {
         transition: none;
@@ -628,12 +647,21 @@ function quickRollDataReady() {
         (quick_roll_data.skills || []).length > 0;
 }
 
+// A row is the roll itself plus small advantage and disadvantage buttons beside it.
+// They are siblings rather than children, since a button cannot hold another button.
 function makeQuickRollRow(row) {
     const label = E.span({}, row.label);
     const mod = E.span({ class: "beyond20-qr-mod" }, row.modifier);
-    return makeButton([label, mod],
+    const roll = makeButton([label, mod],
         () => performQuickRollFromPanel(row.rollType, row.name),
         "beyond20-qr-row", "Roll " + row.label);
+    const adv = makeButton("A",
+        () => performQuickRollFromPanel(row.rollType, row.name, "advantage"),
+        "beyond20-qr-adv", "Roll " + row.label + " with advantage");
+    const dis = makeButton("D",
+        () => performQuickRollFromPanel(row.rollType, row.name, "disadvantage"),
+        "beyond20-qr-dis", "Roll " + row.label + " with disadvantage");
+    return E.div({ class: "beyond20-qr-line" }, roll, adv, dis);
 }
 
 // The rolls: one column of rows for saves and checks, and for skills a group per
@@ -975,13 +1003,13 @@ function loadQuickRollData() {
     });
 }
 
-function performQuickRollFromPanel(rollType, name) {
+function performQuickRollFromPanel(rollType, name, advantage) {
     closeQuickRollCharacterMenu();
     const launcher = document.getElementById(QUICK_ROLL_LAUNCHER_ID);
     if (launcher) launcher.classList.add("beyond20-qr-busy");
     renderQuickRollStatus("Rolling…");
 
-    sendQuickRoll(rollType, name, (response) => {
+    sendQuickRoll(rollType, name, advantage, (response) => {
         if (launcher) launcher.classList.remove("beyond20-qr-busy");
         renderQuickRollStatus(quickRollResultMessage(response));
     });

@@ -102,7 +102,8 @@ class DNDBRoller {
 
 // Set while a remote (Roll20-initiated) quick roll runs. Such a roll runs in a
 // backgrounded tab, where an interactive prompt would be invisible and never answered,
-// so we refuse to block on one.
+// so we refuse to block on one. Its `advantage`, when set, is a RollType the launcher
+// asked for, applied by sendRoll like the advantage hotkeys.
 var b20_remote_roll_context = null;
 
 class DNDBPrompter {

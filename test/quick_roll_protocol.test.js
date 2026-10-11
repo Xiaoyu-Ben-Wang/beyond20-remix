@@ -263,6 +263,18 @@ check("an absurdly long roll name is refused",
     () => isValidQuickRollRequest({ characterId: "100", rollType: "skill", name: "x".repeat(500) }),
     false);
 
+check("an advantage request is accepted",
+    () => isValidQuickRollRequest({ characterId: "100", rollType: "skill", name: "Stealth", advantage: "advantage" }),
+    true);
+
+check("a disadvantage request is accepted",
+    () => isValidQuickRollRequest({ characterId: "100", rollType: "ability", name: "STR", advantage: "disadvantage" }),
+    true);
+
+check("an unknown advantage value is refused",
+    () => isValidQuickRollRequest({ characterId: "100", rollType: "skill", name: "Stealth", advantage: "super" }),
+    false);
+
 // --- QUICK_ROLL_CSS scoping ----------------------------------------------- *
 // The character menu nests in the panel header so it can hang off the header's bottom
 // edge. That nesting is what makes the header's element rules dangerous: with a plain

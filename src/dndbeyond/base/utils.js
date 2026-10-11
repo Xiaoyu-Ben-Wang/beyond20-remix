@@ -597,6 +597,10 @@ async function sendRoll(character, rollType, fallback, args) {
         req["advantage"] = RollType.SUPER_DISADVANTAGE;
     else if (key_modifiers.normal_roll)
         req["advantage"] = RollType.NORMAL;
+    // The launcher's advantage/disadvantage buttons stand in for the hotkeys, which
+    // cannot be held down in a tab the player is not looking at.
+    if (b20_remote_roll_context && b20_remote_roll_context.advantage !== undefined)
+        req["advantage"] = b20_remote_roll_context.advantage;
 
     if (key_modifiers.whisper)
         req.whisper = WhisperType.YES;

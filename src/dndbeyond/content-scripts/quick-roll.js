@@ -165,9 +165,11 @@ async function prepareSkillRoll(skillName) {
     return { ok: true, paneClass };
 }
 
-function requiresInteractivePrompt() {
+// An explicit advantage or disadvantage from the launcher answers the roll-type query
+// before it is asked, so only the whisper query is left to block on then.
+function requiresInteractivePrompt(advantage) {
     return parseInt(character.getGlobalSetting("whisper-type", WhisperType.NO)) === WhisperType.QUERY ||
-        parseInt(character.getGlobalSetting("roll-type", RollType.NORMAL)) === RollType.QUERY;
+        (advantage === undefined && parseInt(character.getGlobalSetting("roll-type", RollType.NORMAL)) === RollType.QUERY);
 }
 
 // A remote quick roll, dispatched to the same functions the sheet's own buttons use, so
@@ -177,11 +179,15 @@ function requiresInteractivePrompt() {
 // the normal sendRoll pipeline, and waiting would leave the Roll20 panel spinning for no
 // benefit. Failures before the roll starts are still reported, since those are the ones
 // the player has to act on.
-async function performRemoteQuickRoll(rollType, name) {
+//
+// `advantage` is "advantage", "disadvantage" or undefined for the sheet's own roll type;
+// sendRoll applies it the way it applies the advantage hotkeys.
+async function performRemoteQuickRoll(rollType, name, advantage) {
     if (b20_remote_roll_context)
         return { ok: false, reason: "busy" };
 
-    const ctx = b20_remote_roll_context = { prompt_blocked: false };
+    const forced = { advantage: RollType.ADVANTAGE, disadvantage: RollType.DISADVANTAGE }[advantage];
+    const ctx = b20_remote_roll_context = { prompt_blocked: false, advantage: forced };
 
     const release = () => {
         if (b20_remote_roll_context !== ctx)
@@ -211,7 +217,7 @@ async function performRemoteQuickRoll(rollType, name) {
     try {
         // These settings would make sendRoll block on an alertify prompt this tab cannot
         // show, so report them rather than hanging.
-        if (requiresInteractivePrompt())
+        if (requiresInteractivePrompt(forced))
             return refuse("interactive-setting");
 
         if (rollType === "ability") {

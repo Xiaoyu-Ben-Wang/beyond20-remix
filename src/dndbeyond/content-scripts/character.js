@@ -3335,7 +3335,7 @@ function handleMessage(request, sender, sendResponse) {
         if (!request.characterId || String(character._id) !== String(request.characterId)) {
             sendResponse({ ok: false, reason: "not-my-character" });
         } else {
-            performRemoteQuickRoll(request.rollType, request.name)
+            performRemoteQuickRoll(request.rollType, request.name, request.advantage)
                 .then(sendResponse)
                 .catch((err) => {
                     console.error("Beyond20: remote quick roll failed", err);

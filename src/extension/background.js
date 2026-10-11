@@ -179,7 +179,8 @@ function isValidQuickRollRequest(request) {
     const rollTypes = ["ability", "saving-throw", "skill"];
     return !!request.characterId &&
         rollTypes.includes(request.rollType) &&
-        typeof request.name === "string" && request.name.length > 0 && request.name.length < 100;
+        typeof request.name === "string" && request.name.length > 0 && request.name.length < 100 &&
+        [undefined, "advantage", "disadvantage"].includes(request.advantage);
 }
 
 function isFVTTTabAdded(tab) {
@@ -357,7 +358,8 @@ function onMessage(request, sender, sendResponse) {
             action: "quick-roll",
             characterId: String(request.characterId),
             rollType: request.rollType,
-            name: request.name
+            name: request.name,
+            advantage: request.advantage
         }
         // A skill roll may have to open its pane first, so this waits longer than a
         // data request. It still only waits for the roll to be accepted.
