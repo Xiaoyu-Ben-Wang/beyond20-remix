@@ -461,10 +461,10 @@ span.dice-roll.beyond20-tooltip-content {
     transition: opacity 0.1s ease, color 0.1s ease, transform 0.1s ease;
 }
 .beyond20-qr-fav::before {
-    content: "°6";
+    content: "\2606";
 }
 .beyond20-qr-fav.beyond20-qr-fav-on::before {
-    content: "°5";
+    content: "\2605";
 }
 .beyond20-qr-fav-row:hover .beyond20-qr-fav,
 .beyond20-qr-fav:focus-visible,
