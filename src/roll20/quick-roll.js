@@ -115,11 +115,12 @@ function requestQuickRollData(callback) {
 }
 
 // `advantage` is "advantage", "disadvantage", or undefined to use the sheet's roll type.
-function sendQuickRoll(rollType, name, advantage, callback) {
+// `level` is a favourite spell's level heading, and undefined for everything else.
+function sendQuickRoll(rollType, name, advantage, level, callback) {
     try {
         const characterId = quick_roll_data && quick_roll_data.id;
         chrome.runtime.sendMessage(
-            { action: "quick-roll", characterId: String(characterId), rollType: rollType, name: name, advantage: advantage },
+            { action: "quick-roll", characterId: String(characterId), rollType: rollType, name: name, advantage: advantage, level: level },
             (response) => {
                 if (chrome.runtime.lastError) {
                     console.log("Beyond20: quick roll failed:", chrome.runtime.lastError.message);
@@ -628,45 +629,34 @@ function quickRollRetryButton() {
     return makeButton("Retry", () => loadQuickRollData());
 }
 
-function quickRollRow(rollType, name, label, modifier) {
-    return { rollType, name, label: label || name, modifier: modifier || "" };
+function quickRollRow(rollType, name, label, modifier, level) {
+    const row = { rollType, name, label: label || name, modifier: modifier || "" };
+    if (level) row.level = level;
+    return row;
 }
 
 function quickRollInitiativeRow(data) {
     return data.initiative ? quickRollRow("initiative", "Initiative", "Initiative", data.initiative.modifier) : null;
 }
 
-// A favourite as a row, looked up in the sheet's current lists so its label and modifier
-// are fresh. One that no longer exists on the sheet is dropped.
-function quickRollFavoriteRow(data, favorite) {
-    if (!favorite) return null;
-    const { rollType, name } = favorite;
-    if (rollType === "initiative")
-        return quickRollInitiativeRow(data);
-    if (rollType === "skill") {
-        const s = (data.skills || []).find((s) => s.name === name && QUICK_ROLL_ABILITY_ORDER.includes(s.ability));
-        return s ? quickRollRow("skill", s.name, s.name, s.modifier) : null;
-    }
-    if (rollType === "saving-throw") {
-        const s = (data.saves || []).find((s) => s.abbr === name);
-        return s ? quickRollRow("saving-throw", s.abbr, s.name + " save", s.modifier) : null;
-    }
-    if (rollType === "ability") {
-        const a = (data.abilities || []).find((a) => a.abbr === name);
-        return a ? quickRollRow("ability", a.abbr, a.name + " check", a.modifier) : null;
-    }
-    return null;
+// A favourite as a row. Favourites are attacks and spells, which the sheet only lists on
+// their own tabs, so each brings its label and to-hit along rather than being looked up.
+function quickRollFavoriteRow(favorite) {
+    if (!favorite || !["action", "spell"].includes(favorite.rollType) || !favorite.name)
+        return null;
+    return quickRollRow(favorite.rollType, favorite.name, favorite.label, favorite.detail,
+        favorite.rollType === "spell" ? favorite.level : undefined);
 }
 
 // The rolls for a section, as blocks of rows. Skills keep their parent ability as a
 // block label; the other sections are one unlabelled block, since there the ability *is*
-// the row (and favourites mix kinds, so they carry it in the label instead).
+// the row, and favourites carry their own labels.
 function quickRollSectionBlocks(section) {
     const data = quick_roll_data;
     if (!data) return [];
 
     if (section === "favorites") {
-        const rows = (data.favorites || []).map((f) => quickRollFavoriteRow(data, f)).filter(Boolean);
+        const rows = (data.favorites || []).map(quickRollFavoriteRow).filter(Boolean);
         return rows.length > 0 ? [{ rows: rows }] : [];
     }
 
@@ -708,13 +698,13 @@ function makeQuickRollRow(row) {
     const label = E.span({}, row.label);
     const mod = E.span({ class: "beyond20-qr-mod" }, row.modifier);
     const roll = makeButton([label, mod],
-        () => performQuickRollFromPanel(row.rollType, row.name),
+        () => performQuickRollFromPanel(row.rollType, row.name, undefined, row.level),
         "beyond20-qr-row", "Roll " + row.label);
     const adv = makeButton("A",
-        () => performQuickRollFromPanel(row.rollType, row.name, "advantage"),
+        () => performQuickRollFromPanel(row.rollType, row.name, "advantage", row.level),
         "beyond20-qr-adv", "Roll " + row.label + " with advantage");
     const dis = makeButton("D",
-        () => performQuickRollFromPanel(row.rollType, row.name, "disadvantage"),
+        () => performQuickRollFromPanel(row.rollType, row.name, "disadvantage", row.level),
         "beyond20-qr-dis", "Roll " + row.label + " with disadvantage");
     return E.div({ class: "beyond20-qr-line" }, roll, adv, dis);
 }
@@ -726,8 +716,8 @@ function renderQuickRollRows(body) {
     const blocks = quickRollSectionBlocks(section);
     if (blocks.length === 0 && section === "favorites")
         return body.appendChild(makeNotice(
-            "No favourites yet. Hover a skill, save, ability or initiative on your D&D Beyond sheet " +
-            "and click its ☆ to pin it here."));
+            "No favourites yet. On your D&D Beyond sheet, click the ☆ after an attack or spell's name, " +
+            "or Favorite in its side panel, to pin it here."));
     if (blocks.length === 0)
         return body.appendChild(makeNotice("Nothing to roll in this section."));
 
@@ -1085,21 +1075,21 @@ function loadQuickRollData() {
     });
 }
 
-function performQuickRollFromPanel(rollType, name, advantage) {
+function performQuickRollFromPanel(rollType, name, advantage, level) {
     // Initiative only reaches the turn tracker with a token selected, so make sure there
     // is one first.
     if (rollType === "initiative" && settings["initiative-tracker"])
         return rollQuickRollInitiative(advantage);
-    sendQuickRollFromPanel(rollType, name, advantage);
+    sendQuickRollFromPanel(rollType, name, advantage, level);
 }
 
-function sendQuickRollFromPanel(rollType, name, advantage) {
+function sendQuickRollFromPanel(rollType, name, advantage, level) {
     closeQuickRollCharacterMenu();
     const launcher = document.getElementById(QUICK_ROLL_LAUNCHER_ID);
     if (launcher) launcher.classList.add("beyond20-qr-busy");
     renderQuickRollStatus("Rolling…");
 
-    sendQuickRoll(rollType, name, advantage, (response) => {
+    sendQuickRoll(rollType, name, advantage, level, (response) => {
         if (launcher) launcher.classList.remove("beyond20-qr-busy");
         renderQuickRollStatus(quickRollResultMessage(response));
     });
@@ -1191,6 +1181,8 @@ function quickRollResultMessage(response) {
         return "Beyond20 was reloaded. Reload this page to continue.";
     if (reason === "busy")
         return "Another roll is still in progress.";
+    if (reason === "not-visible")
+        return "Open the Actions or Spells tab on your D&D Beyond sheet, then try again.";
     if (reason === "pane-timeout" || reason === "not-found")
         return "Couldn't find that on your D&D Beyond sheet. Try refreshing the panel.";
 

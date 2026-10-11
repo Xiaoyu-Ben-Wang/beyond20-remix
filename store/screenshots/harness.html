@@ -96,7 +96,7 @@ body {
 /* A character sheet card standing in for the D&D Beyond side of the favourites story. */
 .sheet {
     position: absolute;
-    left: 425px; top: 205px;
+    left: 425px; top: 222px;
     width: 300px;
     padding: 12px 14px 10px;
     border-radius: 8px;
@@ -132,9 +132,13 @@ body {
     font-weight: 700;
     font-size: 12px;
 }
-/* Mirrors the star in src/extension/beyond20.css, which is what the sheet shows. */
-.sheet-row .name { position: relative; padding-right: 22px; }
-.star { position: absolute; right: 4px; top: 50%; margin-top: -8px; font-size: 13px; line-height: 16px; color: #9a9a9a; }
+.sheet.attacks .sheet-row { grid-template-columns: 1fr 44px 58px; height: 40px; column-gap: 8px; }
+.sheet.attacks .name b { font-weight: 600; }
+.sheet.attacks .name small { display: block; font-size: 10px; color: #8a7f74; line-height: 1.2; }
+.sheet.attacks .mod { justify-self: center; font-size: 13px; }
+.sheet .dmg { justify-self: end; padding: 1px 6px; border: 1px solid #c9bba8; border-radius: 4px; font-size: 12px; font-weight: 600; }
+/* Mirrors the star in src/extension/beyond20.css: inline, after the name. */
+.star { display: inline-block; margin-left: 5px; font-size: 13px; line-height: 14px; color: #9a9a9a; }
 .star.on { color: #e0a526; }
 .cursor {
     position: absolute;
@@ -266,12 +270,12 @@ const CHARACTER = {
     ].map(([name, ability, modifier]) => ({ name, ability, modifier })),
     initiative: { modifier: "+4" },
     favorites: [
-        { rollType: "skill", name: "Perception" },
-        { rollType: "skill", name: "Stealth" },
-        { rollType: "initiative", name: "Initiative" },
-        { rollType: "saving-throw", name: "DEX" },
-        { rollType: "skill", name: "Investigation" },
-        { rollType: "saving-throw", name: "CON" }
+        { rollType: "action", name: "Rapier", label: "Rapier", detail: "+7" },
+        { rollType: "action", name: "Hand Crossbow", label: "Hand Crossbow", detail: "+7" },
+        { rollType: "spell", name: "Vicious Mockery", level: "Cantrip", label: "Vicious Mockery", detail: "DC 14" },
+        { rollType: "spell", name: "Healing Word", level: "1st Level", label: "Healing Word (1st)", detail: "" },
+        { rollType: "spell", name: "Shatter", level: "2nd Level", label: "Shatter (2nd)", detail: "DC 14" },
+        { rollType: "action", name: "Dagger", label: "Dagger", detail: "+7" }
     ]
 };
 
@@ -404,23 +408,20 @@ const scenes = {
     },
     favorites: {
         run() {
-            caption("Favourites", "Pin the rolls you make every session",
-                "Star a skill, save, check or initiative on your D&amp;D Beyond sheet and it joins the launcher's ★ tab, " +
-                "in the order you starred it.");
+            caption("Favourites", "Your go-to attacks and spells, pinned",
+                "Star an attack or spell on your D&amp;D Beyond sheet to pin it to the launcher, " +
+                "ready to roll from Roll20.");
             const rows = [
-                ["", "DEX", "Acrobatics", "+7", false],
-                ["on", "WIS", "Insight", "+4", false, "hovered"],
-                ["on", "INT", "Investigation", "+7", true],
-                ["", "WIS", "Medicine", "+1", false],
-                ["on", "WIS", "Perception", "+7", true],
-                ["on", "DEX", "Stealth", "+10", true]
+                ["Rapier", "Melee Weapon", "+7", "1d8+4", true],
+                ["Hand Crossbow", "Ranged Weapon", "+7", "1d6+4", true],
+                ["Dagger", "Melee Weapon", "+7", "1d4+4", false, "hovered"],
+                ["Unarmed Strike", "Melee Attack", "+2", "1", false]
             ];
-            const sheet = el(`<div class="sheet"><h2>Skills</h2></div>`);
-            for (const [dot, abbr, name, mod, fav, hovered] of rows) {
+            const sheet = el(`<div class="sheet attacks"><h2>Attacks</h2></div>`);
+            for (const [name, kind, hit, dmg, fav, hovered] of rows) {
                 sheet.appendChild(el(`<div class="sheet-row ${hovered || ""}">
-                    <span class="dot ${dot}"></span><span class="abbr">${abbr}</span>
-                    <span class="name">${name}<span class="star ${fav ? "on" : ""}">${fav ? "★" : (hovered ? "☆" : "")}</span></span>
-                    <span class="mod">${mod}</span></div>`));
+                    <span class="name"><b>${name}</b><span class="star ${fav ? "on" : ""}">${fav ? "★" : (hovered ? "☆" : "")}</span><small>${kind}</small></span>
+                    <span class="mod">${hit}</span><span class="dmg">${dmg}</span></div>`));
             }
             document.body.appendChild(sheet);
             openLauncher("favorites");

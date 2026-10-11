@@ -26,9 +26,10 @@ tabs.
 * A floating button on the Roll20 page shows your D&D Beyond character's portrait. Click it to
   open a panel of skills, saving throws, ability checks and initiative.
 * Each row has small **A** and **D** buttons to roll it with advantage or disadvantage.
-* Star the rolls you use most on your D&D Beyond sheet (hover a skill, save, ability or
-  initiative and click its ☆) and they appear in the panel's ★ tab. Favourites are kept per
-  character, in your browser.
+* Favourite your go-to attacks and spells: on your D&D Beyond sheet, click the ☆ that appears
+  after an attack or spell's name when you hover its row, or **Favorite** under "Display in VTT"
+  in its side panel. They appear in the panel's ★ tab and roll from there, even while the sheet
+  is showing another tab. Favourites are kept per character, in your browser.
 * Initiative goes to the Roll20 turn tracker when "Add initiative roll to the Turn Tracker" is
   on. That needs your token selected, so if none is, the panel asks you to select it first.
 * Click a roll and it is performed on your real D&D Beyond character sheet, so class features,

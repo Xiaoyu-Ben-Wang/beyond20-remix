@@ -228,7 +228,8 @@ Returns a [Beyond20Character](#beyond20-character-format) object as response.
 
 #### quick-roll-data
 Ask the background script which D&D Beyond characters are currently open, along with the
-skills, saving throws, ability checks and initiative each of them can roll. Used by the Roll20 quick
+skills, saving throws, ability checks, initiative and favourite attacks and spells each of
+them can roll. Used by the Roll20 quick
 roll launcher, which has no character of its own to read those from.
 
 Unlike most messages, this one runs in the VTT->D&D Beyond direction. The background
@@ -258,14 +259,17 @@ Each entry has the following fields:
     skills,     // <Array> of { name, ability, modifier }; `ability` is the abbreviation
                 //   of the ability the skill belongs to, or "" for a custom skill
     initiative, // <Object> { modifier }, or null when the sheet shows no initiative
-    favorites,  // <Array> of { rollType, name } the player starred on the sheet, in the
-                //   order they were starred; null entries are unreadable stored keys
+    favorites,  // <Array> of { rollType, name, level, label, detail } the player starred
+                //   on the sheet, in the order they were starred. rollType is "action"
+                //   (a row among the attacks) or "spell"; level is the spell's level
+                //   heading ("Cantrip", "1st Level"), for spells only; label and detail
+                //   (its to-hit or DC) are what the launcher shows
 }
 ```
 
 #### quick-roll
 Ask the background script to have a D&D Beyond character roll one of its skills, saving
-throws, ability checks or its initiative. Used by the Roll20 quick roll launcher so that a player can roll
+throws, ability checks, its initiative, or one of its favourite attacks or spells. Used by the Roll20 quick roll launcher so that a player can roll
 without leaving the Roll20 tab.
 
 The request is broadcast to every open D&D Beyond character sheet, and the one whose
@@ -284,9 +288,12 @@ Message Format:
 {
     action,       // <String> Must be "quick-roll"
     characterId,  // <String> The id of the character that should make the roll
-    rollType,     // <String> One of "ability", "saving-throw", "skill" or "initiative"
-    name,         // <String> The ability abbreviation (e.g. "STR"), the skill's name, or
-                  //   "Initiative"
+    rollType,     // <String> One of "ability", "saving-throw", "skill", "initiative",
+                  //   "action" or "spell"
+    name,         // <String> The ability abbreviation (e.g. "STR"), the skill's name,
+                  //   "Initiative", or the attack or spell's name
+    level,        // <String> For "spell" only, and required there: the level heading the
+                  //   spell is listed under, which is the level it is cast at
     advantage     // <String> Optional: "advantage" or "disadvantage" to force either, as
                   //   the advantage hotkeys would; omitted to use the sheet's roll type
 }
@@ -299,7 +306,8 @@ Returns a response of the form:
              //   roll pipeline.
     reason   // <String> Why the roll was refused, when ok is false. One of
              //   "no-tab" (no D&D Beyond sheet is open), "not-my-character",
-             //   "not-found" (the sheet has no such row), "pane-timeout",
+             //   "not-found" (the sheet has no such row), "not-visible" (the
+             //   row's tab could not be brought up), "pane-timeout",
              //   "custom-skill", "interactive-setting" (the roll would need a
              //   prompt nobody can see), "busy" (another roll is in flight),
              //   "disconnected" (the extension was reloaded) or "bad-request"

@@ -62,10 +62,13 @@ const quickRollInitiativeRow = load('src/roll20/quick-roll.js', 'quickRollInitia
 const quickRollFavoriteRow = load('src/roll20/quick-roll.js', 'quickRollFavoriteRow');
 const quickRollSectionBlocks = load('src/roll20/quick-roll.js', 'quickRollSectionBlocks');
 
-// The sheet side's favourite keys. parseQuickRollFavoriteKey reads the allowed types from
-// its module scope, declared here as above.
-const QUICK_ROLL_FAVORITE_TYPES = ["ability", "saving-throw", "skill", "initiative"];
-const parseQuickRollFavoriteKey = load('src/dndbeyond/content-scripts/quick-roll.js', 'parseQuickRollFavoriteKey');
+// The sheet side's favourite helpers, which need no DOM.
+const DDB_QUICK_ROLL = 'src/dndbeyond/content-scripts/quick-roll.js';
+const isValidQuickRollFavorite = load(DDB_QUICK_ROLL, 'isValidQuickRollFavorite');
+const quickRollFavoriteKey = load(DDB_QUICK_ROLL, 'quickRollFavoriteKey');
+const normalizeQuickRollName = load(DDB_QUICK_ROLL, 'normalizeQuickRollName');
+const quickRollDetail = load(DDB_QUICK_ROLL, 'quickRollDetail');
+const quickRollSpellLabel = load(DDB_QUICK_ROLL, 'quickRollSpellLabel');
 
 const isValidQuickRollRequest = load('src/extension/background.js', 'isValidQuickRollRequest');
 
@@ -243,51 +246,75 @@ check("initiative heads the checks when the sheet reports it",
     ["initiative", "ability"]);
 
 // --- Favourites ----------------------------------------------------------- *
-// Favourites are stored as keys on the sheet side and resolved against the sheet's
-// current lists here, so a renamed or removed roll drops out instead of failing.
+// Favourites are attacks and spells. The sheet only lists those on their own tabs, so
+// each favourite carries its label and to-hit for the launcher to show.
+
+const handaxe = { rollType: "action", name: "Handaxe", label: "Handaxe", detail: "+10" };
+const cureWounds = { rollType: "spell", name: "Cure Wounds", level: "1st Level", label: "Cure Wounds (1st)", detail: "" };
 
 check("favourites keep the order they were starred in",
     () => withSheet(SHEET_SKILLS, () => {
-        quick_roll_data.saves = [{ name: "Dexterity", abbr: "DEX", modifier: "+2" }];
-        quick_roll_data.initiative = { modifier: "+3" };
-        quick_roll_data.favorites = [
-            { rollType: "saving-throw", name: "DEX" },
-            { rollType: "skill", name: "Stealth" },
-            { rollType: "initiative", name: "Initiative" }
-        ];
+        quick_roll_data.favorites = [cureWounds, handaxe];
         return quickRollSectionBlocks("favorites")[0].rows.map((r) => r.label);
     }),
-    ["Dexterity save", "Stealth", "Initiative"]);
+    ["Cure Wounds (1st)", "Handaxe"]);
 
-check("a favourite missing from the sheet is dropped",
+check("an attack favourite rolls by name, its to-hit in the pill",
     () => withSheet(SHEET_SKILLS, () => {
-        quick_roll_data.favorites = [{ rollType: "skill", name: "Basket Weaving" }, { rollType: "skill", name: "Stealth" }];
+        quick_roll_data.favorites = [handaxe];
+        return quickRollSectionBlocks("favorites")[0].rows[0];
+    }),
+    { rollType: "action", name: "Handaxe", label: "Handaxe", modifier: "+10" });
+
+check("a spell favourite carries its level to the roll",
+    () => withSheet(SHEET_SKILLS, () => {
+        quick_roll_data.favorites = [cureWounds];
+        return quickRollSectionBlocks("favorites")[0].rows[0];
+    }),
+    { rollType: "spell", name: "Cure Wounds", label: "Cure Wounds (1st)", modifier: "", level: "1st Level" });
+
+check("favourites of other kinds, from an older build, are skipped",
+    () => withSheet(SHEET_SKILLS, () => {
+        quick_roll_data.favorites = [{ rollType: "skill", name: "Stealth" }, null, handaxe];
         return quickRollSectionBlocks("favorites")[0].rows.map((r) => r.name);
     }),
-    ["Stealth"]);
+    ["Handaxe"]);
 
 check("no favourites means no blocks, so the panel can explain the stars",
     () => withSheet(SHEET_SKILLS, () => quickRollSectionBlocks("favorites")),
     []);
 
-check("a null favourite (an unreadable stored key) is skipped",
-    () => withSheet(SHEET_SKILLS, () => {
-        quick_roll_data.favorites = [null, { rollType: "skill", name: "Stealth" }];
-        return quickRollSectionBlocks("favorites")[0].rows.length;
-    }),
-    1);
+check("stored attack and spell favourites are valid",
+    () => [isValidQuickRollFavorite(handaxe), isValidQuickRollFavorite(cureWounds)],
+    [true, true]);
 
-check("a favourite key splits on its first colon only",
-    () => parseQuickRollFavoriteKey("skill:Lore: Arcana"),
-    { rollType: "skill", name: "Lore: Arcana" });
+check("a spell favourite without a level is invalid",
+    () => isValidQuickRollFavorite({ rollType: "spell", name: "Fire Bolt" }),
+    false);
 
-check("a favourite key of an unknown kind is refused",
-    () => parseQuickRollFavoriteKey("attack:Longsword"),
-    null);
+check("a skill favourite is invalid now that only attacks and spells can be starred",
+    () => isValidQuickRollFavorite({ rollType: "skill", name: "Stealth" }),
+    false);
 
-check("a non-string favourite key is refused",
-    () => parseQuickRollFavoriteKey({ rollType: "skill" }),
-    null);
+check("the same spell at another level is a different favourite",
+    () => quickRollFavoriteKey(cureWounds) === quickRollFavoriteKey({ ...cureWounds, level: "2nd Level" }),
+    false);
+
+check("favourite keys ignore case, so a renamed-case row still matches",
+    () => quickRollFavoriteKey(handaxe) === quickRollFavoriteKey({ ...handaxe, name: "HANDAXE" }),
+    true);
+
+check("a customised item's trailing * is dropped, to match its pane",
+    () => normalizeQuickRollName("  Jail Cell Bar* "),
+    "Jail Cell Bar");
+
+check("to-hit text is compacted for the pill",
+    () => [quickRollDetail(" + 10 "), quickRollDetail("DC  15"), quickRollDetail("--")],
+    ["+10", "DC 15", ""]);
+
+check("cantrips are labelled by name alone, levelled spells with their level",
+    () => [quickRollSpellLabel("Fire Bolt", "Cantrip"), quickRollSpellLabel("Shield", "1st Level")],
+    ["Fire Bolt", "Shield (1st)"]);
 
 // --- isValidQuickRollRequest ---------------------------------------------- *
 // The background is the only place that sees requests from a page, so it is where a
@@ -308,6 +335,22 @@ check("an ability check request is accepted",
 check("an initiative request is accepted",
     () => isValidQuickRollRequest({ characterId: "100", rollType: "initiative", name: "Initiative" }),
     true);
+
+check("an attack request is accepted",
+    () => isValidQuickRollRequest({ characterId: "100", rollType: "action", name: "Handaxe" }),
+    true);
+
+check("a spell request with its level is accepted",
+    () => isValidQuickRollRequest({ characterId: "100", rollType: "spell", name: "Cure Wounds", level: "1st Level" }),
+    true);
+
+check("a spell request without a level is refused",
+    () => isValidQuickRollRequest({ characterId: "100", rollType: "spell", name: "Cure Wounds" }),
+    false);
+
+check("a level on anything but a spell is refused",
+    () => isValidQuickRollRequest({ characterId: "100", rollType: "skill", name: "Stealth", level: "1st Level" }),
+    false);
 
 check("an unknown roll type is refused",
     () => isValidQuickRollRequest({ characterId: "100", rollType: "attack", name: "Longsword" }),

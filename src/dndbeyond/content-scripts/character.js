@@ -3156,7 +3156,7 @@ function documentModified(mutations, observer) {
     injectSettingsButton();
     injectCustomRollButton();
     activateQuickRolls();
-    updateQuickRollFavoriteStars();
+    updateQuickRollFavorites();
     if (character._features_needs_refresh && !character._features_refresh_warning_displayed) {
         character._features_refresh_warning_displayed = true;
         alertify.alert("This is a new or recently leveled-up character sheet and Beyond20 needs to parse its information. <br/>Please select the <strong>'Features &amp; Traits'</strong> panel on your DnDBeyond Character Sheet for Beyond20 to parse this character's features and populate the character-specific options.");
@@ -3336,7 +3336,7 @@ function handleMessage(request, sender, sendResponse) {
         if (!request.characterId || String(character._id) !== String(request.characterId)) {
             sendResponse({ ok: false, reason: "not-my-character" });
         } else {
-            performRemoteQuickRoll(request.rollType, request.name, request.advantage)
+            performRemoteQuickRoll(request.rollType, request.name, request.advantage, request.level)
                 .then(sendResponse)
                 .catch((err) => {
                     console.error("Beyond20: remote quick roll failed", err);

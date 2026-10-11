@@ -438,43 +438,33 @@ span.dice-roll.beyond20-tooltip-content {
     min-width:auto;
 }
 
-/* Quick roll favourites: a star on each roll the Roll20 launcher can make. It sits in
-   the corner of its cell, out of the layout, and shows on hover until it is set. The
-   glyph is CSS content so scrapers reading the cell's text never see it. */
-.beyond20-qr-fav-host {
-    position: relative;
-}
+/* Quick roll favourites: a star after the name of each attack and spell row, revealed
+   on hover until it is set. The glyph is CSS content so scrapers reading the name never
+   see it. */
 .beyond20-qr-fav {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    z-index: 2;
+    display: inline-block;
     width: 14px;
     height: 14px;
-    margin: -7px 0 0;
+    margin: 0 0 0 5px;
     padding: 0;
     border: 0;
     background: none;
     color: #9a9a9a;
-    font-size: 12px;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: normal;
     line-height: 14px;
     text-align: center;
+    vertical-align: -1px;
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.1s ease, color 0.1s ease, transform 0.1s ease;
 }
 .beyond20-qr-fav::before {
-    content: "\2606";
+    content: "°6";
 }
 .beyond20-qr-fav.beyond20-qr-fav-on::before {
-    content: "\2605";
-}
-/* The initiative box is the host itself, so its star takes the top corner instead. */
-.ct-combat__summary-group--initiative > .beyond20-qr-fav,
-.ct-combat-tablet__extra--initiative > .beyond20-qr-fav {
-    top: 2px;
-    right: 2px;
-    margin: 0;
+    content: "°5";
 }
 .beyond20-qr-fav-row:hover .beyond20-qr-fav,
 .beyond20-qr-fav:focus-visible,
@@ -486,6 +476,15 @@ span.dice-roll.beyond20-tooltip-content {
     transform: scale(1.2);
 }
 .beyond20-qr-fav.beyond20-qr-fav-on {
+    color: #e0a526;
+}
+/* The side pane's Favorite button, under "Display in VTT". */
+.ct-beyond20-favorite {
+    display: block;
+    margin: 2px auto 0;
+    text-align: center;
+}
+.ct-beyond20-favorite-button.beyond20-qr-fav-on .ct-button__content {
     color: #e0a526;
 }
 @media (prefers-reduced-motion: reduce) {

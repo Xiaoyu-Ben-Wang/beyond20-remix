@@ -176,11 +176,17 @@ function queryMessageToBeyond(request, callback, timeout_ms = 3000) {
 }
 
 function isValidQuickRollRequest(request) {
-    const rollTypes = ["ability", "saving-throw", "skill", "initiative"];
+    const rollTypes = ["ability", "saving-throw", "skill", "initiative", "action", "spell"];
+    // A spell is named together with the level heading it was starred under.
+    const level = request.level;
+    const validLevel = request.rollType === "spell"
+        ? typeof level === "string" && level.length > 0 && level.length < 40
+        : level === undefined;
     return !!request.characterId &&
         rollTypes.includes(request.rollType) &&
         typeof request.name === "string" && request.name.length > 0 && request.name.length < 100 &&
-        [undefined, "advantage", "disadvantage"].includes(request.advantage);
+        [undefined, "advantage", "disadvantage"].includes(request.advantage) &&
+        validLevel;
 }
 
 function isFVTTTabAdded(tab) {
@@ -359,7 +365,8 @@ function onMessage(request, sender, sendResponse) {
             characterId: String(request.characterId),
             rollType: request.rollType,
             name: request.name,
-            advantage: request.advantage
+            advantage: request.advantage,
+            level: request.level
         }
         // A skill roll may have to open its pane first, so this waits longer than a
         // data request. It still only waits for the roll to be accepted.
